@@ -1,0 +1,8 @@
+.stocktakingnavigation{
+    list-style-type: none;
+}
+
+.stocktakingnavigation li{
+    display: inline-block;
+    margin: 20px;
+}

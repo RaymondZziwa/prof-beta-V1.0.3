@@ -1,0 +1,38 @@
+.clickable_option{
+    border: 2px solid #8CA6FE;
+    text-align: center;
+    font-weight: bold;
+    font-size: 15px;
+    color: #3E5AA7;
+    height: 100px;
+    width: 270px;
+    margin-top: 50px;
+    padding: 40px 0;
+}
+
+.mclickable_option{
+    border: 2px solid #8CA6FE;
+    text-align: center;
+    font-weight: bold;
+    font-size: 15px;
+    color: #3E5AA7;
+    height: 100px;
+    width: 270px;
+    margin-top: 50px;
+    margin-left: 50px;
+    padding: 40px 0;
+    display: inline-block;
+}
+
+.mclickable_option:hover{
+    background-color: #8CA6FE;
+    color: white;
+}
+
+.clickable_option:hover{
+    background-color: #8CA6FE;
+    color: white;
+}
+.tab_nav{
+    text-decoration: none;
+}
