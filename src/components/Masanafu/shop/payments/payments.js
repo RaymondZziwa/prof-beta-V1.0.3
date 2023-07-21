@@ -157,11 +157,12 @@ const PaymentModule = ({ items, total }) => {
          items: JSON.stringify(items),
          receiptNo: receiptNo,
          total: total,
+         transactionId: transactionId,
          additionalInfo: additionalInfo,
          paymentMethod: paymentMethod,
          paymentStatus: paymentStatus,
          balance: balance,
-         customerNames: `${firstName} ${lastName}`,
+         customerNames: `${firstName.toUpperCase().trim()} ${lastName.toUpperCase().trim()}`,
          customerContact: phoneNumber,
          date: new Date().toLocaleDateString()
        })

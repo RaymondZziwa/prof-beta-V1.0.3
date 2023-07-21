@@ -2612,8 +2612,7 @@ app.post('/fetchreceiptdata', (req, res) => {
     })
 })
 
-
-//route to mark receipt as delivered
+//mark external receipts as delivered
 app.post('/markreceiptasdelivered', (req, res) => {
     function pad(num) {
         var s = "" + num;
@@ -2626,19 +2625,80 @@ app.post('/markreceiptasdelivered', (req, res) => {
         if (err) {
             res.status(403).send("You are not authorized to perform this action.");
         } else {
-            const receiptNumber = req.body.receiptNumber
-            const newStatus = 'delivered'
+            const receiptNumber = req.body.receiptNumber;
+            const newStatus = 'delivered';
+            const items = req.body.items;
 
-            db.query('UPDATE externalreceipts SET receiptdeliverystatus = ? WHERE receiptnumber = ? ;', [newStatus, receiptNumber], error => {
-                if (error) {
-                    console.log(error)
-                }else{
-                    res.send('success')
-                }
-            })
+            // Array to store items with insufficient stock
+            const insufficientStockItems = [];
+
+            // Check stock availability for each item
+            const itemsSold = JSON.parse(items);
+            const promises = itemsSold.map((item) => {
+                return new Promise((resolve, reject) => {
+                    db.query('SELECT quantityinstock FROM masanafuShopInventory WHERE productId = ?', [item.id], (error, results) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            const quantityInStock = results[0]?.quantityinstock || 0;
+                            if (quantityInStock >= item.quantity) {
+                                resolve();
+                            } else {
+                                insufficientStockItems.push(item.id);
+                                resolve();
+                            }
+                        }
+                    });
+                });
+            });
+
+            // Process the sale if all items have sufficient stock
+            Promise.all(promises)
+                .then(() => {
+                    if (insufficientStockItems.length > 0) {
+                        // Some items have insufficient stock
+                        res.status(400).send(`Insufficient stock for items: ${insufficientStockItems.join(', ')}`);
+                    } else {
+                        // All items have sufficient stock, proceed with the sale
+                                // Update the stock quantities
+                                const updatePromises = itemsSold.map((item) => {
+                                    return new Promise((resolve, reject) => {
+                                        db.query('UPDATE masanafuShopInventory SET quantityinstock = quantityinstock - ? WHERE productId = ?', [item.quantity, item.id], (error) => {
+                                            if (error) {
+                                                reject(error);
+                                            } else {
+                                                resolve();
+                                            }
+                                        });
+                                    });
+                                });
+
+                                // Wait for all stock updates to complete
+                                Promise.all(updatePromises)
+                                    .then(() => {
+                                        // Now update the receipt delivery status in externalreceipts table
+                                        db.query('UPDATE externalreceipts SET receiptdeliverystatus = ? WHERE receiptnumber = ? ;', [newStatus, receiptNumber], error => {
+                                            if (error) {
+                                                console.log(error);
+                                                res.status(500).send('Error occurred during receipt update');
+                                            } else {
+                                                res.send({ status: '200', msg: 'success' });
+                                            }
+                                        });
+                                    })
+                                    .catch((error) => {
+                                        console.log(error);
+                                        res.status(500).send('Error occurred during stock update');
+                                    });
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                    res.status(500).send('Error occurred during stock check');
+                });
         }
-    })
-})
+    });
+});
 
 //save shop restock data
 app.post('/saveshoprestockdata', (req, res) => {
@@ -4282,7 +4342,7 @@ app.post('/saveequatorialprojectsdepartmentstockdata', (req, res) => {
                             // If the account exists
                             if (results.length === 0) {
                                 res.send('This item is not in stock')
-                            } else if (results.length > 0) {
+                            } else if (results.length > 0 && parseFloat(results[0].quantityinstock) > parseFloat(quantity)) {
                                 let newStockCount = parseFloat(results[0].quantityinstock) - parseFloat(quantity);
                                 const sqlStockCount = "UPDATE equatorialProjectsInventory SET quantityinstock = ? WHERE productid = ?"
                                 db.query(sqlStockCount, [newStockCount, itemid], (err) => {
@@ -4293,7 +4353,7 @@ app.post('/saveequatorialprojectsdepartmentstockdata', (req, res) => {
                                     }
                                 })
                             } else {
-                                console.log("Error while increasing the item quantity in stock.")
+                                console.log("Error while increasing the item quantity in stock.It seems the quantity being taken out is more than the item stock count.")
                             }
                         })
                     }else{
@@ -4982,36 +5042,44 @@ app.post('/fetchallequatorialshopsales', (req, res) => {
 
 app.post('/fetchallbranchessalesrecords', (req, res) => {
     jwt.verify(req.body.token, 'SECRETKEY', (err) => {
-        if (err) {
-            res.status(403).send("You are not authorized to perform this action.");
-        } else {
-                let allResults = []
-                db.query('SELECT * FROM equatorialShopSales', (error, results) => {
-                    if (error) throw (error);
-
-                    if (results.length > 0) {
-                        allResults.concat(results)
-                    }
-                })
-                db.query('SELECT * FROM equatorialProjectsSales', (error, results) => {
-                    if (error) throw (error);
-
-                    if (results.length > 0) {
-                        allResults.concat(results)
-                    } 
-                })
-                db.query('SELECT * FROM masanafuShopSales', (error, results) => {
-                    if (error) throw (error);
-
-                    if (results.length > 0) {
-                        allResults.concat(results)
-                    }
-                })
-
-                res.send(allResults)
-        }
-    })
-})
+      if (err) {
+        res.status(403).send("You are not authorized to perform this action.");
+      } else {
+        const fetchEquatorialShopSales = new Promise((resolve, reject) => {
+          db.query('SELECT * FROM equatorialShopSales', (error, results) => {
+            if (error) reject(error);
+            else resolve(results);
+          });
+        });
+  
+        const fetchEquatorialProjectsSales = new Promise((resolve, reject) => {
+          db.query('SELECT * FROM equatorialProjectsSales', (error, results) => {
+            if (error) reject(error);
+            else resolve(results);
+          });
+        });
+  
+        const fetchMasanafuShopSales = new Promise((resolve, reject) => {
+          db.query('SELECT * FROM masanafuShopSales', (error, results) => {
+            if (error) reject(error);
+            else resolve(results);
+          });
+        });
+  
+        Promise.all([fetchEquatorialShopSales, fetchEquatorialProjectsSales, fetchMasanafuShopSales])
+          .then(([equatorialShopSales, equatorialProjectsSales, masanafuShopSales]) => {
+            let allResults = [];
+            allResults = allResults.concat(equatorialShopSales, equatorialProjectsSales, masanafuShopSales);
+            res.send(allResults);
+          })
+          .catch((error) => {
+            console.error(error);
+            res.status(500).send('An error occurred while fetching records.');
+          });
+      }
+    });
+  });
+  
 app.listen(port, () => {
     console.log(`Server is listening on port ${port}`);
 })

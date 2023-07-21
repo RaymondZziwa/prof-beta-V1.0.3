@@ -176,7 +176,7 @@ const PaymentModule = ({ servicesList, items, total }) => {
         paymentMethod: paymentMethod,
         paymentStatus: paymentStatus,
         balance: balance,
-        customerNames: `${firstName} ${lastName}`,
+        customerNames: `${firstName.toUpperCase().trim()} ${lastName.toUpperCase().trim()}`,
         customerContact: phoneNumber,
         date: new Date().toLocaleDateString()
       })

@@ -44,12 +44,15 @@ const ManageExternalReceipts = () => {
 
     const markReceiptAsDelivered = async event => {
         event.preventDefault()
-        let res = await axios.post('http://82.180.136.230:3005/markreceiptasdelivered',{
+        if(receiptData){
+            let res = await axios.post('http://82.180.136.230:3005/markreceiptasdelivered',{
             token: localStorage.getItem('token'),
+            items: receiptItems,
             receiptNumber: receiptNumber
-        })
-        .then(() => setStatus({ type: 'success' }))
-        .catch((err) => setStatus({ type: 'error', err }))
+            })
+            .then(() => setStatus({ type: 'success' }))
+            .catch((err) => setStatus({ type: 'error', err }))
+        }
     }
 
     useEffect(()=>{

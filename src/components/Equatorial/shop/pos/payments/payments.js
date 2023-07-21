@@ -156,7 +156,7 @@ const PaymentModule = ({ servicesList, items, total }) => {
         paymentMethod: paymentMethod,
         paymentStatus: paymentStatus,
         balance: balance,
-        customerNames: `${firstName} ${lastName}`,
+        customerNames: `${firstName.toUpperCase().trim()} ${lastName.toUpperCase().trim()}`,
         customerContact: phoneNumber,
         date: new Date().toLocaleDateString()
       })
@@ -262,7 +262,7 @@ const PaymentModule = ({ servicesList, items, total }) => {
                     Partially Paid
                     </label>
                 </div>
-                <div className="form-check">
+                {/* <div className="form-check">
                     <input
                     className="form-check-input"
                     type="radio"
@@ -275,7 +275,7 @@ const PaymentModule = ({ servicesList, items, total }) => {
                     <label className="form-check-label" htmlFor="paymentMethodPaypal">
                     Unpaid
                     </label>
-                </div>
+                </div> */}
                 { paymentStatus === 'partiallypaid' && 
                     <div className="mb-3">
                         <div className="form-floating mb-3">

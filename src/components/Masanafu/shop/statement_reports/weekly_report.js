@@ -23,6 +23,37 @@ const MasanafuWeeklySalesReport = () => {
     const [totalExpenditureAmountPaid, setTotalExpenditureAmountPaid] = useState(0);
     const [expenditureBalance, setExpenditureBalance] = useState(0)
 
+    const [paymentMethodTotals, setPaymentMethodTotals] = useState({
+        Cash: 0,
+        Visa: 0,
+        MTNMoMo: 0,
+        AirtelMoney: 0,
+        ProfMM: 0,
+      });
+      const [expensePaymentMethodTotals, setExpensePaymentMethodTotals] = useState({
+        Cash: 0,
+        Visa: 0,
+        MTNMoMo: 0,
+        AirtelMoney: 0,
+        ProfMM: 0,
+      });
+
+      let paymentMethods = {
+        Cash: 0,
+        Visa: 0,
+        MTNMoMo: 0,
+        AirtelMoney: 0,
+        ProfMM: 0,
+      }
+
+      let ExpensepaymentMethod = {
+        Cash: 0,
+        Visa: 0,
+        MTNMoMo: 0,
+        AirtelMoney: 0,
+        ProfMM: 0,
+      }
+      
     const handleMonthChange = (event) => {
         const selectedMonth = event.target.value;
         setSelectedMonth(selectedMonth);
@@ -173,26 +204,7 @@ const MasanafuWeeklySalesReport = () => {
             handleFilterSales()
           }, [selectedWeek]);
         
-        //   // Function to get the week number from a date
-        //   const getWeekOfMonth = (date) => {
-        //     const adjustedDate = date.getDate() + date.getDay();
-        //     const prefixes = ['0', '1', '2', '3', '4', '5'];
-        //     return parseInt(prefixes[0 | adjustedDate / 7]) + 1;
-        //   };
-        // const getWeekOfMonth = (date) => {
-        //     const day = date.getDate();
-        //     const weekOffset = date.getDay() === 0 ? 0 : 1; // Adjust the week offset based on the starting day of the week
-        //     const weekNumber = Math.ceil((day - (weekOffset + 1) + 1) / 7); // Calculate the week number
-          
-        //     return weekNumber;
-        // }
-        // const getWeekOfMonth = (date) => {
-        //     const day = date.getDate();
-        //     const weekOffset = (date.getDay() + 6) % 7; // Adjust the week offset based on the starting day of the week
-        //     const weekNumber = Math.ceil((day + weekOffset) / 7); // Calculate the week number
-          
-        //     return weekNumber;
-        // }
+      
         const getWeekOfMonth = (date) => {
             const day = date.getDate();
             const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1).getDay();
@@ -216,17 +228,43 @@ const MasanafuWeeklySalesReport = () => {
               totalAmount += sale.totalAmount;
               totalAmountPaid += sale.totalAmount - sale.balance;
               balance += sale.balance;
+
+              if (sale.paymentMethod === 'Cash') {
+                paymentMethods.Cash += sale.totalAmount;
+              } else if (sale.paymentMethod === 'Prof MM') {
+                paymentMethods.ProfMM += sale.totalAmount;
+              } else if (sale.paymentMethod === 'Visa') {
+                paymentMethods.Visa += sale.totalAmount;
+              }else if (sale.paymentMethod === 'MTN MoMo') {
+                paymentMethods.MTNMoMo += sale.totalAmount;
+              }else if (sale.paymentMethod === 'Airtel Money') {
+                paymentMethods.AirtelMoney += sale.totalAmount;
+              }
             });
           
             filteredExpenses.forEach((expense) => {
               totalExpenseAmount += expense.expenditurecost;
               totalExpenseAmountPaid += expense.amountspent;
               expenseAmountNotPaid += expense.balance;
+
+              if (expense.paymentmethod === 'Cash') {
+                ExpensepaymentMethod.Cash += expense.amountspent;
+              } else if (expense.paymentmethod === 'Prof MM') {
+                ExpensepaymentMethod.ProfMM += expense.amountspent;
+              } else if (expense.paymentmethod === 'Visa') {
+                ExpensepaymentMethod.Visa += expense.amountspent;
+              }else if (expense.paymentmethod === 'MTN MoMo') {
+                ExpensepaymentMethod.MTNMoMo += expense.amountspent;
+              }else if (expense.paymentmethod === 'Airtel Money') {
+                ExpensepaymentMethod.AirtelMoney += expense.amountspent;
+              }
             });
           
             setTotalAmount(totalAmount);
             setTotalAmountPaid(totalAmountPaid);
             setBalance(balance);
+            setPaymentMethodTotals(paymentMethods)
+            setExpensePaymentMethodTotals(ExpensepaymentMethod)
           
             setTotalExpenditureAmount(totalExpenseAmount);
             setTotalExpenditureAmountPaid(totalExpenseAmountPaid);
@@ -438,6 +476,12 @@ const MasanafuWeeklySalesReport = () => {
                         {totalAmount ? 
                             <>
                                 <p>Total Amount From Sales: UGX {totalAmount}</p>
+                                <p>Total Amount From Sales: UGX {totalAmount}</p>
+                                <p>Amount Recieved (Cash): UGX {paymentMethodTotals.Cash}</p>
+                                <p>Amount Recieved (MTN MoMo): UGX {paymentMethodTotals.MTNMoMo}</p>
+                                <p>Amount Recieved (Airtel Money): UGX {paymentMethodTotals.AirtelMoney}</p>
+                                <p>Amount Recieved (Prof MM): UGX {paymentMethodTotals.ProfMM}</p>
+                                <p>Amount Recieved (Visa): UGX {paymentMethodTotals.Visa}</p>
                                 <p>Total Amount Recieved: UGX {totalAmountPaid}</p>
                                 <p>Total Amount Not Paid: UGX {balance}</p>
                             </>
@@ -449,6 +493,11 @@ const MasanafuWeeklySalesReport = () => {
                         {totalExpenditureAmount ? 
                             <>
                                 <p>Total Expenditure Amount: UGX {totalExpenditureAmount}</p>
+                                <p>Expense Paid By (Cash): UGX {expensePaymentMethodTotals.Cash}</p>
+                                <p>Expense Paid By (MTN MoMo): UGX {expensePaymentMethodTotals.MTNMoMo}</p>
+                                <p>Expense Paid By (Airtel Money): UGX {expensePaymentMethodTotals.AirtelMoney}</p>
+                                <p>Expense Paid By (Prof MM): UGX {expensePaymentMethodTotals.ProfMM}</p>
+                                <p>Expense Paid By (Visa): UGX {expensePaymentMethodTotals.Visa}</p>
                                 <p>Total Expenditure Amount Paid: UGX {totalExpenditureAmountPaid}</p>
                                 <p>Total Expenditure Amount Not Paid: UGX {expenditureBalance}</p>
                             </>
@@ -465,7 +514,11 @@ const MasanafuWeeklySalesReport = () => {
                                 <p>Total Expenditure Amount Spent: UGX {totalExpenditureAmountPaid}</p>
                                 <p>Total Sales Amount Not Recieved: UGX {balance}</p>
                                 <p>Total Expenditure Amount Not Paid: UGX {expenditureBalance}</p>
-                                <p>Total Net Income Available: UGX {totalAmountPaid-totalExpenditureAmountPaid}</p>
+                                <p>Total Net Income Available (Cash): UGX {paymentMethodTotals.Cash-expensePaymentMethodTotals.Cash}</p>
+                                <p>Total Net Income Available (MTN MoMo): UGX {paymentMethodTotals.MTNMoMo-expensePaymentMethodTotals.MTNMoMo}</p>
+                                <p>Total Net Income Available (Airtel Money): UGX {paymentMethodTotals.AirtelMoney-expensePaymentMethodTotals.AirtelMoney}</p>
+                                <p>Total Net Income Available (Prof MM): UGX {paymentMethodTotals.ProfMM-expensePaymentMethodTotals.ProfMM}</p>
+                                <p>Total Net Income Available (Visa): UGX {paymentMethodTotals.Visa-expensePaymentMethodTotals.Visa}</p>
                             </>
                             : <p>No data.....</p>
                     }
