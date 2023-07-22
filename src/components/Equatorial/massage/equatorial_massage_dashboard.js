@@ -20,7 +20,7 @@ const EquatorialMassageManagerDashboard = () => {
                         Point Of Sale
                     </div>
                 </Link>
-                <Link className="tab_nav" to="#">
+                <Link className="tab_nav" to="/manageequatorialmassageclientservicesubscription">
                     <div className="mb-3 mclickable_option">
                         Manage Client Subscriptions
                     </div>
