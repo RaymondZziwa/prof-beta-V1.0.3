@@ -146,6 +146,7 @@ import EquatorialShopSalesRecords from './components/Equatorial/shop/records/sal
 import EquatorialShopExpensesRecords from './components/Equatorial/shop/records/expenditure_records';
 import FetchClientAssociatedReceipts from './components/Equatorial/shop/fetch_client_associated_receipts/fetch_client_associated_receipts';
 import EquatorialMassageClientServiceSubscription from './components/Equatorial/massage/client_service_subscription/client_service_subscription';
+import EquatorialMassageSubscriptionsRecords from './components/Equatorial/massage/records/equatorial_massage_subscriptions_records';
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -553,6 +554,9 @@ useEffect(() => {
           </Route>)}
           {authCtx.isLoggedIn && (<Route path="/manageequatorialmassageclientservicesubscription">
             <EquatorialMassageClientServiceSubscription />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/equatorialmassageclientsubscriptionrecords">
+            <EquatorialMassageSubscriptionsRecords />
           </Route>)}
 
 

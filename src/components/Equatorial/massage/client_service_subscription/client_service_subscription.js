@@ -1,4 +1,5 @@
 import { Row, Col } from 'react-bootstrap'
+import { useState } from 'react'
 import Navbar from '../../../side navbar/sidenav'
 import ClientNewSubscriptionForm from './client_new_subscription_form/client_new_subscription_form'
 import FindActiveClientSubscriptions from './find_client_subscription/find_client_subscriptions'
@@ -6,6 +7,7 @@ import DisplayActiveClientSubscription from './display_active_client_subscriptio
 import RecordClientSubscriptionUsage from './record_subscription_usage/record_client_subscription_usage'
 
 const EquatorialMassageClientServiceSubscription = () => {
+    const [clientSubscriptionData, setClientSubscriptionData] = useState([])
     return(
         <Row>
             <Col sm='12' md='2' lg='2' xl='2'>
@@ -24,8 +26,8 @@ const EquatorialMassageClientServiceSubscription = () => {
 
                     <Col sm='12' md='9' lg='9' xl='9'>
                         <h3 style={{textAlign:'center'}}>Manage Client Subscription</h3>
-                        <FindActiveClientSubscriptions />
-                        <DisplayActiveClientSubscription />
+                        <FindActiveClientSubscriptions setClientSubscriptionData={setClientSubscriptionData}/>
+                        <DisplayActiveClientSubscription clientSubscriptionData={clientSubscriptionData}/>
                         <RecordClientSubscriptionUsage />
                     </Col>
                 </Row>

@@ -5089,8 +5089,9 @@ app.post('/saveclientsubscription', (req, res) => {
         } else {
                 const {firstName, middleName, lastName, clientContact, amountPaid, notes} = req.body.data
                 const subscriptionId = `SUB-${Math.floor(Math.random()*100)}`
-                const date = new Date().toLocaleString()
+                const date = req.body.date
                 const clientNames = `${firstName.toUpperCase().trim()} ${middleName.toUpperCase().trim()} ${lastName.toUpperCase().trim()}`
+                
                 db.query('INSERT INTO equatorialmassagesubscriptions (subscriptionId, subscriptiondate, clientnames, clientcontact, amountPaid, balance, notes, subscriptionstatus) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',[subscriptionId, date, clientNames, clientContact, amountPaid, amountPaid, notes, 'active'], (error) => {
                     if (error){
                         throw (error)
@@ -5131,7 +5132,7 @@ app.post('/saveclientsubscriptionusage', (req, res) => {
         if (err) {
             res.status(403).send("You are not authorized to perform this action.");
         } else {
-            const date  =  new Date().toLocaleString()
+            const date  =  req.body.date
             const subscriptionId = req.body.subscriptionId
             const serviceId = req.body.serviceId
             const amountSpent = req.body.amountSpent
@@ -5143,7 +5144,7 @@ app.post('/saveclientsubscriptionusage', (req, res) => {
                     let newSubscriptionStatus;
                     if(newBalance === 0 || newBalance < 0){
                         newSubscriptionStatus = 'inactive'
-                        db.query('INSERT INTO equatorialmassagesubscriptionpayments (subscriptionId, serviceDate,  serviceOfferedId, amountSpent) VALUES (?, ?, ?, ?)',[subscriptionId, date, serviceId, amountSpent], (error) => {
+                        db.query('INSERT INTO equatorialmassagesubscriptionusage (subscriptionId, serviceDate,  serviceOfferedId, amountSpent) VALUES (?, ?, ?, ?)',[subscriptionId, date, serviceId, amountSpent], (error) => {
                             if (error){
                                 throw (error)
                             }else{
@@ -5166,7 +5167,7 @@ app.post('/saveclientsubscriptionusage', (req, res) => {
                             }
                         })
                     }else{
-                        db.query('INSERT INTO equatorialmassagesubscriptionpayments (subscriptionId, serviceDate,  serviceOfferedId, amountSpent) VALUES (?, ?, ?, ?)',[subscriptionId, date, serviceId, amountSpent], (error) => {
+                        db.query('INSERT INTO equatorialmassagesubscriptionusage (subscriptionId, serviceDate,  serviceOfferedId, amountSpent) VALUES (?, ?, ?, ?)',[subscriptionId, date, serviceId, amountSpent], (error) => {
                             if (error){
                                 throw (error)
                             }else{
@@ -5193,6 +5194,27 @@ app.post('/saveclientsubscriptionusage', (req, res) => {
 
     })
 })
+
+
+app.post('/fetchallsubscriptionsusagerecords', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                db.query('SELECT * FROM equatorialmassagesubscriptionusage JOIN massageServices ON equatorialmassagesubscriptionusage.serviceOfferedId = massageServices.productId', (error, results) => {
+                    if (error) throw (error);
+
+                    if (results.length > 0) {
+                        res.send(results)
+                    } else {
+                        res.send(`There are no records found.`)
+                    }
+                })
+        }
+    })
+})
+
+
 app.listen(port, () => {
     console.log(`Server is listening on port ${port}`);
 })

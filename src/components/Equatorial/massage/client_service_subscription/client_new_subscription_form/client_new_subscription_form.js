@@ -14,6 +14,8 @@ const formReducer = (state, action) => {
     switch (action.type) {
         case 'UPDATE_FIELD':
           return { ...state, [action.field]: action.value };
+          case 'RESET_FORM':
+            return initialState
         default:
           return state;
     }
@@ -35,16 +37,19 @@ const ClientNewSubscriptionForm = () => {
     
           return () => clearTimeout(timer);
         }
-      }, [status]);
-
+      }, [status])
+      
     const submitHandler = async (event) => {
         event.preventDefault()
         let res = await axios.post('http://82.180.136.230:3005/saveclientsubscription',{
             token: localStorage.getItem('token'),
+            date: new Date().toLocaleString(),
             data: state
         })
         .then(() => setStatus({ type: 'success' }))
-         .catch((err) => setStatus({ type: 'error', err }))
+        .catch((err) => setStatus({ type: 'error', err }))
+
+        dispatch({ type: 'RESET_FORM'});
     }
 
     return (
