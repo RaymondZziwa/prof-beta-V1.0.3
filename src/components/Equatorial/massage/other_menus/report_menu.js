@@ -12,17 +12,32 @@ const EquatorialMassageReportMenu = () => {
             <div className="col align-self-center" style={{marginTop:'20px'}}>
                 <Link className="tab_nav" to="/equatorialmassagedepartmentdailyreport">
                     <div className="mb-3 mclickable_option">
-                        Daily Report
+                        Products Daily Report
                     </div>
                 </Link>
                 <Link className="tab_nav" to="/equatorialmassagedepartmentweeklyreport">
                     <div className="mb-3 mclickable_option">
-                        Weekly Report
+                       Products Weekly Report
                     </div>
                 </Link>
                 <Link className="tab_nav" to="/equatorialmassagedepartmentmonthlyreport">
                     <div className="mb-3 mclickable_option">
-                    Monthly Report
+                      Products Monthly Report
+                    </div>
+                </Link>
+                <Link className="tab_nav" to="/equatorialmassagedailyservicesreport">
+                    <div className="mb-3 mclickable_option">
+                        Services Daily Report
+                    </div>
+                </Link>
+                <Link className="tab_nav" to="/equatorialmassageweeklyservicesreport">
+                    <div className="mb-3 mclickable_option">
+                       Services Weekly Report
+                    </div>
+                </Link>
+                <Link className="tab_nav" to="/equatorialmassagemonthlyservicesreport">
+                    <div className="mb-3 mclickable_option">
+                      Services Monthly Report
                     </div>
                 </Link>
             </div>

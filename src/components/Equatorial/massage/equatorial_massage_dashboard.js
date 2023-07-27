@@ -1,7 +1,7 @@
 import { Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import '../../Namungoona/supervisor dashboard/namungoona.css'
-import Navbar from "../../side navbar/sidenav";
+import Navbar from "../../side navbar/sidenav"
 
 const EquatorialMassageManagerDashboard = () => {
     return (
@@ -17,12 +17,22 @@ const EquatorialMassageManagerDashboard = () => {
                 </Link>
                 <Link className="tab_nav" to="/equatorialmassagedepartmentpos">
                     <div className="mb-3 mclickable_option">
-                        Point Of Sale
+                        Products Point Of Sale
+                    </div>
+                </Link>
+                <Link className="tab_nav" to="/equatorialmassageservicespos">
+                    <div className="mb-3 mclickable_option">
+                        Services Point Of Sale
                     </div>
                 </Link>
                 <Link className="tab_nav" to="/manageequatorialmassageclientservicesubscription">
                     <div className="mb-3 mclickable_option">
                         Manage Client Subscriptions
+                    </div>
+                </Link>
+                <Link className="tab_nav" to="/massagedailyincomesubmission">
+                    <div className="mb-3 mclickable_option">
+                        Daily Income Submission
                     </div>
                 </Link>
                 <Link className="tab_nav" to="/equatorialmassagedepartmentrecords">

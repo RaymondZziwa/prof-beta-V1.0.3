@@ -146,7 +146,25 @@ const PaymentModule = ({ servicesList, items, total }) => {
 
     const handleSubmit = async (event) => {
         event.preventDefault()
-       let res = await axios.post('http://82.180.136.230:3005/equatorialmassagecartcheckout',{
+        console.log('slsl', servicesList)
+        console.log('items', items)
+        setServices([])
+
+        items.map((item) => {
+            if (servicesList.find((service) => service.label === item.name)) {
+              services.push({
+                Id: item.id,
+                productName: item.name,
+                quantity: item.quantity,
+                totalCost: item.totalCost,
+                unitCost: item.unitCost
+              });
+            }
+        })
+       console.log('serv', services)
+       console.log('items22', items)
+
+       let res = await axios.post('http://82.180.136.230:3005/equatorialmassageservicescheckout',{
         token: localStorage.getItem('token'),
         branch: localStorage.getItem('branch'),
         services: JSON.stringify(services),
@@ -264,7 +282,7 @@ const PaymentModule = ({ servicesList, items, total }) => {
                     Partially Paid
                     </label>
                 </div>
-                <div className="form-check">
+                {/* <div className="form-check">
                     <input
                     className="form-check-input"
                     type="radio"
@@ -277,7 +295,7 @@ const PaymentModule = ({ servicesList, items, total }) => {
                     <label className="form-check-label" htmlFor="paymentMethodPaypal">
                     Unpaid
                     </label>
-                </div>
+                </div> */}
                 { paymentStatus === 'partiallypaid' && 
                     <div className="mb-3">
                         <div className="form-floating mb-3">

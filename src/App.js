@@ -147,6 +147,12 @@ import EquatorialShopExpensesRecords from './components/Equatorial/shop/records/
 import FetchClientAssociatedReceipts from './components/Equatorial/shop/fetch_client_associated_receipts/fetch_client_associated_receipts';
 import EquatorialMassageClientServiceSubscription from './components/Equatorial/massage/client_service_subscription/client_service_subscription';
 import EquatorialMassageSubscriptionsRecords from './components/Equatorial/massage/records/equatorial_massage_subscriptions_records';
+import MassageDailyIncomeSubmission from './components/Equatorial/massage/income_submission/income_submission';
+import EquatorialMassageServicesPos from './components/Equatorial/massage/services_pos/point_of_sale/pos';
+import RecieveMassageIncome from './components/Equatorial/shop/recieve_massage_income/recieve_income';
+import EquatorialMassageDailyServicesReport from './components/Equatorial/massage/reports/daily_services_report';
+import EquatorialMassageWeeklyServicesReport from './components/Equatorial/massage/reports/weekly_services_report';
+import EquatorialMassageMonthlyServicesReport from './components/Equatorial/massage/reports/monthly_services_report';
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -513,11 +519,16 @@ useEffect(() => {
           {authCtx.isLoggedIn && (<Route path="/masanafucustodianrecordsmenu">
             <CustodianRecordsMenu />
           </Route>)}
+
+
           {authCtx.isLoggedIn && (<Route path="/massagemanagerdashboard">
             <EquatorialMassageManagerDashboard />
           </Route>)}
           {authCtx.isLoggedIn && (<Route path="/equatorialmassagedepartmentpos">
             <MassagePOS />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/equatorialmassageservicespos">
+            <EquatorialMassageServicesPos />
           </Route>)}
           {authCtx.isLoggedIn && (<Route path="/equatorialmassagedepartmentinventorymenu">
             <EquatorialMassageInventoryMgtMenu />
@@ -557,6 +568,9 @@ useEffect(() => {
           </Route>)}
           {authCtx.isLoggedIn && (<Route path="/equatorialmassageclientsubscriptionrecords">
             <EquatorialMassageSubscriptionsRecords />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/massagedailyincomesubmission">
+            <MassageDailyIncomeSubmission />
           </Route>)}
 
 
@@ -675,6 +689,19 @@ useEffect(() => {
           </Route>)}
           {authCtx.isLoggedIn && (<Route path="/fetchclientassociatedreceipts">
             <FetchClientAssociatedReceipts />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/recievemassagedepartmentincome">
+            <RecieveMassageIncome />
+          </Route>)}
+
+          {authCtx.isLoggedIn && (<Route path="/equatorialmassagedailyservicesreport">
+            <EquatorialMassageDailyServicesReport />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/equatorialmassageweeklyservicesreport">
+            <EquatorialMassageWeeklyServicesReport />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/equatorialmassagemonthlyservicesreport">
+            <EquatorialMassageMonthlyServicesReport />
           </Route>)}
           
       </BrowserRouter>

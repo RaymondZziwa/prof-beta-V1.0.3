@@ -11,27 +11,33 @@ const SearchAndAddToCart = () => {
   const [options, setOptions] = useState([]);
   const [cartItems, setCartItems] = useState([])
   const [total, setTotal] = useState(0)
+  const [servicesList, setServicesList] = useState(undefined)
+
+  useEffect(()=>{
+    if(servicesList){
+        setOptions(servicesList)
+    }
+  },[servicesList])
 
 
   useEffect(() => {
-    const fetchAllMaterials = async () => {
-      let res = await axios.post('http://82.180.136.230:3005/fetchallshopinventory', {
-        token: localStorage.getItem('token')
-      });
+    const fetchAllServices = async () => {
+      let res = await axios.post('http://82.180.136.230:3005/fetchallmassageservices',{
+          token: localStorage.getItem('token')
+      })
   
-      if (Array.isArray(res.data)) {
+      if(Array.isArray(res.data)){
         const transformedOptions = res.data.map((item) => ({
           value: item.productId.toString(),
           label: item.productName,
           productData: item // Include the whole item object as productData
         }))
-        setOptions(transformedOptions)
+        setServicesList(transformedOptions)
       }
     }
-
-    fetchAllMaterials()
-  },[])
-
+    
+    fetchAllServices()
+  }, []);
 
   const handleSelectChange = (selectedOption) => {
     setSelectedOption(selectedOption);
@@ -115,7 +121,7 @@ const SearchAndAddToCart = () => {
               <Cart items={cartItems} setCartItems={setCartItems} total={total} setTotal={setTotal}/>
             </Col>
             <Col sm='12' md='3' lg='3' xl='3'>
-               <PaymentModule items={cartItems} total={total} />  
+               <PaymentModule items={cartItems} total={total} servicesList={servicesList}/>  
             </Col>
       </Row>  
     </>

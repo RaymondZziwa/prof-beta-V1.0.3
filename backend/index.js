@@ -5215,6 +5215,254 @@ app.post('/fetchallsubscriptionsusagerecords', (req, res) => {
 })
 
 
+//route to save client payment
+app.post('/submitmassageincome', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                const submissionId = `SM-${Math.floor(Math.random()*100)}`
+                const date = req.body.date
+                const submittedBy = req.body.submittedBy
+                const submissionStatus = 'unconfirmed'
+                const amountSubmitted = req.body.massageAmount
+                const productsAmount = req.body.productsAmount
+                const receivedBy = req.body.deliveredTo
+                
+                db.query('INSERT INTO equatorialmassagemoneysubmission (submissionId, submissionDate, massageamount, productamount, submittedBy, receivedBy, submissionstatus) VALUES (?, ?, ?, ?, ?, ?, ?)',[submissionId, date, amountSubmitted, productsAmount, submittedBy, receivedBy, submissionStatus], (error) => {
+                    if (error){
+                        throw (error)
+                    }else{
+                        res.send({
+                            status: 200,
+                            msg: 'success'
+                        })
+                    }
+
+                })
+        }
+    })
+})
+
+//route to save client payment
+app.post('/confirmincomesubmission', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                const submissionId = req.body.submissionId
+                const submissionStatus = 'recieved'
+
+                db.query('UPDATE equatorialmassagemoneysubmission SET submissionstatus = ? WHERE submissionId = ?',[submissionStatus, submissionId], (error) => {
+                    if (error){
+                        throw (error)
+                    }else{
+                        res.send({
+                            status: 200,
+                            msg: 'success'
+                        })
+                    }
+
+                })
+        }
+    })
+})
+
+app.post('/rejectincomesubmission', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                const submissionId = req.body.submissionId
+                const submissionStatus = 'not recieved'
+ 
+                db.query('UPDATE equatorialmassagemoneysubmission SET submissionstatus = ? WHERE submissionId = ?',[submissionStatus, submissionId], (error) => {
+                    if (error){
+                        throw (error)
+                    }else{
+                        res.send({
+                            status: 200,
+                            msg: 'success'
+                        })
+                    }
+
+                })
+        }
+    })
+})
+
+app.post('/fetchallincomesubmissionrecords', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                db.query('SELECT * FROM equatorialmassagemoneysubmission', (error, results) => {
+                    if (error) throw (error);
+
+                    if (results.length > 0) {
+                        res.send(results)
+                    } else {
+                        res.send(`There are no records found.`)
+                    }
+                })
+        }
+    })
+})
+
+
+app.post('/savesupplydata', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                const supplyId = `SP-${Math.floor(Math.random()*100)}`
+                const supplierNames = req.body.supplierNames
+                const date = req.body.date
+                const itemsSupplied = req.body.itemsSupplied
+                const totalSupplyCost = req.body.totalSupplyCost
+                const balance = req.body.balance
+                const paymentMethod = req.body.paymentMethod
+                const paymentStatus = req.body.paymentStatus
+                const transactionId = req.body.transactionId
+                const chequeNumber = req.body.chequeNumber
+                const receivedBy = req.body.receivedBy
+                const notes = req.body.notes
+   
+                db.query('INSERT INTO suppliers (supplyId, suppliernames, supplydate, itemssupplied, totalsupplycost, balance, paymentmethod, paymentstatus, transactionId, chequenumber, receivedBy, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',[supplyId, supplierNames, date, itemsSupplied, totalSupplyCost, balance, paymentMethod, paymentStatus, transactionId, chequeNumber, receivedBy, notes], (error) => {
+                    if (error){
+                        throw (error)
+                    }else{
+                        res.send({
+                            status: 200,
+                            msg: 'success'
+                        })
+                    }
+
+                })
+        }
+    })
+})
+
+
+app.post('/savesupplierpayment', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const date  =  req.body.date
+            const supplyId = req.body.supplyId
+            const amountPaid = req.body.amountPaid
+            const paymentMethod = req.body.paymentMethod
+            const transactionId = req.body.transactionId
+            const chequeNumber = req.body.chequeNumber
+            const notes = req.body.notes
+
+            db.query('SELECT * FROM suppliers WHERE supplyId = ?;', supplyId, function (error, results) {
+                if (error) throw error;
+                if (results.length > 0 && results[0].paymentstatus !== 'pending') {
+                    const newBalance = results[0].balance - parseFloat(amountPaid)
+                    let newStatus;
+                    if(newBalance === 0 || newBalance < 0){
+                        newStatus = 'fully paid'
+                        db.query('INSERT INTO supplierpaymentrecords (paymentDate, supplyId, amountPaid, paymentmethod, transactionId, chequenumber, notes) VALUES (?, ?, ?, ?, ?, ?, ?)',[date, supplyId, amountPaid, paymentMethod, transactionId, chequeNumber, notes], (error) => {
+                            if (error){
+                                throw (error)
+                            }else{
+                                db.query('UPDATE suppliers SET balance = ? WHERE supplyId = ?;', [newBalance, supplyId], error => {
+                                    if (error) {
+                                        console.log(error)
+                                    }else{
+                                        db.query('UPDATE suppliers SET balance = ?, paymentstatus = ? WHERE supplyId = ?;', [newBalance, newStatus, supplyId], error => {
+                                            if (error) {
+                                                console.log(error)
+                                            }else{
+                                                res.send({
+                                                    status: 200,
+                                                    msg: 'success'
+                                                })
+                                            }
+                                        })
+                                    }
+                                })
+                            }
+                        })
+                    }else{
+                        db.query('INSERT INTO supplierpaymentrecords (paymentDate, supplyId, amountPaid, paymentmethod, transactionId, chequenumber, notes) VALUES (?, ?, ?, ?, ?, ?, ?)',[date, supplyId, amountPaid, paymentMethod, transactionId, chequeNumber, notes], (error) => {
+                            if (error){
+                                throw (error)
+                            }else{
+                                db.query('UPDATE suppliers SET balance = ? WHERE supplyId = ? ;', [newBalance, supplyId], error => {
+                                    if (error) {
+                                        console.log(error)
+                                    }else{
+                                        res.send({
+                                            status: 200,
+                                            msg: 'success'
+                                        })
+                                    }
+                                })
+
+                            }
+                        })
+                    }             
+                } else {
+                    res.send('No data found.')
+                }
+            })
+        }
+
+    })
+})
+
+app.post('/equatorialmassageservicescheckout', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+      if (err) {
+        res.status(403).send("You are not authorized to perform this action.");
+      } else {
+        const services = req.body.services;
+        const receiptNumber = req.body.receiptNo;
+        const total = req.body.total;
+        const additionalInfo = req.body.additionalInfo;
+        const paymentMethod = req.body.paymentMethod;
+        const paymentStatus = req.body.paymentStatus;
+        const balance = req.body.balance;
+        const customerNames = req.body.customerNames;
+        const customerContact = req.body.customerContact;
+        const date = req.body.date;
+        const transactionId = req.body.transactionId
+  
+        // Process the sale if all items have sufficient stock
+        db.query('INSERT INTO equatorialMassageServicesRecords (receiptNumber, saleDate, customerNames, customerContact, servicesOffered, totalAmount, balance, paymentStatus, paymentMethod, additionalinfo, transactionID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', [receiptNumber, date, customerNames, customerContact, services, total, balance, paymentStatus, paymentMethod, additionalInfo, transactionId], (error) => {
+                if (error) {
+                  console.log(error);
+                  res.status(500).send('Error occurred during sale.');
+                } else {
+                res.send({ status: '200', msg: 'success' })
+                }
+              });
+            }
+          })
+});
+
+
+app.post('/fetchallservicesalesrecords', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                db.query('SELECT * FROM equatorialMassageServicesRecords', (error, results) => {
+                    if (error) throw (error);
+
+                    if (results.length > 0) {
+                        res.send(results)
+                    } else {
+                        res.send(`There are no records found.`)
+                    }
+                })
+        }
+    })
+})
+
 app.listen(port, () => {
     console.log(`Server is listening on port ${port}`);
 })

@@ -174,6 +174,8 @@ const Login = () => {
                                         <option value="labelling">Labelling Department</option>
                                         <option value="projects">Projects</option>
                                         <option value="massage">Massage</option>
+                                        <option value="inventorycustodian">Inventory Custodian</option>
+                                        <option value="debtmanager">Debt Manager</option>
                                     </select>
                                 </div>
                             </div>
