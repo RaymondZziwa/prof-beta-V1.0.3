@@ -72,7 +72,6 @@ const EquatorialShopInventoryRestockingForm = () => {
          .then(() => setStatus({ type: 'success' }))
          .catch((err) => setStatus({ type: 'error', err }))
 
-        console.log(expenditureDate, itemName, quantity, restockSource, moreInfo, notes)
     }
 
     return(

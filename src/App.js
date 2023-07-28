@@ -153,6 +153,7 @@ import RecieveMassageIncome from './components/Equatorial/shop/recieve_massage_i
 import EquatorialMassageDailyServicesReport from './components/Equatorial/massage/reports/daily_services_report';
 import EquatorialMassageWeeklyServicesReport from './components/Equatorial/massage/reports/weekly_services_report';
 import EquatorialMassageMonthlyServicesReport from './components/Equatorial/massage/reports/monthly_services_report';
+import ManageSuppliers from './components/Equatorial/shop/manage_suppliers/manage_suppliers';
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -702,6 +703,9 @@ useEffect(() => {
           </Route>)}
           {authCtx.isLoggedIn && (<Route path="/equatorialmassagemonthlyservicesreport">
             <EquatorialMassageMonthlyServicesReport />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/managesuppliers">
+            <ManageSuppliers />
           </Route>)}
           
       </BrowserRouter>

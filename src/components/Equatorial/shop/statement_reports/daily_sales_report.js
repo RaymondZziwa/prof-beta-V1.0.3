@@ -20,7 +20,8 @@ const EquatorialShopDailySalesReport = () => {
     const [totalExpenditureAmountPaid, setTotalExpenditureAmountPaid] = useState(0);
     const [expenditureBalance, setExpenditureBalance] = useState(0)
     //const [paymentMethods, setPaymentMethods] = useState({})
-
+    const [massageData,  setMassageData] = useState([])
+    const [filteredMassageData,  setFilteredMassageData] = useState([])
     const [isCalculationsLoading, setIsCalculationsLoading] = useState(true)
 
     const [paymentMethodTotals, setPaymentMethodTotals] = useState({
@@ -73,6 +74,13 @@ const EquatorialShopDailySalesReport = () => {
                 const expenseDate = moment(expense.date, 'DD/MM/YYYY').format('DD/MM/YYYY');
                 return expenseDate === formattedDate;
             });
+
+            const filteredMassageSalesData = salesData.filter((sale) => {
+                const saleDate = moment(sale.saleDate, 'DD/MM/YYYY').format('DD/MM/YYYY');
+                return saleDate === formattedDate;
+            });
+
+            setFilteredMassageData(filteredMassageSalesData)
             
             setFilteredSales(filteredSalesData)
             setFilteredExpenses(filteredExpensesData)
@@ -89,6 +97,7 @@ const EquatorialShopDailySalesReport = () => {
         let totalExpenseAmount = 0;
         let totalExpenseAmountPaid = 0;
         let expenseAmountNotPaid = 0;
+
       
         filteredSales.forEach((sale) => {
           totalAmount += sale.totalAmount;
@@ -152,6 +161,21 @@ const EquatorialShopDailySalesReport = () => {
         }
       
         fetchExpensesData()
+      }, [])
+
+      useEffect(() => {
+        const fetchMassageData = async () => {
+          let res = await axios.post('http://82.180.136.230:3005/fetchallservicesalesrecords', {
+            token: localStorage.getItem('token')
+          });
+      
+          if (Array.isArray(res.data)) {
+            setIsLoading(false);
+            setMassageData(res.data);
+          }
+        }
+      
+        fetchMassageData()
       }, [])
 
     useEffect(() => {
@@ -375,6 +399,7 @@ const EquatorialShopDailySalesReport = () => {
                                 <p>Total Expenditure Amount Spent: UGX {totalExpenditureAmountPaid}</p>
                                 <p>Total Sales Amount Not Recieved: UGX {balance}</p>
                                 <p>Total Expenditure Amount Not Paid: UGX {expenditureBalance}</p>
+                                <p>Total Income Amount From Massage Department: UGX </p>
                                 <p>Total Net Income Available (Cash): UGX {paymentMethodTotals.Cash-expensePaymentMethodTotals.Cash}</p>
                                 <p>Total Net Income Available (MTN MoMo): UGX {paymentMethodTotals.MTNMoMo-expensePaymentMethodTotals.MTNMoMo}</p>
                                 <p>Total Net Income Available (Airtel Money): UGX {paymentMethodTotals.AirtelMoney-expensePaymentMethodTotals.AirtelMoney}</p>

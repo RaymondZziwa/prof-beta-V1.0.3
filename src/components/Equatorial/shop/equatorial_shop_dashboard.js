@@ -50,6 +50,11 @@ return(
                 Save Shop Expenditure Receipts
             </div>
         </Link>
+        <Link className="tab_nav" to="/managesuppliers">
+            <div className="mb-3 mclickable_option">
+                Manage Suppliers
+            </div>
+        </Link>
         <Link className="tab_nav" to="/viewequatorialexpenditurereceipts">
             <div className="mb-3 mclickable_option">
                 View Shop Expenditure Receipts
@@ -81,7 +86,7 @@ return(
             </div>
         </Link>
     </div>
-    <Col sm='12' md='2' lg='2' xl='2'>
+    <Col sm='12' md='1' lg='1' xl='1'>
     </Col>
 </Row>
 )

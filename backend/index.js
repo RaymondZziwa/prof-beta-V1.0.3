@@ -5321,14 +5321,17 @@ app.post('/savesupplydata', (req, res) => {
                 const itemsSupplied = req.body.itemsSupplied
                 const totalSupplyCost = req.body.totalSupplyCost
                 const balance = req.body.balance
+                const branchSupplied = req.body.branchSupplied
                 const paymentMethod = req.body.paymentMethod
                 const paymentStatus = req.body.paymentStatus
                 const transactionId = req.body.transactionId
                 const chequeNumber = req.body.chequeNumber
                 const receivedBy = req.body.receivedBy
                 const notes = req.body.notes
+                const units = req.body.units
+                const quantitySupplied = req.body.quantitySupplied
    
-                db.query('INSERT INTO suppliers (supplyId, suppliernames, supplydate, itemssupplied, totalsupplycost, balance, paymentmethod, paymentstatus, transactionId, chequenumber, receivedBy, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',[supplyId, supplierNames, date, itemsSupplied, totalSupplyCost, balance, paymentMethod, paymentStatus, transactionId, chequeNumber, receivedBy, notes], (error) => {
+                db.query('INSERT INTO suppliers (supplyId, suppliernames, supplydate, branchsupplied, itemssupplied, quantitysupplied, units, totalsupplycost, balance, paymentmethod, paymentstatus, transactionId, chequenumber, receivedBy, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',[supplyId, supplierNames, date, branchSupplied, itemsSupplied, quantitySupplied, units, totalSupplyCost, balance, paymentMethod, paymentStatus, transactionId, chequeNumber, receivedBy, notes], (error) => {
                     if (error){
                         throw (error)
                     }else{
@@ -5338,6 +5341,43 @@ app.post('/savesupplydata', (req, res) => {
                         })
                     }
 
+                })
+        }
+    })
+})
+
+
+app.post('/fetchallsupplyrecords', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                db.query('SELECT * FROM suppliers', (error, results) => {
+                    if (error) throw (error);
+
+                    if (results.length > 0) {
+                        res.send(results)
+                    } else {
+                        res.send(`There are no records found.`)
+                    }
+                })
+        }
+    })
+})
+
+app.post('/fetchallsupplierpaymentrecords', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                db.query('SELECT * FROM supplierpaymentrecords JOIN suppliers ON supplierpaymentrecords.supplyId = suppliers.supplyId', (error, results) => {
+                    if (error) throw (error);
+
+                    if (results.length > 0) {
+                        res.send(results)
+                    } else {
+                        res.send(`There are no records found.`)
+                    }
                 })
         }
     })
@@ -5355,6 +5395,7 @@ app.post('/savesupplierpayment', (req, res) => {
             const paymentMethod = req.body.paymentMethod
             const transactionId = req.body.transactionId
             const chequeNumber = req.body.chequeNumber
+            const paidBy = req.body.paidBy
             const notes = req.body.notes
 
             db.query('SELECT * FROM suppliers WHERE supplyId = ?;', supplyId, function (error, results) {
@@ -5364,7 +5405,7 @@ app.post('/savesupplierpayment', (req, res) => {
                     let newStatus;
                     if(newBalance === 0 || newBalance < 0){
                         newStatus = 'fully paid'
-                        db.query('INSERT INTO supplierpaymentrecords (paymentDate, supplyId, amountPaid, paymentmethod, transactionId, chequenumber, notes) VALUES (?, ?, ?, ?, ?, ?, ?)',[date, supplyId, amountPaid, paymentMethod, transactionId, chequeNumber, notes], (error) => {
+                        db.query('INSERT INTO supplierpaymentrecords (paymentDate, supplyId, amountPaid, paymentmethod, transactionId, chequenumber, PaidBy, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',[date, supplyId, amountPaid, paymentMethod, transactionId, chequeNumber, paidBy, notes], (error) => {
                             if (error){
                                 throw (error)
                             }else{
@@ -5387,7 +5428,7 @@ app.post('/savesupplierpayment', (req, res) => {
                             }
                         })
                     }else{
-                        db.query('INSERT INTO supplierpaymentrecords (paymentDate, supplyId, amountPaid, paymentmethod, transactionId, chequenumber, notes) VALUES (?, ?, ?, ?, ?, ?, ?)',[date, supplyId, amountPaid, paymentMethod, transactionId, chequeNumber, notes], (error) => {
+                        db.query('INSERT INTO supplierpaymentrecords (paymentDate, supplyId, amountPaid, paymentmethod, transactionId, chequenumber, PaidBy, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',[date, supplyId, amountPaid, paymentMethod, transactionId, chequeNumber, paidBy, notes], (error) => {
                             if (error){
                                 throw (error)
                             }else{
