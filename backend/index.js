@@ -1275,6 +1275,25 @@ app.post('/exhibitionlist', (req, res) => {
     })
 })
 
+//5. fetching exhibition list from database ---route is tested and it is working as expected
+app.post('/fetchallexhibitiondata', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            db.query('SELECT * FROM exhibitions;', (error, results) => {
+                if (error) throw (error);
+
+                if (results.length > 0) {
+                    res.send(results)
+                } else {
+                    res.send('There are no exhibition data.')
+                }
+            })
+        }
+    })
+})
+
 
 // route to fetch exhibition data for the post-exhibition form
 app.post('/exhibitiondata', (req, res) => {
@@ -5370,7 +5389,7 @@ app.post('/fetchallsupplierpaymentrecords', (req, res) => {
         if (err) {
             res.status(403).send("You are not authorized to perform this action.");
         } else {
-                db.query('SELECT * FROM supplierpaymentrecords JOIN suppliers ON supplierpaymentrecords.supplyId = suppliers.supplyId', (error, results) => {
+                db.query('SELECT * FROM supplierpaymentrecords', (error, results) => {
                     if (error) throw (error);
 
                     if (results.length > 0) {
@@ -5387,73 +5406,50 @@ app.post('/fetchallsupplierpaymentrecords', (req, res) => {
 app.post('/savesupplierpayment', (req, res) => {
     jwt.verify(req.body.token, 'SECRETKEY', (err) => {
         if (err) {
-            res.status(403).send("You are not authorized to perform this action.");
-        } else {
-            const date  =  req.body.date
-            const supplyId = req.body.supplyId
-            const amountPaid = req.body.amountPaid
-            const paymentMethod = req.body.paymentMethod
-            const transactionId = req.body.transactionId
-            const chequeNumber = req.body.chequeNumber
-            const paidBy = req.body.paidBy
-            const notes = req.body.notes
-
-            db.query('SELECT * FROM suppliers WHERE supplyId = ?;', supplyId, function (error, results) {
-                if (error) throw error;
-                if (results.length > 0 && results[0].paymentstatus !== 'pending') {
-                    const newBalance = results[0].balance - parseFloat(amountPaid)
-                    let newStatus;
-                    if(newBalance === 0 || newBalance < 0){
-                        newStatus = 'fully paid'
-                        db.query('INSERT INTO supplierpaymentrecords (paymentDate, supplyId, amountPaid, paymentmethod, transactionId, chequenumber, PaidBy, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',[date, supplyId, amountPaid, paymentMethod, transactionId, chequeNumber, paidBy, notes], (error) => {
-                            if (error){
-                                throw (error)
-                            }else{
-                                db.query('UPDATE suppliers SET balance = ? WHERE supplyId = ?;', [newBalance, supplyId], error => {
-                                    if (error) {
-                                        console.log(error)
-                                    }else{
-                                        db.query('UPDATE suppliers SET balance = ?, paymentstatus = ? WHERE supplyId = ?;', [newBalance, newStatus, supplyId], error => {
-                                            if (error) {
-                                                console.log(error)
-                                            }else{
-                                                res.send({
-                                                    status: 200,
-                                                    msg: 'success'
-                                                })
-                                            }
-                                        })
-                                    }
-                                })
-                            }
-                        })
-                    }else{
-                        db.query('INSERT INTO supplierpaymentrecords (paymentDate, supplyId, amountPaid, paymentmethod, transactionId, chequenumber, PaidBy, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',[date, supplyId, amountPaid, paymentMethod, transactionId, chequeNumber, paidBy, notes], (error) => {
-                            if (error){
-                                throw (error)
-                            }else{
-                                db.query('UPDATE suppliers SET balance = ? WHERE supplyId = ? ;', [newBalance, supplyId], error => {
-                                    if (error) {
-                                        console.log(error)
-                                    }else{
-                                        res.send({
-                                            status: 200,
-                                            msg: 'success'
-                                        })
-                                    }
-                                })
-
-                            }
-                        })
-                    }             
-                } else {
-                    res.send('No data found.')
-                }
-            })
+            return res.status(403).send("You are not authorized to perform this action.");
         }
 
-    })
-})
+        const date = req.body.date;
+        const supplyId = req.body.supplyId;
+        const amountPaid = req.body.amountPaid;
+        const paymentMethod = req.body.paymentMethod;
+        const transactionId = req.body.transactionId;
+        const chequeNumber = req.body.chequeNumber;
+        const paidBy = req.body.paidBy;
+        const notes = req.body.notes;
+
+        db.query('SELECT * FROM suppliers WHERE supplyId = ?;', supplyId, function (error, results) {
+            if (error) {
+                return res.status(500).send("Error retrieving supplier data.");
+            }
+
+            if (results.length > 0 && results[0].paymentstatus !== 'pending') {
+                const newBalance = results[0].balance - parseFloat(amountPaid);
+                let newStatus = newBalance <= 0 ? 'fully paid' : 'partially paid';
+
+                db.query('INSERT INTO supplierpaymentrecords (paymentDate, supplyId, amountPaid, paymentmethod, transactionId, chequenumber, PaidBy, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [date, supplyId, amountPaid, paymentMethod, transactionId, chequeNumber, paidBy, notes], (error) => {
+                    if (error) {
+                        return res.status(500).send("Error saving payment record.");
+                    }
+
+                    db.query('UPDATE suppliers SET balance = ?, paymentstatus = ? WHERE supplyId = ?;', [newBalance, newStatus, supplyId], (error) => {
+                        if (error) {
+                            return res.status(500).send("Error updating supplier data.");
+                        }
+
+                        return res.send({
+                            status: 200,
+                            msg: 'success'
+                        });
+                    });
+                });
+            } else {
+                res.send('No data found.');
+            }
+        });
+    });
+});
+
 
 app.post('/equatorialmassageservicescheckout', (req, res) => {
     jwt.verify(req.body.token, 'SECRETKEY', (err) => {
@@ -5483,7 +5479,7 @@ app.post('/equatorialmassageservicescheckout', (req, res) => {
               });
             }
           })
-});
+})
 
 
 app.post('/fetchallservicesalesrecords', (req, res) => {
@@ -5492,6 +5488,48 @@ app.post('/fetchallservicesalesrecords', (req, res) => {
             res.status(403).send("You are not authorized to perform this action.");
         } else {
                 db.query('SELECT * FROM equatorialMassageServicesRecords', (error, results) => {
+                    if (error) throw (error);
+
+                    if (results.length > 0) {
+                        res.send(results)
+                    } else {
+                        res.send(`There are no records found.`)
+                    }
+                })
+        }
+    })
+})
+
+app.post('/saveexhibitionincomerecord', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+      if (err) {
+        res.status(403).send("You are not authorized to perform this action.");
+      } else {
+        const date = req.body.date
+        const exId = req.body.exId
+        const amountRecieved = req.body.amountRecieved
+        const deliveredBy = req.body.deliveredBy
+        const recievedBy = req.body.recievedBy
+  
+        // Process the sale if all items have sufficient stock
+        db.query('INSERT INTO exhibitionincome (date, exhibitionId, amountRecieved, DeliveredBy, RecievedBy) VALUES (?, ?, ?, ?, ?);', [date, exId, amountRecieved, deliveredBy, recievedBy], (error) => {
+                if (error) {
+                  console.log(error);
+                  res.status(500).send('Error occurred during sale.');
+                } else {
+                res.send({ status: '200', msg: 'success' })
+                }
+              });
+            }
+          })
+})
+
+app.post('/fetchallexhibitionincomedata', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                db.query('SELECT * FROM exhibitionincome JOIN exhibitions ON exhibitionincome.exhibitionId = exhibitions.id', (error, results) => {
                     if (error) throw (error);
 
                     if (results.length > 0) {

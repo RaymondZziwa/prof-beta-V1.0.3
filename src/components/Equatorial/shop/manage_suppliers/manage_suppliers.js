@@ -57,7 +57,7 @@ const ManageSuppliers = () => {
             <Row>
                 <Col sm='12' md='12' lg='12' xl='12'>
                     <span style={{float:'right', cursor:'pointer', color:'blue'}} onClick={openModal}><h5>Save new supply <FontAwesomeIcon icon={faPenToSquare} beat /></h5></span>
-                    <DisplayTable records={records} filteredRecords={filteredRecords} />
+                    <DisplayTable records={records} filteredRecords={filteredRecords} fetchAllSubmissionRecords={fetchAllSubmissionRecords}/>
                 </Col>
             </Row>
         </div>

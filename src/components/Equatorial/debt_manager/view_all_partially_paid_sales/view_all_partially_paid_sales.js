@@ -1,34 +1,14 @@
-import { useState, useEffect } from 'react'
-import axios from 'axios'
 import Navbar from '../../../side navbar/sidenav'
 import { Row, Col } from "react-bootstrap"
 
-const EquatorialShopSalesRecords = () => {
-    const [isLoading, setIsLoading] = useState(true)
-    const [salesData, setSalesData] = useState([])
-
-    useEffect(() => {
-        const fetchSalesData = async () => {
-          let res = await axios.post('http://82.180.136.230:3005/fetchallequatorialshopsales', {
-            token: localStorage.getItem('token')
-          });
-      
-          if (Array.isArray(res.data)) {
-            setIsLoading(false);
-            setSalesData(res.data);
-          }
-        };
-      
-        fetchSalesData();
-    }, [])
-
+const ViewAllPartiallyPaidSales = () => {
     return(
         <>
             <div className='container-fluid'>
                 <Row>
                     <Col sm='12' md='2' lg='2' xl='2'></Col>
                     <Col sm='12' md='8' lg='8' xl='8'>
-                    <h2 style={{textAlign:'center', marginTop:'60px'}}>Equatorial Shop Sales Records</h2>
+                    <h2 style={{textAlign:'center', marginTop:'60px'}}>View Partially Paid Sales</h2>
                         <table className="table table-light" style={{ marginTop: '20px',textAlign:'center' }}>
                             <thead style={{ textAlign: 'center' }}>
                                 <tr>
@@ -43,7 +23,7 @@ const EquatorialShopSalesRecords = () => {
                                     <th scope="col">Additional Notes</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            {/* <tbody>
                                 {!isLoading ? salesData.map(item => (
                                     <tr>
                                         <td>{item.receiptNumber}</td>
@@ -81,7 +61,7 @@ const EquatorialShopSalesRecords = () => {
                                     </tr>
                                 ))
                                 : <tr><td colSpan='9'>Loading...</td></tr>}
-                            </tbody>
+                            </tbody> */}
                         </table>
                     </Col>
                     <Col sm='12' md='2' lg='2' xl='2'>
@@ -93,4 +73,4 @@ const EquatorialShopSalesRecords = () => {
     )
 }
 
-export default EquatorialShopSalesRecords
+export default ViewAllPartiallyPaidSales

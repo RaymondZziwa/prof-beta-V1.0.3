@@ -154,6 +154,7 @@ import EquatorialMassageDailyServicesReport from './components/Equatorial/massag
 import EquatorialMassageWeeklyServicesReport from './components/Equatorial/massage/reports/weekly_services_report';
 import EquatorialMassageMonthlyServicesReport from './components/Equatorial/massage/reports/monthly_services_report';
 import ManageSuppliers from './components/Equatorial/shop/manage_suppliers/manage_suppliers';
+import RecieveExhibitionIncome from './components/Equatorial/shop/exhibition_income/recieve_exhibition_income';
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -693,6 +694,9 @@ useEffect(() => {
           </Route>)}
           {authCtx.isLoggedIn && (<Route path="/recievemassagedepartmentincome">
             <RecieveMassageIncome />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/recieveexhibitionincome">
+            <RecieveExhibitionIncome />
           </Route>)}
 
           {authCtx.isLoggedIn && (<Route path="/equatorialmassagedailyservicesreport">

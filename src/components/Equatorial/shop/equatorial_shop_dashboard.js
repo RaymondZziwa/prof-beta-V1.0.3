@@ -29,6 +29,11 @@ return(
                 Sale Data Retrieval
             </div>
         </Link>
+        <Link className="tab_nav" to="/recieveexhibitionincome">
+            <div className="mb-3 mclickable_option">
+                Recieve Exhibition Income
+            </div>
+        </Link>
         <Link className="tab_nav" to="/recievemassagedepartmentincome">
             <div className="mb-3 mclickable_option">
                 Recieve Massage Dept Income
