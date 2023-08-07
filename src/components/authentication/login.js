@@ -174,8 +174,6 @@ const Login = () => {
                                         <option value="labelling">Labelling Department</option>
                                         <option value="projects">Projects</option>
                                         <option value="massage">Massage</option>
-                                        <option value="inventorycustodian">Inventory Custodian</option>
-                                        <option value="debtmanager">Debt Manager</option>
                                     </select>
                                 </div>
                             </div>
@@ -183,10 +181,12 @@ const Login = () => {
                                 <div className="mb-3">
                                     <select className="form-select" aria-label="Default select example" style={{ height: "60px", color: "#8CA6FE" }} onChange={handleRoleData}>
                                         <option defaultValue>Role</option>
-                                        <option value="labellingmanager">Labelling Manager</option>
+                                        <option value="equatoriallabellingmanager">Labelling Manager</option>
                                         <option value="equatorialprojectsmanager">Projects Manager</option>
                                         <option value="equatorialshopmanager">Shop Manager</option>
                                         <option value="massagemanager">Massage Manager</option>
+                                        <option value="equatorialdebtmanager">Debt Manager</option>
+                                        <option value="equatorialinventorycustodian">Inventory Custodian</option>
                                     </select>
                                 </div>
                             </div>

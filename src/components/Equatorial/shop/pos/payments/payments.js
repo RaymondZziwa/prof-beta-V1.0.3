@@ -262,20 +262,6 @@ const PaymentModule = ({ servicesList, items, total }) => {
                     Partially Paid
                     </label>
                 </div>
-                {/* <div className="form-check">
-                    <input
-                    className="form-check-input"
-                    type="radio"
-                    name="paymentMethod"
-                    id="paymentMethodPaypal"
-                    value="unpaid"
-                    checked={paymentStatus === 'unpaid'}
-                    onChange={handlePaymentStatusChange}
-                    />
-                    <label className="form-check-label" htmlFor="paymentMethodPaypal">
-                    Unpaid
-                    </label>
-                </div> */}
                 { paymentStatus === 'partiallypaid' && 
                     <div className="mb-3">
                         <div className="form-floating mb-3">

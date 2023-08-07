@@ -155,6 +155,26 @@ import EquatorialMassageWeeklyServicesReport from './components/Equatorial/massa
 import EquatorialMassageMonthlyServicesReport from './components/Equatorial/massage/reports/monthly_services_report';
 import ManageSuppliers from './components/Equatorial/shop/manage_suppliers/manage_suppliers';
 import RecieveExhibitionIncome from './components/Equatorial/shop/exhibition_income/recieve_exhibition_income';
+import EquatorialCustodianDashboard from './components/Equatorial/inventory_custodian/equatorial_custodian_dahsboard';
+import MassageInventoryMenuForInventoryCustodian from './components/Equatorial/inventory_custodian/other_menus/massage_inventory_menu';
+import ProjectsInventoryMenuForInventoryCustodian from './components/Equatorial/inventory_custodian/other_menus/projects_inventory_menu';
+import MainShopInventoryMenuForInventoryCustodian from './components/Equatorial/inventory_custodian/other_menus/main_shop_inventory_menu';
+import LabellingInventoryMenuForInventoryCustodian from './components/Equatorial/inventory_custodian/other_menus/labelling_dept_inventory_menu';
+import CustodianGeneralStoreInventoryManagement from './components/Equatorial/inventory_custodian/other_menus/general_store_inventory_menu';
+import CustodianReleaseInventoryMgt from './components/Equatorial/inventory_custodian/release_inventory/release_inventory';
+import EquatorialGeneralStoreStockTaking from './components/Equatorial/inventory_custodian/inventory_mgt/stock_taking';
+import EquatorialGeneralStoreRestockingRecords from './components/Equatorial/inventory_custodian/inventory_mgt/restocking_records';
+import EquatorialGeneralStoreRestockForm from './components/Equatorial/inventory_custodian/inventory_mgt/general_store_restock_form';
+import EquatorialLabellingManagerDashboard from './components/Equatorial/labelling/equatorial_labelling_dashboard';
+import LabellingDepartmentStockTaking from './components/Equatorial/labelling/stock_taking/stock_taking';
+import LabellingDepartmentIncomingInventoryMgt from './components/Equatorial/labelling/record_incoming_inventory/incoming_inventory_mgt';
+import LabellingDepartmentInventoryTransferToCustodianMgt from './components/Equatorial/labelling/send_inventory_to_custodian/outgoing_inventory_mgt';
+import LabellingDepartmentDailyOutputMgt from './components/Equatorial/labelling/daily_labelling_records/daily_output_mgt';
+import EquatorialDebtManagerDashboard from './components/Equatorial/debt_manager/equatorial_debt_manager';
+import ViewAllPartiallyPaidSales from './components/Equatorial/debt_manager/view_all_partially_paid_sales/view_all_partially_paid_sales';
+import ViewAllUnPaidSales from './components/Equatorial/debt_manager/view_all_unpaid_sales/view_all_unpaid_sales';
+import DebtManagerPOS from './components/Equatorial/debt_manager/POS/point_of_sale/pos';
+import NoneCashTransactionsMgt from './components/Equatorial/debt_manager/NCTs/none_cash_transactions';
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -711,7 +731,70 @@ useEffect(() => {
           {authCtx.isLoggedIn && (<Route path="/managesuppliers">
             <ManageSuppliers />
           </Route>)}
-          
+
+          {authCtx.isLoggedIn && (<Route path="/equatorialinventorycustodiandashboard">
+            <EquatorialCustodianDashboard />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/custodianequatorialmassageinventorymanagement">
+            <MassageInventoryMenuForInventoryCustodian />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/custodianequatorialprojectsinventorymanagement">
+            <ProjectsInventoryMenuForInventoryCustodian />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/custodianequatorialshopinventorymanagement">
+            <MainShopInventoryMenuForInventoryCustodian />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/labellinginventorymanagement">
+            <LabellingInventoryMenuForInventoryCustodian />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/generalinventorymanagement">
+            <CustodianGeneralStoreInventoryManagement />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/custodianreleaseinventorymgt">
+            <CustodianReleaseInventoryMgt />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/equatorialgeneralstorestocktaking">
+            <EquatorialGeneralStoreStockTaking />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/equatorialgeneralstorerestockingrecords">
+            <EquatorialGeneralStoreRestockingRecords />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/equatorialgeneralstorerestockingform">
+            <EquatorialGeneralStoreRestockForm />
+          </Route>)}
+
+          {authCtx.isLoggedIn && (<Route path="/equatoriallabellingmanagerdashboard">
+            <EquatorialLabellingManagerDashboard />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/equatoriallabellingstorestocktaking">
+            <LabellingDepartmentStockTaking />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/equatoriallabellingincominginventorymgt">
+            <LabellingDepartmentIncomingInventoryMgt />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/equatoriallabellinginventorytransfermgt">
+            <LabellingDepartmentInventoryTransferToCustodianMgt />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/equatoriallabellingdailyoutputmgt">
+            <LabellingDepartmentDailyOutputMgt />
+          </Route>)}
+
+
+          {authCtx.isLoggedIn && (<Route path="/equatorialdebtmanagerdashboard">
+            <EquatorialDebtManagerDashboard />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/viewallpartiallypaidshopsales">
+            <ViewAllPartiallyPaidSales />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/viewallunpaidshopsales">
+            <ViewAllUnPaidSales />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/debtmanagerpos">
+            <DebtManagerPOS />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/managenonecashtransactions">
+            <NoneCashTransactionsMgt />
+          </Route>)}
       </BrowserRouter>
     </div>
   );

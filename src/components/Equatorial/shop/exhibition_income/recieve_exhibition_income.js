@@ -96,7 +96,7 @@ const RecieveExhibitionIncome = () => {
                         { !exData ? <option>Loading Items From Database</option> :
                             exData.map(item => (
                                 <option key={item.id} value={item.id}>
-                                    {item.exhibitionname}
+                                    {item.exhibitionname} - {item.date}
                                 </option>
                             ))
                         }

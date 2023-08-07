@@ -3,7 +3,7 @@ import Navbar from '../../../../side navbar/sidenav'
 import SearchAndAddToCart from "./search_and_add_items_to_cart/search_and_add_to_cart"
 import { useState } from 'react'
 
-const DebitManagerPOS = () => {
+const DebtManagerPOS = () => {
     const [cartItems, setCartItems] = useState([]);
 
     const handleAddToCart = (itemToAdd) => {
@@ -46,4 +46,4 @@ const DebitManagerPOS = () => {
     )
 }
 
-export default DebitManagerPOS
+export default DebtManagerPOS

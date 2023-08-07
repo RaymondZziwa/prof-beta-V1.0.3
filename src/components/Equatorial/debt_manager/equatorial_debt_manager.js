@@ -10,17 +10,17 @@ const EquatorialDebtManagerDashboard = () => {
                     <Navbar />
                 </Col>
                 <div className="col align-self-center" style={{marginTop:'20px'}}>
-                    <Link className="tab_nav" to="#">
+                    <Link className="tab_nav" to="/managenonecashtransactions">
                         <div className="mb-3 mclickable_option">
-                            None Cash Transactions (Barter)
+                            None Cash Transactions (NCTs)
                         </div>
                     </Link>
-                    <Link className="tab_nav" to="#">
+                    <Link className="tab_nav" to="/viewallpartiallypaidshopsales">
                         <div className="mb-3 mclickable_option">
                             View All Partially Paid Sales
                         </div>
                     </Link>
-                    <Link className="tab_nav" to="#">
+                    <Link className="tab_nav" to="/viewallunpaidshopsales">
                         <div className="mb-3 mclickable_option">
                             View All Unpaid Sales
                         </div>
@@ -30,7 +30,7 @@ const EquatorialDebtManagerDashboard = () => {
                             Client Projects Upgrade
                         </div>
                     </Link>
-                    <Link className="tab_nav" to="#">
+                    <Link className="tab_nav" to="/debtmanagerpos">
                         <div className="mb-3 mclickable_option">
                             Point Of Sale
                         </div>

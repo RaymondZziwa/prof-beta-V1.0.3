@@ -9,34 +9,34 @@ const EquatorialCustodianDashboard = () => {
             <Navbar />
         </Col>
         <div className="col align-self-center" style={{marginTop:'20px'}}>
-            <Link className="tab_nav" to="#">
+            <Link className="tab_nav" to="/generalinventorymanagement">
                 <div className="mb-3 mclickable_option">
                     Manage General Store Inventory
                 </div>
             </Link>
-            <Link className="tab_nav" to="#">
+            <Link className="tab_nav" to="/custodianreleaseinventorymgt">
                 <div className="mb-3 mclickable_option">
-                    Manage Labelling Dept Inventory
+                   Release Inventory 
                 </div>
             </Link>
-            <Link className="tab_nav" to="#">
+            <Link className="tab_nav" to="/labellinginventorymanagement">
                 <div className="mb-3 mclickable_option">
-                    Manage Main Shop Inventory
+                    View Labelling Dept Inventory
                 </div>
             </Link>
-            <Link className="tab_nav" to="#">
+            <Link className="tab_nav" to="/custodianequatorialshopinventorymanagement">
                 <div className="mb-3 mclickable_option">
-                    Manage Projects Inventory
+                    View Main Shop Inventory
                 </div>
             </Link>
-            <Link className="tab_nav" to="#">
+            <Link className="tab_nav" to="/custodianequatorialprojectsinventorymanagement">
                 <div className="mb-3 mclickable_option">
-                    Manage Massage Inventory
+                    View Projects Inventory
                 </div>
             </Link>
-            <Link className="tab_nav" to="#">
+            <Link className="tab_nav" to="/custodianequatorialmassageinventorymanagement">
                 <div className="mb-3 mclickable_option">
-                    View Records
+                    View Massage Inventory
                 </div>
             </Link>
             <Link className="tab_nav" to="/accountsettings">
