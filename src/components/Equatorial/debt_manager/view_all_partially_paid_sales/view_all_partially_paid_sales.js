@@ -12,7 +12,7 @@ const ViewAllPartiallyPaidSales = () => {
     const [salesRecords, setSalesRecords] = useState([])
     const [isPayModalOpen, setIsPayModalOpen] = useState(false)
     const [isViewModalOpen, setIsViewModalOpen] = useState(false)
-    const [selectedReceiptNumber, setSelectedReceiptNumber] = useState(null)
+    const [selectedReceiptNumber, setSelectedReceiptNumber] = useState('')
     const [saleData, setSaleData] = useState([])
     const [paymentData, setPaymentData] = useState([])
     const [receiptData, setReceiptData] = useState([])
@@ -39,10 +39,10 @@ const ViewAllPartiallyPaidSales = () => {
     }
 
     const openPayModal = (event) => {
-        setSelectedReceiptNumber(event.target.id)
-        if(selectedReceiptNumber && salesRecords){
+        const clickedReceiptNumber = event.target.id
+        if(salesRecords){
             const saleData = salesRecords.filter((record)=>
-                record.receiptNumber === selectedReceiptNumber
+                record.receiptNumber === clickedReceiptNumber
             )
             setSaleData(saleData)
             setIsPayModalOpen(true)
@@ -56,15 +56,31 @@ const ViewAllPartiallyPaidSales = () => {
     }
 
     const openViewModal = (event) => {
-        setSelectedReceiptNumber(event.target.id)
-        if(selectedReceiptNumber && paymentData){
+        const clickedReceiptNumber = event.target.id
+        if(paymentData){
+            console.log(paymentData)
             const recieptData = paymentData.filter((record)=>
-                record.receiptNumber === selectedReceiptNumber
+                record.receiptNumber === clickedReceiptNumber
             )
+            console.log(receiptData)
             setReceiptData(recieptData)
             setIsViewModalOpen(true)
         }
     }
+    // const openViewModal = (event) => {
+    //     const clickedReceiptNumber = event.target.id;
+    //     setSelectedReceiptNumber(clickedReceiptNumber);
+    // };
+
+    // useEffect(() => {
+    //     if (selectedReceiptNumber && paymentData) {
+    //         const receiptData = paymentData.filter((record) =>
+    //             record.receiptNumber === selectedReceiptNumber
+    //         );
+    //         setReceiptData(receiptData);
+    //         setIsViewModalOpen(true);
+    //     }
+    // }, [selectedReceiptNumber, paymentData])
 
     const closeViewModal = () => {
         setIsViewModalOpen(false)
@@ -144,7 +160,7 @@ const ViewAllPartiallyPaidSales = () => {
                      {/* Modal */}
                     <Modal
                         isOpen={isPayModalOpen}
-                        onRequestClose={closeViewModal}
+                        onRequestClose={closePayModal}
                         //contentLabel="Subscription Details"
                     >
                         <h2 style={{textAlign:'center'}}>Record Client Payment</h2>
@@ -159,7 +175,7 @@ const ViewAllPartiallyPaidSales = () => {
                     >
                         <h2 style={{textAlign:'center'}}>View Client Payment Record</h2>
                         <button className='btn btn-danger' style={{float:'right', marginBottom:'20px'}} onClick={closeViewModal}>Close</button>
-                        <DisplayReceiptPaymentRecords receiptRecords={receiptData[0]}/>
+                        <DisplayReceiptPaymentRecords receiptRecords={receiptData}/>
                     </Modal>
                     <Col sm='12' md='1' lg='1' xl='1'>
                         <Navbar />

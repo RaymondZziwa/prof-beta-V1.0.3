@@ -51,6 +51,7 @@ const ViewAllUnPaidSales = () => {
     }
 
     const closeViewModal = () => {
+        setSelectedReceiptNumber(null)
         setIsViewModalOpen(false);
         fetchSalesData()
     }

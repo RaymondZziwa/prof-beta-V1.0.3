@@ -3,11 +3,27 @@ import { Row, Col } from "react-bootstrap"
 import { useEffect, useState } from 'react'
 import Modal from 'react-modal'
 import SaveNewNctForm from './save_new_nct_form/save_new_nct_form'
+import axios from 'axios'
 
 const NoneCashTransactionsMgt = () => {
     const [isPayModalOpen, setIsPayModalOpen] = useState(false)
     const [isViewModalOpen, setIsViewModalOpen] = useState(false)
     const [nctRecords, setNctRecords] = useState([])
+
+    const fetchNCTRecords = async () => {
+        let res = await axios.post('http://82.180.136.230:3005/fetchallnctrecords',{
+            token: localStorage.getItem('token')
+        })
+
+        if(Array.isArray(res.data)){
+            console.log(res.data)
+            setNctRecords(res.data)
+        }
+    }
+
+    useEffect(()=>{
+        fetchNCTRecords()
+    },[])
 
     const openPayModal = (event) => {
             setIsPayModalOpen(true)
@@ -43,7 +59,6 @@ const NoneCashTransactionsMgt = () => {
                                 <table className="table table-light" style={{ marginTop: '20px',textAlign:'center' }}>
                             <thead style={{ textAlign: 'center' }}>
                                 <tr>
-                                    <th scope="col">Transaction Id</th>
                                     <th scope="col">Transaction Date</th>
                                     <th scope="col">Customer Names</th>
                                     <th scope="col">Customer Contact</th>
@@ -55,17 +70,24 @@ const NoneCashTransactionsMgt = () => {
                                     <th scope="col">Units</th>
                                     <th scope="col">Authorized By</th>
                                     <th scope="col">Notes</th>
+                                    <th scope="col">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 { nctRecords ? nctRecords.map(item => (
                                     <tr key={item.receiptNumber}>
-                                        <td>{item.receiptNumber}</td>
-                                        <td>{item.paymentdate}</td>
-                                        <td>{item.amountPaid}</td>
+                                        <td>{item.date}</td>
+                                        <td>{item.clientnames}</td>
+                                        <td>{item.clientcontact}</td>
+                                        <td>{item.productName}</td>
+                                        <td>{item.quantityin}</td>
+                                        <td>{item.unitsin}</td>
+                                        <td>{item.itemOut}</td>
+                                        <td>{item.quantityout}</td>
+                                        <td>{item.unitsout}</td>
+                                        <td>{item.authorizedby}</td>
                                         <td>{item.notes}</td>
-                                        <td>{item.paymentMethod}</td>
-                                        <td>{item.transactionId}</td>
+                                        <td>{item.status}</td>
                                     </tr>
                                 ))
                                 : <tr><td colSpan='9'>Loading...</td></tr>}
@@ -81,7 +103,7 @@ const NoneCashTransactionsMgt = () => {
                     >
                         <h2 style={{textAlign:'center'}}>Save New NCT</h2>
                         <button className='btn btn-danger' style={{float:'right', marginBottom:'20px'}} onClick={closePayModal}>Close</button>
-                        <SaveNewNctForm />
+                        <SaveNewNctForm fetchNCTRecords={fetchNCTRecords}/>
                     </Modal>
                     <Col sm='12' md='1' lg='1' xl='1'>
                         <Navbar />

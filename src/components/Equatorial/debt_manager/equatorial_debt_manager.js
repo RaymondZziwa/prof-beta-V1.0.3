@@ -45,6 +45,11 @@ const EquatorialDebtManagerDashboard = () => {
                             Exhibition Sale Records
                         </div>
                     </Link>
+                    <Link className="tab_nav" to="/equatorialshopstocktaking">
+                        <div className="mb-3 mclickable_option">
+                            Shop Inventory Stock Taking
+                        </div>
+                    </Link>
                     <Link className="tab_nav" to="/accountsettings">
                         <div className="mb-3 mclickable_option">
                             Settings

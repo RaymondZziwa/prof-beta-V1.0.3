@@ -4871,6 +4871,9 @@ app.post('/updateequatorialshopsaledata', (req, res) => {
             const amountPaid = req.body.amountPaid
             const date = req.body.date
             const notes = req.body.additionalInfo
+            const itemIn = req.body.itemIn
+            const quantityIn = req.body.quantityIn
+            const unitsIn = req.body.unitsIn
             const paymentMethod = req.body.paymentMethod
             const transactionId = req.body.transactionId
             let paymentStatus;
@@ -4887,7 +4890,7 @@ app.post('/updateequatorialshopsaledata', (req, res) => {
                         paymentStatus = 'partiallypaid'
                      }
 
-                     db.query('INSERT INTO equatorialshopsalespayments (receiptNumber, paymentdate, amountPaid, notes, paymentMethod, transactionId) VALUES (?, ?, ?, ?, ?, ?);', [receiptNo, date, amountPaid, notes, paymentMethod, transactionId], error => {
+                     db.query('INSERT INTO equatorialshopsalespayments (receiptNumber, paymentdate, itemin, quantityin, units, amountPaid, notes, paymentMethod, transactionId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);', [receiptNo, date, itemIn, quantityIn, unitsIn, amountPaid, notes, paymentMethod, transactionId], error => {
                          //if the query is faulty , throw the error
                          if (error) {
                              console.log(error);
@@ -5959,6 +5962,7 @@ app.post('/equatorialsavenewnct', (req, res) => {
             let unitsOut = req.body.unitsOut
             let authorizedBy = req.body.authorizedBy
             let notes = req.body.notes
+            let initialStatus = 'pending'
 
             db.query('SELECT * FROM equatorialShopInventory WHERE productid = ?;', [itemInId], function (err, results) {
                 // If there is an issue with the query, output the error
@@ -5970,12 +5974,9 @@ app.post('/equatorialsavenewnct', (req, res) => {
                         if (err) {
                             console.log(err)
                         } else {
-                            db.query('INSERT INTO equatorialncts (date, clientnames, clientcontact, iteminid, quantityin, unitsin, itemoutid, quantityout, unitsout, notes, authorizedby) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [date, names, contact, itemInId, itemInQuantity, unitsIn, itemOutId, itemOutQuantity, unitsOut, notes, authorizedBy], (error) => {
+                            db.query('INSERT INTO equatorialncts (date, clientnames, clientcontact, iteminid, quantityin, unitsin, itemoutid, quantityout, unitsout, notes, authorizedby, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [date, names, contact, itemInId, itemInQuantity, unitsIn, itemOutId, itemOutQuantity, unitsOut, notes, authorizedBy, initialStatus], (error) => {
                                 if (error) {
-                                    console.log(error);
                                     res.status(500).send('Error occurred during saving.');
-                                  } else {
-                                  res.send({ status: '200', msg: 'success' })
                                   }
                             })
                         }
@@ -5988,12 +5989,9 @@ app.post('/equatorialsavenewnct', (req, res) => {
                             console.log(err)
                         } else {
                             console.log('item quantity in stock has been updated successfully')
-                            db.query('INSERT INTO equatorialncts (date, clientnames, clientcontact, iteminid, quantityin, unitsin, itemoutid, quantityout, unitsout, notes, authorizedby) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [date, names, contact, itemInId, itemInQuantity, unitsIn, itemOutId, itemOutQuantity, unitsOut, notes, authorizedBy], (error) => {
+                            db.query('INSERT INTO equatorialncts (date, clientnames, clientcontact, iteminid, quantityin, unitsin, itemoutid, quantityout, unitsout, notes, authorizedby, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [date, names, contact, itemInId, itemInQuantity, unitsIn, itemOutId, itemOutQuantity, unitsOut, notes, authorizedBy, initialStatus], (error) => {
                                 if (error) {
-                                    console.log(error);
                                     res.status(500).send('Error occurred during saving.');
-                                  } else {
-                                  res.send({ status: '200', msg: 'success' })
                                   }
                             })
                         }
@@ -6003,7 +6001,7 @@ app.post('/equatorialsavenewnct', (req, res) => {
                 }
             })
 
-            db.query('SELECT * FROM equatorialShopInventory WHERE productid = ?;', [itemInId], function (err, results) {
+            db.query('SELECT * FROM equatorialShopInventory WHERE productid = ?;', [itemOutId], function (err, results) {
                 // If there is an issue with the query, output the error
                 if (err) throw err;
                 // If the account exists
@@ -6016,15 +6014,7 @@ app.post('/equatorialsavenewnct', (req, res) => {
                         if (err) {
                             console.log(err)
                         } else {
-                            console.log('item quantity in stock has been updated successfully')
-                            db.query('INSERT INTO equatorialncts (date, clientnames, clientcontact, iteminid, quantityin, unitsin, itemoutid, quantityout, unitsout, notes, authorizedby) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [date, names, contact, itemInId, itemInQuantity, unitsIn, itemOutId, itemOutQuantity, unitsOut, notes, authorizedBy], (error) => {
-                                if (error) {
-                                    console.log(error);
-                                    res.status(500).send('Error occurred during saving.');
-                                  } else {
-                                  res.send({ status: '200', msg: 'success' })
-                                  }
-                            })
+                            res.send({ status: '200', msg: 'success' })
                         }
                     })
                 } else {
@@ -6041,18 +6031,37 @@ app.post('/fetchallnctrecords', (req, res) => {
         if (err) {
             res.status(403).send("You are not authorized to perform this action.");
         } else {
-                db.query('SELECT * FROM equatorialncts JOIN shopProducts ON equatorialncts.iteminid = shopProducts.productId AND equatorialncts.itemoutid = shopProducts.productId', (error, results) => {
-                    if (error) throw (error);
+            db.query('SELECT * FROM equatorialncts JOIN shopProducts ON equatorialncts.iteminid = shopProducts.productId', (error, results) => {
+                if (error) throw error;
 
-                    if (results.length > 0) {
-                        res.send(results)
-                    } else {
-                        res.send(`There are no records found.`)
-                    }
-                })
+                if (results.length > 0) {
+                    const itemoutids = results.map(record => record.itemoutid);
+
+                    db.query('SELECT productId, productName FROM shopProducts WHERE productId IN (?)', [itemoutids], (error, productResults) => {
+                        if (error) throw error;
+
+                        const productMap = new Map();
+                        productResults.forEach(product => {
+                            productMap.set(product.productId, product.productName);
+                        });
+
+                        const mergedResults = results.map(record => {
+                            const modifiedRecord = { ...record };
+                            modifiedRecord.itemOut = productMap.get(record.itemoutid);
+                            return modifiedRecord;
+                        });
+
+                        console.log(mergedResults)
+                        res.send(mergedResults);
+                    });
+                } else {
+                    res.send(`There are no records found.`);
+                }
+            });
         }
-    })
-})
+    });
+});
+
 app.listen(port, () => {
     console.log(`Server is listening on port ${port}`);
 })
