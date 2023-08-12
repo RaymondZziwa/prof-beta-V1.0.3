@@ -25,10 +25,15 @@ return(
             </div>
         </Link>
         <Link className="tab_nav" to="/equatorialprojectspos">
-                    <div className="mb-3 mclickable_option">
-                        Projects Point Of Sale
-                    </div>
-                </Link>
+            <div className="mb-3 mclickable_option">
+                Projects Point Of Sale
+            </div>
+        </Link>
+        <Link className="tab_nav" to="/managenctsbydebtmanager">
+            <div className="mb-3 mclickable_option">
+                Manage NCTs
+            </div>
+        </Link>
         <Link className="tab_nav" to="/equatorialshopsalesdataretrieval">
             <div className="mb-3 mclickable_option">
                 Sale Data Retrieval
@@ -49,7 +54,6 @@ return(
                 Fetch Client Associated Receipts
             </div>
         </Link>
-
         <Link className="tab_nav" to="/recordequatorialexpenditure">
             <div className="mb-3 mclickable_option">
                 Record Shop Expenditures

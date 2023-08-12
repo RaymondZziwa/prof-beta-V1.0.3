@@ -6062,6 +6062,52 @@ app.post('/fetchallnctrecords', (req, res) => {
     });
 });
 
+
+app.post('/confirmnct', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                const transactionId = req.body.transactionId
+                const newStatus = 'approved'
+
+                db.query('UPDATE equatorialncts SET status = ? WHERE transactionId = ?',[newStatus, transactionId], (error) => {
+                    if (error){
+                        throw (error)
+                    }else{
+                        res.send({
+                            status: 200,
+                            msg: 'success'
+                        })
+                    }
+
+                })
+        }
+    })
+})
+
+app.post('/rejectnct', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const transactionId = req.body.transactionId
+            const newStatus = 'rejected'
+ 
+                db.query('UPDATE equatorialncts SET status = ? WHERE transactionId = ?',[newStatus, transactionId], (error) => {
+                    if (error){
+                        throw (error)
+                    }else{
+                        res.send({
+                            status: 200,
+                            msg: 'success'
+                        })
+                    }
+
+                })
+        }
+    })
+})
 app.listen(port, () => {
     console.log(`Server is listening on port ${port}`);
 })
