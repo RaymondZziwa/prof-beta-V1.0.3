@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jul 17, 2023 at 03:32 PM
+-- Generation Time: Aug 14, 2023 at 03:56 PM
 -- Server version: 8.0.33-0ubuntu0.20.04.1
 -- PHP Version: 7.4.3-4ubuntu2.18
 
@@ -145,6 +145,64 @@ INSERT INTO `chickenbatchmortalities` (`date`, `batchnumber`, `numberofchickende
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `clientprojectorders`
+--
+
+CREATE TABLE `clientprojectorders` (
+  `orderId` varchar(15) NOT NULL,
+  `firstname` text NOT NULL,
+  `lastname` text NOT NULL,
+  `contact1` varchar(15) NOT NULL,
+  `contact2` varchar(15) DEFAULT NULL,
+  `address` text NOT NULL,
+  `itemname` varchar(15) NOT NULL,
+  `quantity` float NOT NULL,
+  `units` varchar(5) NOT NULL,
+  `totalprice` float NOT NULL,
+  `balance` float NOT NULL,
+  `notes` text
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+--
+-- Dumping data for table `clientprojectorders`
+--
+
+INSERT INTO `clientprojectorders` (`orderId`, `firstname`, `lastname`, `contact1`, `contact2`, `address`, `itemname`, `quantity`, `units`, `totalprice`, `balance`, `notes`) VALUES
+('POE -3028-680', 'Lwasa', 'Reagan', '0775149572', '', 'Ndejje', 'PJ-26', 1, 'Pcs', 500000, 100000, 'xxxx'),
+('POE -8109-295', 'Zziwa', 'Raymond', '0701303137', '', 'Kira', 'PJ-26', 1, 'Pcs', 500000, 400000, 'Initial form testing');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `clientprojectspayments`
+--
+
+CREATE TABLE `clientprojectspayments` (
+  `paymentDate` varchar(30) NOT NULL,
+  `orderId` varchar(15) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `itemName` text,
+  `Quantity` float DEFAULT NULL,
+  `Units` varchar(10) DEFAULT NULL,
+  `amountPaid` float NOT NULL,
+  `paymentmethod` text NOT NULL,
+  `transactionId` varchar(20) DEFAULT NULL,
+  `chequenumber` varchar(50) DEFAULT NULL,
+  `notes` text
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+--
+-- Dumping data for table `clientprojectspayments`
+--
+
+INSERT INTO `clientprojectspayments` (`paymentDate`, `orderId`, `itemName`, `Quantity`, `Units`, `amountPaid`, `paymentmethod`, `transactionId`, `chequenumber`, `notes`) VALUES
+('14/08/2023', 'POE -3028-680', NULL, NULL, NULL, 25000, 'Cash', NULL, NULL, NULL),
+('14/08/2023', 'POE -3028-680', NULL, NULL, NULL, 5000, 'Cash', NULL, NULL, 'Initial Test '),
+('14/08/2023', 'POE -3028-680', NULL, NULL, NULL, 10000, 'Cash', NULL, NULL, 'Testing Product Payment'),
+('14/08/2023', 'POE -3028-680', NULL, NULL, NULL, 10000, 'MTN MoMo', '346556547674363', NULL, 'Test 2');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `departments`
 --
 
@@ -194,6 +252,31 @@ INSERT INTO `eggproductionrecords` (`batchnumber`, `collectiondate`, `totaleggsc
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `equatorialcustodianreleasedinventory`
+--
+
+CREATE TABLE `equatorialcustodianreleasedinventory` (
+  `releaseId` int NOT NULL,
+  `releasedate` varchar(30) NOT NULL,
+  `itemreleasedId` int NOT NULL,
+  `quantityreleased` float NOT NULL,
+  `units` varchar(15) NOT NULL,
+  `departmentreleasedto` text NOT NULL,
+  `recievedby` text NOT NULL,
+  `notes` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+--
+-- Dumping data for table `equatorialcustodianreleasedinventory`
+--
+
+INSERT INTO `equatorialcustodianreleasedinventory` (`releaseId`, `releasedate`, `itemreleasedId`, `quantityreleased`, `units`, `departmentreleasedto`, `recievedby`, `notes`) VALUES
+(1, '02/08/2023, 23:39:57', 2, 20, 'Pcs', 'Shop', 'Bridget', 'testing form'),
+(2, '03/08/2023, 00:07:20', 2, 10, 'Pcs', 'Massage', 'Paul', '');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `equatorialexpensesreceipts`
 --
 
@@ -208,6 +291,134 @@ CREATE TABLE `equatorialexpensesreceipts` (
 
 INSERT INTO `equatorialexpensesreceipts` (`expenditureid`, `receiptimage`) VALUES
 (3, 'receipt_uploads/b2d26a05d44026eb651cb9a60907fbb1');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `equatorialgeneralstoreinventory`
+--
+
+CREATE TABLE `equatorialgeneralstoreinventory` (
+  `productId` int NOT NULL,
+  `quantityinstock` int NOT NULL,
+  `munits` varchar(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+--
+-- Dumping data for table `equatorialgeneralstoreinventory`
+--
+
+INSERT INTO `equatorialgeneralstoreinventory` (`productId`, `quantityinstock`, `munits`) VALUES
+(2, 450, 'Pcs'),
+(7, 130, 'Pcs'),
+(4, 65, 'Pcs');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `equatorialgeneralstorerestockrecords`
+--
+
+CREATE TABLE `equatorialgeneralstorerestockrecords` (
+  `date` varchar(20) NOT NULL,
+  `deliverynotenumber` varchar(20) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `itemid` int NOT NULL,
+  `quantityin` float NOT NULL,
+  `munits` varchar(20) NOT NULL,
+  `restocksource` varchar(50) NOT NULL,
+  `externalsourcedetails` text,
+  `notes` text
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+--
+-- Dumping data for table `equatorialgeneralstorerestockrecords`
+--
+
+INSERT INTO `equatorialgeneralstorerestockrecords` (`date`, `deliverynotenumber`, `itemid`, `quantityin`, `munits`, `restocksource`, `externalsourcedetails`, `notes`) VALUES
+('02/08/2023', '', 2, 250, 'Pcs', 'labelling department', '', 'Testing Form'),
+('02/08/2023', '450-124', 2, 250, 'Pcs', 'labelling department', '', 'Testing Form 2'),
+('02/08/2023', '120-978', 7, 130, 'Pcs', 'labelling department', '', 'Testing Form 3'),
+('02/08/2023', '345-670', 4, 65, 'Pcs', 'labelling department', '', 'Testing 4');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `equatoriallabellingdailyoutput`
+--
+
+CREATE TABLE `equatoriallabellingdailyoutput` (
+  `id` int NOT NULL,
+  `date` varchar(50) NOT NULL,
+  `itemid` int NOT NULL,
+  `quantity` float NOT NULL,
+  `units` text NOT NULL,
+  `recordedby` text NOT NULL,
+  `notes` text NOT NULL,
+  `deliverynotenumber` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+--
+-- Dumping data for table `equatoriallabellingdailyoutput`
+--
+
+INSERT INTO `equatoriallabellingdailyoutput` (`id`, `date`, `itemid`, `quantity`, `units`, `recordedby`, `notes`, `deliverynotenumber`) VALUES
+(1, '05/08/2023', 2, 10, 'Pcs', 'za8', 'Testing', '1230-543'),
+(2, '05/08/2023', 8, 25, 'Pcs', 'za8', 'raymond ian', '459-650');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `equatoriallabellinginventory`
+--
+
+CREATE TABLE `equatoriallabellinginventory` (
+  `itemid` int NOT NULL,
+  `quantityinstock` int NOT NULL,
+  `munits` varchar(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+--
+-- Dumping data for table `equatoriallabellinginventory`
+--
+
+INSERT INTO `equatoriallabellinginventory` (`itemid`, `quantityinstock`, `munits`) VALUES
+(2, 40, 'Pcs'),
+(8, 320, 'Pcs'),
+(14, 80, 'Pcs'),
+(4, 80, 'Pcs'),
+(7, 50, 'Pcs');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `equatoriallabellinginventoryrecords`
+--
+
+CREATE TABLE `equatoriallabellinginventoryrecords` (
+  `restockId` varchar(25) NOT NULL,
+  `date` varchar(30) NOT NULL,
+  `itemId` int NOT NULL,
+  `quantity` float NOT NULL,
+  `units` varchar(10) NOT NULL,
+  `restocksource` text NOT NULL,
+  `externalsourcedetails` text,
+  `companybranch` text,
+  `deliveredby` text NOT NULL,
+  `notes` text,
+  `deliverynotenumber` varchar(25) NOT NULL,
+  `deliverynoteimage` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+--
+-- Dumping data for table `equatoriallabellinginventoryrecords`
+--
+
+INSERT INTO `equatoriallabellinginventoryrecords` (`restockId`, `date`, `itemId`, `quantity`, `units`, `restocksource`, `externalsourcedetails`, `companybranch`, `deliveredby`, `notes`, `deliverynotenumber`, `deliverynoteimage`) VALUES
+('LR-197', '04/08/2023, 14:49:28', 4, 80, 'Pcs', 'external', 'Kitaka', '', 'Kitaka', 'Testing Image', '123-321', 'delivery_notes_uploads/aecaa83d350713f83b60466998102d13'),
+('LR-423', '04/08/2023, 14:11:44', 2, 120, 'Pcs', 'companybranches', '', 'namungoona', 'Lutalo', 'Testing Form', '120-454', 'delivery_notes_uploads/5a9f332eababad4c5f00f51b61792309'),
+('LR-509', '04/08/2023, 14:57:46', 7, 50, 'Pcs', 'companybranches', '', 'namungoona', 'Lutalo', 'Testing ', '540-765', 'delivery_notes_uploads/3ebe9f8df05b1d4e237aa848120135b5'),
+('LR-616', '04/08/2023, 14:14:51', 14, 80, 'Pcs', 'external', 'From Kizito', 'namungoona', 'Lutalo', 'Testing Form 3', '120-5670', 'delivery_notes_uploads/0bf96b11d26772bb0e7167a04ab0c571'),
+('LR-794', '04/08/2023, 14:14:15', 8, 350, 'Pcs', 'companybranches', '', 'namungoona', 'Lutalo', 'Testing Form 2', '120-560', 'delivery_notes_uploads/3b534480b9330260c3067ea3a6c4bb5a');
 
 -- --------------------------------------------------------
 
@@ -227,7 +438,7 @@ CREATE TABLE `equatorialMassageInventory` (
 
 INSERT INTO `equatorialMassageInventory` (`productId`, `quantityinstock`, `munits`) VALUES
 (2, 41, 'Pcs'),
-(7, 74, 'Pcs'),
+(7, 86, 'Pcs'),
 (8, 30, 'Pcs');
 
 -- --------------------------------------------------------
@@ -255,7 +466,36 @@ INSERT INTO `equatorialmassageinventoryrecords` (`date`, `recordcategory`, `item
 ('08/07/2023', 'incoming', 2, 50, 'Pcs', 'equatorialshop', '', ''),
 ('08/07/2023', 'incoming', 7, 75, 'Pcs', 'equatorialshop', '', ''),
 ('08/07/2023', 'incoming', 8, 30, 'Pcs', 'equatorialshop', '', ''),
-('08/07/2023', 'outgoing', 2, 5, 'Pcs', 'other', '', 'Exhibitions');
+('08/07/2023', 'outgoing', 2, 5, 'Pcs', 'other', '', 'Exhibitions'),
+('17/07/2023', 'incoming', 7, 12, 'Pcs', 'equatorialshop', '', '');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `equatorialmassagemoneysubmission`
+--
+
+CREATE TABLE `equatorialmassagemoneysubmission` (
+  `submissionId` varchar(15) NOT NULL,
+  `submissionDate` varchar(30) NOT NULL,
+  `massageamount` float DEFAULT NULL,
+  `productamount` float DEFAULT NULL,
+  `submittedBy` text NOT NULL,
+  `receivedby` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci,
+  `submissionstatus` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+--
+-- Dumping data for table `equatorialmassagemoneysubmission`
+--
+
+INSERT INTO `equatorialmassagemoneysubmission` (`submissionId`, `submissionDate`, `massageamount`, `productamount`, `submittedBy`, `receivedby`, `submissionstatus`) VALUES
+('SM-22', '27/07/2023', 120000, 60000, 'za2', 'Bridget', 'recieved'),
+('SM-53', '28/07/2023', 10000, 32000, 'za2', 'Bridget', 'unconfirmed'),
+('SM-64', '27/07/2023', 50000, 75000, 'za2', 'Bridget', 'not recieved'),
+('SM-76', '27/07/2023', 80000, 20000, 'za2', 'Bridget', 'not recieved'),
+('SM-78', '26/07/2023', 45000, 12000, 'za2', 'Bridget', 'recieved'),
+('SM-83', '27/07/2023', 78000, 230000, 'za2', 'Bridget', 'unconfirmed');
 
 -- --------------------------------------------------------
 
@@ -264,7 +504,6 @@ INSERT INTO `equatorialmassageinventoryrecords` (`date`, `recordcategory`, `item
 --
 
 CREATE TABLE `equatorialMassageSales` (
-  `saleId` int DEFAULT NULL,
   `receiptNumber` varchar(10) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
   `saleDate` varchar(20) NOT NULL,
   `customerNames` varchar(100) NOT NULL,
@@ -274,19 +513,21 @@ CREATE TABLE `equatorialMassageSales` (
   `balance` float NOT NULL,
   `paymentStatus` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
   `paymentMethod` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
-  `additionalinfo` text
+  `additionalinfo` text,
+  `transactionID` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
 -- Dumping data for table `equatorialMassageSales`
 --
 
-INSERT INTO `equatorialMassageSales` (`saleId`, `receiptNumber`, `saleDate`, `customerNames`, `customerContact`, `itemsSold`, `totalAmount`, `balance`, `paymentStatus`, `paymentMethod`, `additionalinfo`) VALUES
-(NULL, '1723-73026', '08/07/2023', 'aa qq', '12345', '[{\"id\":7,\"name\":\"Stevia 100 grams\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000},{\"id\":\"S-2\",\"name\":\"Full Body Massage\",\"unitCost\":50000,\"discount\":0,\"quantity\":1,\"totalCost\":50000},{\"id\":\"S-1\",\"name\":\"Foot Massage\",\"unitCost\":25000,\"discount\":0,\"quantity\":1,\"totalCost\":25000}]', 90000, 0, 'fullypaid', 'Cash', ''),
-(NULL, '4472-98391', '08/07/2023', 'za1 za1', '11', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000}]', 15000, 0, 'fullypaid', 'Cash', ''),
-(NULL, '6308-28886', '08/07/2023', 'zza1 zza11', '11111', '[{\"id\":\"S-1\",\"name\":\"Foot Massage\",\"unitCost\":25000,\"discount\":0,\"quantity\":1,\"totalCost\":25000},{\"id\":\"S-2\",\"name\":\"Full Body Massage\",\"unitCost\":50000,\"discount\":0,\"quantity\":1,\"totalCost\":50000},{\"id\":\"S-93\",\"name\":\"Head Massage\",\"unitCost\":35000,\"discount\":0,\"quantity\":1,\"totalCost\":35000},{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000}]', 125000, 28500, 'partiallypaid', 'Cash', ''),
-(NULL, '6587-92020', '08/07/2023', 'za1 za1', '11', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000},{\"id\":\"S-2\",\"name\":\"Full Body Massage\",\"unitCost\":50000,\"discount\":0,\"quantity\":1,\"totalCost\":50000}]', 65000, 0, 'fullypaid', 'Cash', ''),
-(NULL, '8921-946', '08/07/2023', 'zza1 zza11', '11111', '[{\"id\":\"S-1\",\"name\":\"Foot Massage\",\"unitCost\":25000,\"discount\":0,\"quantity\":1,\"totalCost\":25000},{\"id\":\"S-2\",\"name\":\"Full Body Massage\",\"unitCost\":50000,\"discount\":0,\"quantity\":1,\"totalCost\":50000},{\"id\":\"S-93\",\"name\":\"Head Massage\",\"unitCost\":35000,\"discount\":0,\"quantity\":1,\"totalCost\":35000},{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000}]', 125000, 28500, 'partiallypaid', 'Cash', '');
+INSERT INTO `equatorialMassageSales` (`receiptNumber`, `saleDate`, `customerNames`, `customerContact`, `itemsSold`, `totalAmount`, `balance`, `paymentStatus`, `paymentMethod`, `additionalinfo`, `transactionID`) VALUES
+('1723-73026', '08/07/2023', 'aa qq', '12345', '[{\"id\":7,\"name\":\"Stevia 100 grams\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000},{\"id\":\"S-2\",\"name\":\"Full Body Massage\",\"unitCost\":50000,\"discount\":0,\"quantity\":1,\"totalCost\":50000},{\"id\":\"S-1\",\"name\":\"Foot Massage\",\"unitCost\":25000,\"discount\":0,\"quantity\":1,\"totalCost\":25000}]', 90000, 0, 'fullypaid', 'Cash', '', NULL),
+('4003-33245', '17/07/2023', 'tt rrr', '44567', '[{\"id\":\"S-1\",\"name\":\"Foot Massage\",\"unitCost\":25000,\"discount\":0,\"quantity\":1,\"totalCost\":25000},{\"id\":\"S-93\",\"name\":\"Head Massage\",\"unitCost\":35000,\"discount\":0,\"quantity\":1,\"totalCost\":35000}]', 60000, 0, 'fullypaid', 'Cash', '', NULL),
+('4472-98391', '08/07/2023', 'za1 za1', '11', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000}]', 15000, 0, 'fullypaid', 'Cash', '', NULL),
+('6308-28886', '08/07/2023', 'zza1 zza11', '11111', '[{\"id\":\"S-1\",\"name\":\"Foot Massage\",\"unitCost\":25000,\"discount\":0,\"quantity\":1,\"totalCost\":25000},{\"id\":\"S-2\",\"name\":\"Full Body Massage\",\"unitCost\":50000,\"discount\":0,\"quantity\":1,\"totalCost\":50000},{\"id\":\"S-93\",\"name\":\"Head Massage\",\"unitCost\":35000,\"discount\":0,\"quantity\":1,\"totalCost\":35000},{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000}]', 125000, 28500, 'partiallypaid', 'Cash', '', NULL),
+('6587-92020', '08/07/2023', 'za1 za1', '11', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000},{\"id\":\"S-2\",\"name\":\"Full Body Massage\",\"unitCost\":50000,\"discount\":0,\"quantity\":1,\"totalCost\":50000}]', 65000, 0, 'fullypaid', 'Cash', '', NULL),
+('8921-946', '08/07/2023', 'zza1 zza11', '11111', '[{\"id\":\"S-1\",\"name\":\"Foot Massage\",\"unitCost\":25000,\"discount\":0,\"quantity\":1,\"totalCost\":25000},{\"id\":\"S-2\",\"name\":\"Full Body Massage\",\"unitCost\":50000,\"discount\":0,\"quantity\":1,\"totalCost\":50000},{\"id\":\"S-93\",\"name\":\"Head Massage\",\"unitCost\":35000,\"discount\":0,\"quantity\":1,\"totalCost\":35000},{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000}]', 125000, 28500, 'partiallypaid', 'Cash', '', NULL);
 
 -- --------------------------------------------------------
 
@@ -305,6 +546,116 @@ CREATE TABLE `equatorialmassagesalespayments` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `equatorialMassageServicesRecords`
+--
+
+CREATE TABLE `equatorialMassageServicesRecords` (
+  `receiptNumber` varchar(10) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `saleDate` varchar(20) NOT NULL,
+  `customerNames` varchar(100) NOT NULL,
+  `customerContact` varchar(15) NOT NULL,
+  `servicesOffered` varchar(500) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `totalAmount` float NOT NULL,
+  `balance` float NOT NULL,
+  `paymentStatus` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `paymentMethod` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `additionalinfo` text,
+  `transactionID` varchar(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+--
+-- Dumping data for table `equatorialMassageServicesRecords`
+--
+
+INSERT INTO `equatorialMassageServicesRecords` (`receiptNumber`, `saleDate`, `customerNames`, `customerContact`, `servicesOffered`, `totalAmount`, `balance`, `paymentStatus`, `paymentMethod`, `additionalinfo`, `transactionID`) VALUES
+('4866-6671', '27/07/2023', 'ZZIWA RAYMOND', '0775149572', '[{\"Id\":\"S-24\",\"productName\":\"Nuru Massage\",\"quantity\":1,\"totalCost\":50000,\"unitCost\":50000}]', 50000, 0, 'fullypaid', 'Cash', '', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `equatorialmassagesubscriptions`
+--
+
+CREATE TABLE `equatorialmassagesubscriptions` (
+  `subscriptionId` varchar(10) NOT NULL,
+  `subscriptiondate` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `clientnames` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `clientcontact` varchar(12) NOT NULL,
+  `amountPaid` float NOT NULL,
+  `balance` float NOT NULL,
+  `notes` text,
+  `subscriptionstatus` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+--
+-- Dumping data for table `equatorialmassagesubscriptions`
+--
+
+INSERT INTO `equatorialmassagesubscriptions` (`subscriptionId`, `subscriptiondate`, `clientnames`, `clientcontact`, `amountPaid`, `balance`, `notes`, `subscriptionstatus`) VALUES
+('SUB-25', '7/23/2023, 9:22:13 PM', 'LWASA REAGAN PETER', '0701303137', 220000, 220000, 'Testing status ', 'active'),
+('SUB-40', '7/24/2023, 8:14:17 AM', 'MURUNGI  MARTHA', '0775563805', 150000, 115000, 'Testing form reseting', 'active'),
+('SUB-53', '7/24/2023, 11:28:16 PM', 'ASIA MARIA GORETTI', '111-222-333', 340000, 340000, 'Testing Form 4', 'active'),
+('SUB-84', '7/23/2023, 7:10:04 PM', 'ZZIWA RAYMOND IAN', '0775149572', 120000, 60000, 'Testing Subscription form', 'active');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `equatorialmassagesubscriptionusage`
+--
+
+CREATE TABLE `equatorialmassagesubscriptionusage` (
+  `subscriptionId` varchar(15) NOT NULL,
+  `serviceDate` varchar(10) NOT NULL,
+  `serviceOfferedId` varchar(15) NOT NULL,
+  `amountSpent` float NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+--
+-- Dumping data for table `equatorialmassagesubscriptionusage`
+--
+
+INSERT INTO `equatorialmassagesubscriptionusage` (`subscriptionId`, `serviceDate`, `serviceOfferedId`, `amountSpent`) VALUES
+('SUB-84', '25/07/2023', 'S-1', 25000),
+('SUB-84', '25/07/2023', 'S-93', 35000),
+('SUB-40', '25/07/2023', 'S-93', 35000);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `equatorialncts`
+--
+
+CREATE TABLE `equatorialncts` (
+  `transactionId` int NOT NULL,
+  `date` varchar(30) NOT NULL,
+  `clientnames` text NOT NULL,
+  `clientcontact` varchar(15) NOT NULL,
+  `iteminid` int NOT NULL,
+  `quantityin` float NOT NULL,
+  `unitsin` varchar(10) NOT NULL,
+  `itemoutid` int NOT NULL,
+  `quantityout` float NOT NULL,
+  `unitsout` varchar(10) NOT NULL,
+  `notes` text NOT NULL,
+  `authorizedby` text NOT NULL,
+  `status` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+--
+-- Dumping data for table `equatorialncts`
+--
+
+INSERT INTO `equatorialncts` (`transactionId`, `date`, `clientnames`, `clientcontact`, `iteminid`, `quantityin`, `unitsin`, `itemoutid`, `quantityout`, `unitsout`, `notes`, `authorizedby`, `status`) VALUES
+(4, '10/08/2023, 13:41:25', 'ZZIWA RAYMOND', '0775149572', 5, 40, 'L', 14, 20, 'Pcs', 'Testing', 'za7', 'pending'),
+(5, '10/08/2023, 15:34:59', 'ZZIWA RAYMOND', '0701303137', 4, 30, 'Pcs', 6, 30, 'Pcs', 'Testing 2', 'za7', 'approved'),
+(6, '10/08/2023, 15:47:04', 'LWASA REAGAN', '0775563805', 7, 50, 'Pcs', 13, 50, 'Pcs', 'Testing 3', 'za7', 'approved'),
+(7, '10/08/2023, 16:40:33', 'LEMI MANOAH', '0775563805', 8, 80, 'Pcs', 2, 30, 'Pcs', 'Testing 3', 'za7', 'pending'),
+(12, '10/08/2023, 16:53:25', 'FETA JEFF', '12345678', 11, 5, 'Pcs', 2, 20, 'Pcs', 'Testing', 'za7', 'pending'),
+(14, '10/08/2023, 16:58:41', 'MALUNGA DOUGLAS', '12345678', 7, 15, 'Pcs', 2, 30, 'Pcs', 'qazqaz', 'za7', 'approved');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `equatorialprojectsclientpaymentplans`
 --
 
@@ -318,7 +669,8 @@ CREATE TABLE `equatorialprojectsclientpaymentplans` (
 --
 
 INSERT INTO `equatorialprojectsclientpaymentplans` (`receiptNumber`, `paymentPlan`) VALUES
-('8982-20825', '[{\"paymentDate\":\"17/07/2023\",\"amountToBePaid\":1562500,\"balanceAfterPayment\":4687500},{\"paymentDate\":\"17/08/2023\",\"amountToBePaid\":1562500,\"balanceAfterPayment\":3125000},{\"paymentDate\":\"17/09/2023\",\"amountToBePaid\":1562500,\"balanceAfterPayment\":1562500},{\"paymentDate\":\"17/10/2023\",\"amountToBePaid\":1562500,\"balanceAfterPayment\":0}]');
+('8982-20825', '[{\"paymentDate\":\"17/07/2023\",\"amountToBePaid\":1562500,\"balanceAfterPayment\":4687500},{\"paymentDate\":\"17/08/2023\",\"amountToBePaid\":1562500,\"balanceAfterPayment\":3125000},{\"paymentDate\":\"17/09/2023\",\"amountToBePaid\":1562500,\"balanceAfterPayment\":1562500},{\"paymentDate\":\"17/10/2023\",\"amountToBePaid\":1562500,\"balanceAfterPayment\":0}]'),
+('7756-40369', '[{\"paymentDate\":\"17/07/2023\",\"amountToBePaid\":550000,\"balanceAfterPayment\":1650000},{\"paymentDate\":\"17/08/2023\",\"amountToBePaid\":550000,\"balanceAfterPayment\":1100000},{\"paymentDate\":\"17/09/2023\",\"amountToBePaid\":550000,\"balanceAfterPayment\":550000},{\"paymentDate\":\"17/10/2023\",\"amountToBePaid\":550000,\"balanceAfterPayment\":0}]');
 
 -- --------------------------------------------------------
 
@@ -337,9 +689,9 @@ CREATE TABLE `equatorialProjectsInventory` (
 --
 
 INSERT INTO `equatorialProjectsInventory` (`productId`, `quantityinstock`, `munits`) VALUES
-('PJ-26', 62, 'Pcs'),
+('PJ-26', 68, 'Pcs'),
 ('PJ-39', 22, 'Pcs'),
-('PJ-97', 20, 'Pcs');
+('PJ-97', -20, 'Pcs');
 
 -- --------------------------------------------------------
 
@@ -367,7 +719,11 @@ INSERT INTO `equatorialProjectsInventoryrecords` (`date`, `recordcategory`, `ite
 ('16/07/2023', 'incoming', 'PJ-39', 25, 'Pcs', 'equatorialshop', '', ''),
 ('16/07/2023', 'outgoing', 'PJ-39', 2, 'Pcs', 'external', 'Delivery to a certain client', 'Test'),
 ('16/07/2023', 'incoming', 'PJ-26', 78, 'Pcs', 'external', 'From Masanafu', ''),
-('16/07/2023', 'incoming', 'PJ-97', 35, 'Pcs', 'equatorialshop', '', '');
+('16/07/2023', 'incoming', 'PJ-97', 35, 'Pcs', 'equatorialshop', '', ''),
+('17/07/2023', 'incoming', 'PJ-26', 15, 'Pcs', 'external', 'From Masanafu Department', ''),
+('17/07/2023', 'incoming', 'PJ-26', 5, 'Pcs', 'external', 'masanafu', ''),
+('17/07/2023', 'outgoing', 'PJ-97', 20, 'Pcs', 'external', 'delivered to client', ''),
+('17/07/2023', 'outgoing', 'PJ-97', 20, 'Pcs', 'external', 'delivered to client', '');
 
 -- --------------------------------------------------------
 
@@ -386,17 +742,23 @@ CREATE TABLE `equatorialProjectsSales` (
   `balance` float NOT NULL,
   `paymentStatus` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
   `paymentMethod` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
-  `additionalinfo` text
+  `additionalinfo` text,
+  `transactionID` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
 -- Dumping data for table `equatorialProjectsSales`
 --
 
-INSERT INTO `equatorialProjectsSales` (`saleId`, `receiptNumber`, `saleDate`, `customerNames`, `customerContact`, `itemsSold`, `totalAmount`, `balance`, `paymentStatus`, `paymentMethod`, `additionalinfo`) VALUES
-(NULL, '4045-27630', '16/07/2023', 'Zziwa Raymond', '444-777-120', '[{\"id\":\"PJ-26\",\"name\":\"Biomass Dryer (BIG)\",\"unitCost\":500000,\"discount\":0,\"quantity\":1,\"totalCost\":500000},{\"id\":\"PJ-39\",\"name\":\"Stand\",\"unitCost\":120000,\"discount\":0,\"quantity\":1,\"totalCost\":120000}]', 620000, 0, 'fullypaid', 'Cash', ''),
-(101, '555-100', '2-07-2001', 'zz', '242444', '[{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":1,\"totalCost\":7500}]', 50000, 5000, 'unpaid', 'cash', NULL),
-(NULL, '8982-20825', '16/07/2023', 'Musoke Peter', '111-675-346', '[{\"id\":\"PJ-26\",\"name\":\"Biomass Dryer (BIG)\",\"unitCost\":500000,\"discount\":0,\"quantity\":20,\"totalCost\":10000000},{\"id\":\"PJ-97\",\"name\":\"Biomass Dryer (SMALL)\",\"unitCost\":250000,\"discount\":0,\"quantity\":15,\"totalCost\":3750000}]', 13750000, 4687500, 'partiallypaid', 'Cash', '');
+INSERT INTO `equatorialProjectsSales` (`saleId`, `receiptNumber`, `saleDate`, `customerNames`, `customerContact`, `itemsSold`, `totalAmount`, `balance`, `paymentStatus`, `paymentMethod`, `additionalinfo`, `transactionID`) VALUES
+(NULL, '2773-88686', '7/19/2023', 'Lwasa Reagan Peter', '+256704259828', '[{\"id\":\"PJ-26\",\"name\":\"Biomass Dryer (BIG)\",\"unitCost\":500000,\"discount\":0,\"quantity\":1,\"totalCost\":500000}]', 500000, 0, 'fullypaid', 'MTN MoMo', '', '458935008975628'),
+(NULL, '4045-27630', '16/07/2023', 'Zziwa Raymond', '444-777-120', '[{\"id\":\"PJ-26\",\"name\":\"Biomass Dryer (BIG)\",\"unitCost\":500000,\"discount\":0,\"quantity\":1,\"totalCost\":500000},{\"id\":\"PJ-39\",\"name\":\"Stand\",\"unitCost\":120000,\"discount\":0,\"quantity\":1,\"totalCost\":120000}]', 620000, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '4755-80987', '7/19/2023', 'Lwasa Reagan Peter', '+256704259828', '[{\"id\":\"PJ-26\",\"name\":\"Biomass Dryer (BIG)\",\"unitCost\":500000,\"discount\":0,\"quantity\":1,\"totalCost\":500000}]', 500000, 0, 'fullypaid', 'Cash', '', NULL),
+(101, '555-100', '2-07-2001', 'zz', '242444', '[{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":1,\"totalCost\":7500}]', 50000, 5000, 'unpaid', 'cash', NULL, NULL),
+(NULL, '6194-21119', '7/19/2023', 'Lwasa Reagan Peter', '+256704259828', '[{\"id\":\"PJ-26\",\"name\":\"Biomass Dryer (BIG)\",\"unitCost\":500000,\"discount\":0,\"quantity\":1,\"totalCost\":500000}]', 500000, 0, 'fullypaid', 'Airtel Money', '', '458935628975628'),
+(NULL, '7625-13090', '7/19/2023', 'Lwasa Reagan Peter', '+256704259828', '[{\"id\":\"PJ-26\",\"name\":\"Biomass Dryer (BIG)\",\"unitCost\":500000,\"discount\":0,\"quantity\":3,\"totalCost\":1500000}]', 1500000, 750000, 'partiallypaid', 'Airtel Money', '', NULL),
+(NULL, '7756-40369', '17/07/2023', 'QQ AA', '111111', '[{\"id\":\"PJ-26\",\"name\":\"Biomass Dryer (BIG)\",\"unitCost\":500000,\"discount\":0,\"quantity\":8,\"totalCost\":4000000}]', 4000000, -2487500, 'fullypaid', 'Cash', '', NULL),
+(NULL, '8982-20825', '16/07/2023', 'Musoke Peter', '111-675-346', '[{\"id\":\"PJ-26\",\"name\":\"Biomass Dryer (BIG)\",\"unitCost\":500000,\"discount\":0,\"quantity\":20,\"totalCost\":10000000},{\"id\":\"PJ-97\",\"name\":\"Biomass Dryer (SMALL)\",\"unitCost\":250000,\"discount\":0,\"quantity\":15,\"totalCost\":3750000}]', 13750000, 4687500, 'partiallypaid', 'Cash', '', NULL);
 
 -- --------------------------------------------------------
 
@@ -417,7 +779,8 @@ CREATE TABLE `equatorialprojectssalespayments` (
 --
 
 INSERT INTO `equatorialprojectssalespayments` (`receiptNumber`, `paymentdate`, `amountPaid`, `notes`, `paymentMethod`) VALUES
-('8982-20825', '17/07/2023', 1562500, 'Testing 22', 'Cash');
+('8982-20825', '17/07/2023', 1562500, 'Testing 22', 'Cash'),
+('7756-40369', '17/07/2023', 4687500, '', 'Cash');
 
 -- --------------------------------------------------------
 
@@ -479,7 +842,14 @@ CREATE TABLE `equatorialShopInventory` (
 --
 
 INSERT INTO `equatorialShopInventory` (`productId`, `quantityinstock`, `munits`) VALUES
-(14, 105, 'Pcs');
+(14, 89, 'Pcs'),
+(2, 90, 'Pcs'),
+(5, 55, 'L'),
+(4, 30, 'Pcs'),
+(7, 65, 'Pcs'),
+(8, 80, 'Pcs'),
+(1, 35, 'Kgs'),
+(11, 10, 'Pcs');
 
 -- --------------------------------------------------------
 
@@ -524,17 +894,30 @@ CREATE TABLE `equatorialShopSales` (
   `balance` float NOT NULL,
   `paymentStatus` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
   `paymentMethod` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
-  `additionalinfo` text
+  `additionalinfo` text,
+  `transactionID` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
 -- Dumping data for table `equatorialShopSales`
 --
 
-INSERT INTO `equatorialShopSales` (`saleId`, `receiptNumber`, `saleDate`, `customerNames`, `customerContact`, `itemsSold`, `totalAmount`, `balance`, `paymentStatus`, `paymentMethod`, `additionalinfo`) VALUES
-(NULL, '2240-64639', '17/07/2023', 'Dada Pipiro', '44-680-210-331', '[{\"id\":14,\"name\":\"Levanda Oil 100 mls\",\"unitCost\":3000,\"discount\":0,\"quantity\":20,\"totalCost\":60000}]', 60000, 0, 'fullypaid', 'Cash', 'Testing'),
-(NULL, '4143-66901', '17/07/2023', 'Musika Peter', '555-999-000', '[{\"id\":14,\"name\":\"Levanda Oil 100 mls\",\"unitCost\":3000,\"discount\":0,\"quantity\":15,\"totalCost\":45000}]', 45000, 0, 'fullypaid', 'Cash', ''),
-(NULL, '9374-51343', '17/07/2023', 'Dada Pipiro', '44-680-210-331', '[{\"id\":14,\"name\":\"Levanda Oil 100 mls\",\"unitCost\":3000,\"discount\":10,\"quantity\":20,\"totalCost\":54000}]', 54000, 54000, 'unpaid', 'Cash', 'Testing');
+INSERT INTO `equatorialShopSales` (`saleId`, `receiptNumber`, `saleDate`, `customerNames`, `customerContact`, `itemsSold`, `totalAmount`, `balance`, `paymentStatus`, `paymentMethod`, `additionalinfo`, `transactionID`) VALUES
+(NULL, '0356-17180', '19/07/2023', 'ZZIWA RAYMOND', '0775149572', '[{\"id\":14,\"name\":\"Levanda Oil 100 mls\",\"unitCost\":3000,\"discount\":0,\"quantity\":2,\"totalCost\":6000}]', 6000, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '1102-28771', '20/07/2023', 'SAM ODEKE', '555-666-990', '[{\"id\":14,\"name\":\"Levanda Oil 100 mls\",\"unitCost\":3000,\"discount\":0,\"quantity\":25,\"totalCost\":75000}]', 75000, 75000, 'unpaid', '', '', NULL),
+(NULL, '1749-18161', '20/07/2023', 'SAM ODEKE', '555-666-990', '[{\"id\":14,\"name\":\"Levanda Oil 100 mls\",\"unitCost\":3000,\"discount\":0,\"quantity\":2,\"totalCost\":6000}]', 6000, 0, 'fullypaid', 'MTN MoMo', '', NULL),
+(NULL, '1861-52228', '19/07/2023', 'ZZIWA RAYMOND   ', '0775149572', '[{\"id\":14,\"name\":\"Levanda Oil 100 mls\",\"unitCost\":3000,\"discount\":0,\"quantity\":8,\"totalCost\":24000}]', 24000, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '2240-64639', '17/07/2023', 'Dada Pipiro', '44-680-210-331', '[{\"id\":14,\"name\":\"Levanda Oil 100 mls\",\"unitCost\":3000,\"discount\":0,\"quantity\":20,\"totalCost\":60000}]', 60000, 30000, 'partiallypaid', '', 'Testing', NULL),
+(NULL, '2461-61170', '19/07/2023', 'OPIO DIOR', '11-222-333', '[{\"id\":14,\"name\":\"Levanda Oil 100 mls\",\"unitCost\":3000,\"discount\":0,\"quantity\":12,\"totalCost\":36000}]', 36000, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '3250-76183', '20/07/2023', 'SAM ODEKE', '555-666-990', '[{\"id\":14,\"name\":\"Levanda Oil 100 mls\",\"unitCost\":3000,\"discount\":0,\"quantity\":7,\"totalCost\":21000}]', 21000, 0, 'fullypaid', 'Prof MM', '', NULL),
+(NULL, '3356-60511', '19/07/2023', 'ZZIWA RAYMOND', '0775149572', '[{\"id\":14,\"name\":\"Levanda Oil 100 mls\",\"unitCost\":3000,\"discount\":0,\"quantity\":2,\"totalCost\":6000}]', 6000, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '4143-66901', '17/07/2023', 'Musika Peter', '555-999-000', '[{\"id\":14,\"name\":\"Levanda Oil 100 mls\",\"unitCost\":3000,\"discount\":0,\"quantity\":15,\"totalCost\":45000}]', 45000, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '4639-58301', '19/07/2023', 'ZZIWA RAYMOND', '0775149572', '[{\"id\":14,\"name\":\"Levanda Oil 100 mls\",\"unitCost\":3000,\"discount\":0,\"quantity\":2,\"totalCost\":6000}]', 6000, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '5757-2755', '19/07/2023', 'ZZIWA RAYMOND', '0775149572', '[{\"id\":14,\"name\":\"Levanda Oil 100 mls\",\"unitCost\":3000,\"discount\":0,\"quantity\":2,\"totalCost\":6000}]', 6000, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '6452-51721', '19/07/2023', 'ZZIWA RAYMOND', '0775149572', '[{\"id\":14,\"name\":\"Levanda Oil 100 mls\",\"unitCost\":3000,\"discount\":0,\"quantity\":2,\"totalCost\":6000}]', 6000, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '7759-23355', '19/07/2023', 'ZZIWA RAYMOND', '0775149572', '[{\"id\":14,\"name\":\"Levanda Oil 100 mls\",\"unitCost\":3000,\"discount\":0,\"quantity\":2,\"totalCost\":6000}]', 6000, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '8406-39991', '20/07/2023', 'SAM ODEKE', '555-666-990', '[{\"id\":14,\"name\":\"Levanda Oil 100 mls\",\"unitCost\":3000,\"discount\":0,\"quantity\":8,\"totalCost\":24000}]', 24000, 0, 'fullypaid', 'Airtel Money', '', '564565446543t'),
+(NULL, '9374-51343', '17/07/2023', 'Dada Pipiro', '44-680-210-331', '[{\"id\":14,\"name\":\"Levanda Oil 100 mls\",\"unitCost\":3000,\"discount\":10,\"quantity\":20,\"totalCost\":54000}]', 54000, 14000, 'partiallypaid', 'Cash', 'Testing', NULL);
 
 -- --------------------------------------------------------
 
@@ -545,17 +928,47 @@ INSERT INTO `equatorialShopSales` (`saleId`, `receiptNumber`, `saleDate`, `custo
 CREATE TABLE `equatorialshopsalespayments` (
   `receiptNumber` varchar(10) NOT NULL,
   `paymentdate` varchar(20) NOT NULL,
+  `itemin` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `quantityin` float DEFAULT NULL,
+  `units` varchar(5) DEFAULT NULL,
   `amountPaid` float NOT NULL,
   `notes` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci,
-  `paymentMethod` varchar(20) NOT NULL
+  `paymentMethod` varchar(20) NOT NULL,
+  `transactionId` varchar(40) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
 -- Dumping data for table `equatorialshopsalespayments`
 --
 
-INSERT INTO `equatorialshopsalespayments` (`receiptNumber`, `paymentdate`, `amountPaid`, `notes`, `paymentMethod`) VALUES
-('2240-64639', '17/07/2023', 35000, NULL, 'Cash');
+INSERT INTO `equatorialshopsalespayments` (`receiptNumber`, `paymentdate`, `itemin`, `quantityin`, `units`, `amountPaid`, `notes`, `paymentMethod`, `transactionId`) VALUES
+('2240-64639', '17/07/2023', NULL, NULL, NULL, 35000, NULL, 'Cash', NULL),
+('9374-51343', '06/08/2023', NULL, NULL, NULL, 20000, NULL, 'Cash', NULL),
+('9374-51343', '06/08/2023', NULL, NULL, NULL, 20000, NULL, 'Cash', NULL),
+('2240-64639', '10/08/2023', '', NULL, '', 10000, 'Testing 1', 'Cash', NULL),
+('2240-64639', '10/08/2023', 'Amaranth seeds', 2, 'Kgs', 14000, 'Testing 2', '', NULL),
+('2240-64639', '10/08/2023', '', NULL, '', 6000, 'Testing again', 'Prof MM', '324543646350');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `exhibitionincome`
+--
+
+CREATE TABLE `exhibitionincome` (
+  `date` varchar(30) NOT NULL,
+  `exhibitionId` int NOT NULL,
+  `amountRecieved` float NOT NULL,
+  `DeliveredBy` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `RecievedBy` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+--
+-- Dumping data for table `exhibitionincome`
+--
+
+INSERT INTO `exhibitionincome` (`date`, `exhibitionId`, `amountRecieved`, `DeliveredBy`, `RecievedBy`) VALUES
+('01/08/2023, 00:10:55', 1, 350000, 'Maria', 'za3');
 
 -- --------------------------------------------------------
 
@@ -564,6 +977,7 @@ INSERT INTO `equatorialshopsalespayments` (`receiptNumber`, `paymentdate`, `amou
 --
 
 CREATE TABLE `exhibitions` (
+  `id` int NOT NULL,
   `exhibitionname` varchar(100) NOT NULL,
   `date` varchar(50) NOT NULL,
   `itemsrecord` text NOT NULL,
@@ -578,8 +992,30 @@ CREATE TABLE `exhibitions` (
 -- Dumping data for table `exhibitions`
 --
 
-INSERT INTO `exhibitions` (`exhibitionname`, `date`, `itemsrecord`, `filledfrombranch`, `filledbydepartment`, `filledbyrole`, `filledbyuser`, `status`) VALUES
-('BUBU', '2023-07-02', '[{\"itemName\":\"Black seeds\",\"itemQuantity\":\"2\",\"itemQuantitySold\":\"1\",\"itemQuantityReturned\":\"0\",\"Discrepancies\":1,\"mUnits\":\"KG\"}]', 'masanafu', 'production', 'custodian', 'namugangamaria', 'postexhibition');
+INSERT INTO `exhibitions` (`id`, `exhibitionname`, `date`, `itemsrecord`, `filledfrombranch`, `filledbydepartment`, `filledbyrole`, `filledbyuser`, `status`) VALUES
+(1, 'BUBU', '2023-07-02', '[{\"itemName\":\"Black seeds\",\"itemQuantity\":\"2\",\"itemQuantitySold\":\"1\",\"itemQuantityReturned\":\"0\",\"Discrepancies\":1,\"mUnits\":\"KG\"}]', 'masanafu', 'production', 'custodian', 'namugangamaria', 'postexhibition'),
+(2, 'ZAZA', '2023-08-30', '[{\"itemName\":\"Black seeds\",\"itemQuantity\":\"5\",\"itemQuantitySold\":\"0\",\"itemQuantityReturned\":\"0\",\"Discrepancies\":\"0\",\"mUnits\":\"KG\"}]', 'masanafu', 'production', 'custodian', 'namugangamaria', 'preexhibition');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `exhibitionsales`
+--
+
+CREATE TABLE `exhibitionsales` (
+  `receiptNumber` varchar(10) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `exhibitionId` int NOT NULL,
+  `saleDate` varchar(20) NOT NULL,
+  `customerNames` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `customerContact` varchar(15) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `itemsSold` varchar(500) NOT NULL,
+  `totalAmount` float NOT NULL,
+  `balance` float NOT NULL,
+  `paymentStatus` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `paymentMethod` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `additionalinfo` text,
+  `transactionID` varchar(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 -- --------------------------------------------------------
 
@@ -591,6 +1027,13 @@ CREATE TABLE `expensesreceipts` (
   `expenditureid` int NOT NULL,
   `receiptimage` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+--
+-- Dumping data for table `expensesreceipts`
+--
+
+INSERT INTO `expensesreceipts` (`expenditureid`, `receiptimage`) VALUES
+(13, 'receipt_uploads/3cf6862cea60f535166e0d07f326fb85');
 
 -- --------------------------------------------------------
 
@@ -614,20 +1057,23 @@ CREATE TABLE `externalreceipts` (
   `clientfirstname` text NOT NULL,
   `clientmiddlename` text,
   `clientlastname` text NOT NULL,
-  `clientcontact` varchar(15) NOT NULL
+  `clientcontact` varchar(15) NOT NULL,
+  `transactionID` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
 -- Dumping data for table `externalreceipts`
 --
 
-INSERT INTO `externalreceipts` (`receiptnumber`, `receiptdate`, `itemsattached`, `receiptissuedfrombranch`, `receiptissuedfromdepartment`, `receiptissuedby`, `receiptdeliveredtobranch`, `receiptdeliveredtodepartment`, `receiptdeliveredtopersonnel`, `receiptpaymentstatus`, `receiptdeliverystatus`, `additionalinfo`, `clientfirstname`, `clientmiddlename`, `clientlastname`, `clientcontact`) VALUES
-('101', '11/6/2023', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":10,\"quantity\":5,\"totalCost\":67500},{\"id\":4,\"name\":\"Makuna 50 grams\",\"unitCost\":3500,\"discount\":0,\"quantity\":2,\"totalCost\":7000}]', 'equatorial', 'shop', 'bridget', 'masanafu', 'shop', 'julie', 'fully paid', 'delivered', 'Please fullfill this receipt as the customer is in urgent need', 'Mukasa', NULL, 'Paul', '0775149572'),
-('102', '11/6/2023', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":10,\"quantity\":30,\"totalCost\":405000},{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":2,\"totalCost\":15000},{\"id\":4,\"name\":\"Makuna 50 grams\",\"unitCost\":3500,\"discount\":0,\"quantity\":3,\"totalCost\":10500}]', 'equatorial', 'shop', 'bridget', 'masanafu', 'shop', 'julie', 'partially paid', 'delivered', NULL, 'Lwasa', 'Reagan', 'Peter', '0701303137'),
-('2164-87460', '16/07/2023', '[{\"id\":4,\"name\":\"Makuna 50 grams\",\"unitCost\":3500,\"discount\":0,\"quantity\":1,\"totalCost\":3500},{\"id\":7,\"name\":\"Stevia 100 grams\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000}]', 'equatorial', 'projects', 'za4', 'masanafu', 'shop', 'za1', 'unpaid', 'pending', '', 'Zziwa', NULL, 'Raymond', '111-222-333-444'),
-('2647-21869', '16/07/2023', '[{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":1,\"totalCost\":5000},{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000},{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":1,\"totalCost\":7500}]', 'equatorial', 'projects', 'za4', 'masanafu', 'shop', 'za1', 'unpaid', 'pending', 'testing', 'zz', NULL, 'rr', '333-444-555'),
-('5520-11215', '16/07/2023', '[{\"id\":7,\"name\":\"Stevia 100 grams\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000},{\"id\":5,\"name\":\"Avocado Oil\",\"unitCost\":3500,\"discount\":0,\"quantity\":1,\"totalCost\":3500}]', 'equatorial', 'projects', 'za4', 'masanafu', 'shop', 'za1', 'partiallypaid', 'pending', '', 'Zziwa', NULL, 'Raymond', '111-222-333-444'),
-('9973-72674', '16/07/2023', '[{\"id\":7,\"name\":\"Stevia 100 grams\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000}]', 'equatorial', 'projects', 'za4', 'masanafu', 'shop', 'za1', 'fullypaid', 'pending', '', 'Zziwa', NULL, 'Raymond', '111-222-333-444');
+INSERT INTO `externalreceipts` (`receiptnumber`, `receiptdate`, `itemsattached`, `receiptissuedfrombranch`, `receiptissuedfromdepartment`, `receiptissuedby`, `receiptdeliveredtobranch`, `receiptdeliveredtodepartment`, `receiptdeliveredtopersonnel`, `receiptpaymentstatus`, `receiptdeliverystatus`, `additionalinfo`, `clientfirstname`, `clientmiddlename`, `clientlastname`, `clientcontact`, `transactionID`) VALUES
+('2164-87460', '16/07/2023', '[{\"id\":4,\"name\":\"Makuna 50 grams\",\"unitCost\":3500,\"discount\":0,\"quantity\":1,\"totalCost\":3500},{\"id\":7,\"name\":\"Stevia 100 grams\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000}]', 'equatorial', 'projects', 'za4', 'masanafu', 'shop', 'za1', 'unpaid', 'pending', '', 'Zziwa', NULL, 'Raymond', '111-222-333-444', NULL),
+('2647-21869', '16/07/2023', '[{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":1,\"totalCost\":5000},{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000},{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":1,\"totalCost\":7500}]', 'equatorial', 'projects', 'za4', 'masanafu', 'shop', 'za1', 'unpaid', 'delivered', 'testing', 'zz', NULL, 'rr', '333-444-555', NULL),
+('2912-94093', '7/19/2023', '[{\"id\":\"PJ-26\",\"name\":\"Biomass Dryer (BIG)\",\"unitCost\":500000,\"discount\":0,\"quantity\":2,\"totalCost\":1000000},{\"id\":\"PJ-39\",\"name\":\"Stand\",\"unitCost\":120000,\"discount\":0,\"quantity\":1,\"totalCost\":120000}]', 'equatorial', 'projects', 'za4', 'masanafu', 'shop', 'za1', 'fullypaid', 'pending', '', 'Lwasa', NULL, 'Reagan Peter', '+256704259828', NULL),
+('5520-11215', '16/07/2023', '[{\"id\":7,\"name\":\"Stevia 100 grams\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000},{\"id\":5,\"name\":\"Avocado Oil\",\"unitCost\":3500,\"discount\":0,\"quantity\":1,\"totalCost\":3500}]', 'equatorial', 'projects', 'za4', 'masanafu', 'shop', 'za1', 'partiallypaid', 'pending', '', 'Zziwa', NULL, 'Raymond', '111-222-333-444', NULL),
+('6717-35126', '7/19/2023', '[{\"id\":\"PJ-26\",\"name\":\"Biomass Dryer (BIG)\",\"unitCost\":500000,\"discount\":0,\"quantity\":1,\"totalCost\":500000},{\"id\":\"PJ-39\",\"name\":\"Stand\",\"unitCost\":120000,\"discount\":0,\"quantity\":1,\"totalCost\":120000}]', 'equatorial', 'projects', 'za4', 'masanafu', 'shop', 'za1', 'fullypaid', 'pending', '', 'Lwasa', NULL, 'Reagan Peter', '+256704259828', NULL),
+('8408-31695', '7/19/2023', '[{\"id\":\"PJ-26\",\"name\":\"Biomass Dryer (BIG)\",\"unitCost\":500000,\"discount\":0,\"quantity\":2,\"totalCost\":1000000},{\"id\":\"PJ-39\",\"name\":\"Stand\",\"unitCost\":120000,\"discount\":0,\"quantity\":1,\"totalCost\":120000}]', 'equatorial', 'projects', 'za4', 'masanafu', 'shop', 'za1', 'partiallypaid', 'pending', '', 'Lwasa', NULL, 'Reagan Peter', '+256704259828', NULL),
+('8690-12685', '17/07/2023', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":40,\"totalCost\":600000}]', 'equatorial', 'projects', 'za4', 'masanafu', 'shop', 'za1', 'fullypaid', 'pending', '', 'sss', NULL, 'aaaa', '1223345', NULL),
+('9973-72674', '16/07/2023', '[{\"id\":7,\"name\":\"Stevia 100 grams\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000}]', 'equatorial', 'projects', 'za4', 'masanafu', 'shop', 'za1', 'fullypaid', 'pending', '', 'Zziwa', NULL, 'Raymond', '111-222-333-444', NULL);
 
 -- --------------------------------------------------------
 
@@ -830,6 +1276,33 @@ INSERT INTO `inventorytransactions` (`id`, `date`, `inventoryname`, `reason`, `a
 ('T-external-supplier-namungoona-166431', '2023-05-15', 'Lavender oil', 'restocking', '', 'external-supplier', 'Sammy', 'namungoona', 'Brenda ', 2, 2, 0, NULL, 'L', 'incoming', 'nakiwalabrenda', '', 'namungoona', 'inventory'),
 ('T-equatorial-namungoona-76343', '2023-05-15', 'Lemon Eucalyptus oil', 'restocking', '', 'equatorial', 'Sammy', 'namungoona', 'Brenda ', 10, 10, 0, NULL, 'L', 'incoming', 'nakiwalabrenda', '', 'namungoona', 'inventory'),
 ('T-external-supplier-masanafu-152504', '2023-06-24', 'Black seeds', 'restocking', '', 'external-supplier', 'Lutalo', 'masanafu', 'Manager', 65.8, 65.8, 0, NULL, 'KG', 'incoming', 'zray', 'manager', 'masanafu', 'production');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `labelledinventorydeliveryrecords`
+--
+
+CREATE TABLE `labelledinventorydeliveryrecords` (
+  `deliveryId` int NOT NULL,
+  `date` varchar(30) NOT NULL,
+  `itemId` int NOT NULL,
+  `deliverynotenumber` varchar(25) NOT NULL,
+  `quantitydelivered` float NOT NULL,
+  `units` varchar(10) NOT NULL,
+  `deliveredto` text NOT NULL,
+  `otherdestinationinfo` text,
+  `notes` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+--
+-- Dumping data for table `labelledinventorydeliveryrecords`
+--
+
+INSERT INTO `labelledinventorydeliveryrecords` (`deliveryId`, `date`, `itemId`, `deliverynotenumber`, `quantitydelivered`, `units`, `deliveredto`, `otherdestinationinfo`, `notes`) VALUES
+(1, '04/08/2023', 2, '120-454', 20, 'Pcs', 'Equatorial Custodian', NULL, 'testing'),
+(2, '04/08/2023', 8, '450-678', 20, 'Pcs', 'Equatorial Custodian', NULL, 'testing again'),
+(3, '04/08/2023', 8, '510-646', 10, 'Pcs', 'Equatorial Custodian', NULL, 'rrrrr');
 
 -- --------------------------------------------------------
 
@@ -1055,7 +1528,8 @@ INSERT INTO `masanafushopexpenditure` (`expenditureid`, `date`, `expenditurecate
 (9, '23/06/2023', 'utilities', 'Water', 'Water bill', 25000, 25000, 0, 'MTN MoMo', 'fully paid', '2023-06-22 23:45:19'),
 (10, '26/06/2023', 'shop equipment', 'Computer Purchase', 'We purchased a mac book pro 2017 for the custodian', 2400000, 2400000, 0, 'Cash', 'fully paid', '2023-06-26 10:30:11'),
 (11, '17/07/2023', 'utilities', 'Yaaka', 'Yaaka testing form dfsdfs', 250000, 200000, 50000, 'MTN MoMo', 'partially paid', '2023-07-17 14:23:43'),
-(12, '17/07/2023', 'utilities', 'dfsdfs', 'dfs', 150000, 50000, 100000, 'MTN MoMo', 'partially paid', '2023-07-17 14:26:00');
+(12, '17/07/2023', 'utilities', 'dfsdfs', 'dfs', 150000, 50000, 100000, 'MTN MoMo', 'partially paid', '2023-07-17 14:26:00'),
+(13, '17/07/2023', 'utilities', 'Yaaka', 'Power for machines', 150000, 100000, 50000, 'Cash', 'partially paid', '2023-07-17 17:46:02');
 
 -- --------------------------------------------------------
 
@@ -1096,11 +1570,11 @@ CREATE TABLE `masanafuShopInventory` (
 --
 
 INSERT INTO `masanafuShopInventory` (`productId`, `quantityinstock`, `munits`) VALUES
-(2, 713, 'Pcs'),
-(1, 346, 'Pcs'),
+(2, 520, 'Pcs'),
+(1, 320, 'Pcs'),
 (6, 409, 'Pcs'),
-(5, 225, 'Pcs'),
-(3, 790, 'Pcs'),
+(5, 193, 'Pcs'),
+(3, 752, 'Pcs'),
 (8, 0, 'Pcs'),
 (10, 30, 'Pcs');
 
@@ -1142,7 +1616,9 @@ INSERT INTO `masanafushopinventoryrecords` (`date`, `recordcategory`, `itemid`, 
 ('21/06/2023', 'outgoing', 8, 4, 'Pcs', 'Equatorial', '', 'They were out of products'),
 ('12/7/2023', 'incoming', 1, 2, 'Pcs', 'custodian', '', ''),
 ('12/07/2023', 'incoming', 10, 35, 'Pcs', 'external', 'Delivered external', ''),
-('12/07/2023', 'outgoing', 10, 5, 'Pcs', 'Equatorial', '', '');
+('12/07/2023', 'outgoing', 10, 5, 'Pcs', 'Equatorial', '', ''),
+('17/07/2023', 'outgoing', 2, 62, 'Pcs', 'external', 'exhibition', ''),
+('17/07/2023', 'outgoing', 2, 50, 'Pcs', 'Equatorial', '', 'requested by shop manager');
 
 -- --------------------------------------------------------
 
@@ -1161,67 +1637,75 @@ CREATE TABLE `masanafuShopSales` (
   `balance` float NOT NULL,
   `paymentStatus` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
   `paymentMethod` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
-  `additionalinfo` text
+  `additionalinfo` text,
+  `transactionID` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
 -- Dumping data for table `masanafuShopSales`
 --
 
-INSERT INTO `masanafuShopSales` (`saleId`, `receiptNumber`, `saleDate`, `customerNames`, `customerContact`, `itemsSold`, `totalAmount`, `balance`, `paymentStatus`, `paymentMethod`, `additionalinfo`) VALUES
-(NULL, '0116-41156', '27/06/2023', 'Nsubuga Raymond', '0775563800', '[{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":1,\"totalCost\":7500}]', 7500, 0, 'fullypaid', 'Cash', ''),
-(NULL, '0321-39203', '27/06/2023', 'Aketch Sonia', '0775563760', '[{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":1,\"totalCost\":7500}]', 7500, 0, 'fullypaid', 'Cash', ''),
-(NULL, '0542-98097', '21/06/2023', 'qqqq aaaaazzz', '123345', '[{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":5,\"totalCost\":25000}]', 25000, 0, 'fullypaid', 'Cash', ''),
-(NULL, '0596-4229', '27/06/2023', 'Ssali Sean Paul', '0775563805', '[{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":1,\"totalCost\":7500}]', 7500, 0, 'fullypaid', 'Cash', ''),
-(NULL, '0824-96361', '27/06/2023', 'scvc sdcvsd', '345', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000}]', 15000, 0, 'fullypaid', 'Cash', ''),
-(NULL, '0977-88268', '22/06/2023', 'cfv vfv', '4536', '[]', 0, 0, 'fullypaid', 'Cash', ''),
-(NULL, '112512', '20/05/2023', 'Zziwa Raymond', '0701303137', '[{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":15,\"totalCost\":75000}]', 75000, 0, 'fullypaid', 'Cash', ''),
-(NULL, '1168972', '21/06/2023', 'Naki Sharon', '0701303137', '[{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":10,\"totalCost\":75000},{\"id\":8,\"name\":\"Collodial Silver 20 mls\",\"unitCost\":2500,\"discount\":0,\"quantity\":10,\"totalCost\":25000}]', 100000, 50000, 'partiallypaid', 'Cash', 'Testing'),
-(0, '139473', '17/05/2023', 'Mukisa Tricia', '0775149572', '[{\"id\":6,\"name\":\"Stevia 50 grams\",\"unitCost\":8000,\"discount\":0,\"quantity\":1,\"totalCost\":8000},{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000},{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":1,\"totalCost\":7500}]', 30500, 0, 'fullypaid', 'Cash', ''),
-(NULL, '1415103', '21/06/2023', 'Naki Sharon', '0701303137', '[{\"id\":8,\"name\":\"Collodial Silver 20 mls\",\"unitCost\":2500,\"discount\":0,\"quantity\":10,\"totalCost\":25000}]', 25000, -25000, 'partiallypaid', 'Cash', ''),
-(NULL, '1590-26995', '21/06/2023', '1 1', '1', '[{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":1,\"totalCost\":5000}]', 5000, 0, 'fullypaid', 'Cash', ''),
-(NULL, '1621171', '15/06/2023', 'Zziwa Raymond', '0701303137', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":50,\"totalCost\":750000}]', 750000, 0, 'fullypaid', 'Cash', ''),
-(NULL, '178566', '27/06/2023', 'Nayiga Carol', '123456789', '[{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":2,\"quantity\":10,\"totalCost\":49000},{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":5,\"quantity\":10,\"totalCost\":142500}]', 191500, 0, 'fullypaid', 'Cash', 'Paying Partially'),
-(NULL, '1883-13434', '27/06/2023', 'Asia Europe', '123456789', '[{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":7,\"totalCost\":52500},{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":3,\"totalCost\":45000}]', 97500, 0, 'fullypaid', 'Cash', ''),
-(NULL, '1935-52439', '21/06/2023', '1 1', '1', '[{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":1,\"totalCost\":5000}]', 5000, 0, 'fullypaid', 'Cash', ''),
-(NULL, '2036-55133', '08/07/2023', 'zz aa', '1234', '[{\"id\":\"S-2\",\"name\":\"Full Body Massage\",\"unitCost\":50000,\"discount\":0,\"quantity\":1,\"totalCost\":50000},{\"id\":\"S-1\",\"name\":\"Foot Massage\",\"unitCost\":25000,\"discount\":0,\"quantity\":1,\"totalCost\":25000},{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000},{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":1,\"totalCost\":7500}]', 97500, 0, 'fullypaid', 'Cash', ''),
-(NULL, '2185-93093', '27/06/2023', 'Nalwadda Leila', '0701303137', '[{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":2,\"totalCost\":15000}]', 15000, 0, 'fullypaid', 'Cash', ''),
-(NULL, '2278-78472', '21/06/2023', 'fdv xc s', '5654', '[{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":12,\"totalCost\":60000}]', 60000, 0, 'fullypaid', 'Cash', ''),
-(NULL, '258494', '01/06/2023', 'Isaac Jjingo', '123456789', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":10,\"totalCost\":150000},{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":10,\"totalCost\":50000}]', 200000, 0, 'fullypaid', 'Cash', 'Fully paid'),
-(NULL, '2864-61038', '27/06/2023', 'Naomi Mary', '0775563805', '[{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":1,\"totalCost\":7500}]', 7500, 0, 'fullypaid', 'Cash', ''),
-(NULL, '2907-30902', '21/06/2023', 'Wakibu Shona', '12345678', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":5,\"totalCost\":75000}]', 75000, 45000, 'partiallypaid', 'Cash', ''),
-(NULL, '2995-54334', '21/06/2023', 'qqq aaa', '324424', '[{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":5,\"totalCost\":25000}]', 25000, 0, 'fullypaid', 'Cash', ''),
-(NULL, '32623', '20/06/2023', 'Zziwa Raymond', '0701303137', '[{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":15,\"totalCost\":75000}]', 75000, 0, 'fullypaid', 'Cash', ''),
-(NULL, '3486-87584', '27/06/2023', 'Nalwadda Leila', '0701303137', '[{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":2,\"totalCost\":15000}]', 15000, 0, 'fullypaid', 'Cash', ''),
-(NULL, '3602-73780', '27/06/2023', 'Kibumba Moses', '0701303137', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":5,\"quantity\":15,\"totalCost\":213750}]', 213750, 0, 'fullypaid', 'Airtel Money', ''),
-(NULL, '3643-1122', '27/06/2023', 'Nalwadda Leila', '0701303137', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000}]', 15000, 0, 'fullypaid', 'Cash', ''),
-(NULL, '3726-5061', '06/07/2023', 'xx xx', '324', '[{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":1,\"totalCost\":7500},{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000}]', 22500, 0, 'fullypaid', 'Cash', ''),
-(NULL, '3736-38282', '21/06/2023', 'Lwasa Peter', '4254354435', '[{\"id\":5,\"name\":\"Avocado Oil\",\"unitCost\":3500,\"discount\":0,\"quantity\":10,\"totalCost\":35000},{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":10,\"totalCost\":75000}]', 110000, 0, 'fullypaid', 'Airtel Money', ''),
-(NULL, '4014-95364', '21/06/2023', 'css zaz', '44', '[{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":1,\"totalCost\":5000}]', 5000, 0, 'fullypaid', 'Cash', ''),
-(NULL, '4094-63412', '27/06/2023', 'Lwasa Reagan', '0701303137', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":2,\"totalCost\":30000}]', 30000, 0, 'fullypaid', 'Cash', ''),
-(NULL, '423926', '21/06/2023', 'Nakigudde Sharon', '0701303137', '[{\"id\":8,\"name\":\"Collodial Silver 20 mls\",\"unitCost\":2500,\"discount\":0,\"quantity\":10,\"totalCost\":25000}]', 25000, 15000, 'partiallypaid', 'Cash', ''),
-(NULL, '4293-43481', '06/07/2023', 'Test22 Test22', '12345', '[{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":1,\"totalCost\":7500}]', 7500, 0, 'fullypaid', 'Cash', ''),
-(NULL, '4301-33254', '21/06/2023', 'Lemi Sharon', '0701303137', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":10,\"totalCost\":150000},{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":10,\"totalCost\":50000}]', 200000, 50000, 'partiallypaid', 'MTN MoMo', ''),
-(NULL, '4361-36890', '27/06/2023', 'test45 das', '1234567', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000}]', 15000, 0, 'fullypaid', 'Cash', ''),
-(0, '436517', '17/06/2023', 'John Aduman', '0701303137', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":2,\"totalCost\":30000},{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":5,\"totalCost\":25000},{\"id\":6,\"name\":\"Stevia 50 grams\",\"unitCost\":8000,\"discount\":0,\"quantity\":10,\"totalCost\":80000}]', 135000, 0, 'fullypaid', 'Cash', ''),
-(NULL, '4534-88847', '27/06/2023', 'Lwasa Reagan', '0701303137', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":2,\"totalCost\":30000}]', 30000, 0, 'fullypaid', 'Cash', ''),
-(NULL, '475704', '19/06/2023', 'Makubuya Moses', '0701303137', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":5,\"totalCost\":75000},{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":16,\"totalCost\":80000}]', 155000, 0, 'fullypaid', 'Prof MM', 'Partially Paid'),
-(NULL, '5226-77067', '08/07/2023', 'zz aa', '1234', '[{\"id\":\"S-2\",\"name\":\"Full Body Massage\",\"unitCost\":50000,\"discount\":0,\"quantity\":1,\"totalCost\":50000},{\"id\":\"S-1\",\"name\":\"Foot Massage\",\"unitCost\":25000,\"discount\":0,\"quantity\":1,\"totalCost\":25000},{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000},{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":1,\"totalCost\":7500}]', 97500, 0, 'fullypaid', 'Cash', ''),
-(NULL, '5271-31026', '21/06/2023', 'zzzzzzz ssssss', '12345678', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":5,\"totalCost\":75000}]', 75000, 0, 'fullypaid', 'Cash', ''),
-(NULL, '5371-14626', '21/06/2023', 'zz aa', '324', '[{\"id\":8,\"name\":\"Collodial Silver 20 mls\",\"unitCost\":2500,\"discount\":0,\"quantity\":1,\"totalCost\":2500}]', 2500, 0, 'fullypaid', 'Cash', ''),
-(NULL, '5373-30738', '27/06/2023', 'test tester', '0701393137', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000}]', 15000, 0, 'fullypaid', 'Cash', ''),
-(NULL, '5579-61061', '23/06/2023', 'Zziwa Raymond', '1234567', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":5,\"totalCost\":75000},{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":5,\"totalCost\":37500}]', 112500, 0, 'fullypaid', 'Cash', 'New Sale'),
-(0, '706427', '2/06/2023', 'Mwesigwa Joseph', '0701303137', '[{\"id\":6,\"name\":\"Stevia 50 grams\",\"unitCost\":8000,\"discount\":0,\"quantity\":15,\"totalCost\":120000},{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":20,\"totalCost\":100000}]', 220000, 0, 'fullypaid', 'Prof MM', ''),
-(NULL, '7649-83257', '27/06/2023', 'Aketch Sonia', '0701303133', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000},{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":1,\"totalCost\":7500}]', 22500, 0, 'fullypaid', 'Cash', ''),
-(NULL, '7652-84744', '21/06/2023', 'aaaa zzzzz', '1234567', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":5,\"totalCost\":75000}]', 75000, 0, 'fullypaid', 'Cash', ''),
-(NULL, '8074-68501', '27/06/2023', 'Adut Mary', '0775563805', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000}]', 15000, 0, 'fullypaid', 'Cash', ''),
-(0, '857015', '9/06/2023', 'Mwesigwa Joseph', '0701303137', '[{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":2,\"totalCost\":15000},{\"id\":6,\"name\":\"Stevia 50 grams\",\"unitCost\":8000,\"discount\":0,\"quantity\":15,\"totalCost\":120000},{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":20,\"totalCost\":100000},{\"id\":5,\"name\":\"Avocado Oil\",\"unitCost\":3500,\"discount\":0,\"quantity\":10,\"totalCost\":35000}]', 270000, 30000, 'partiallypaid', 'Cash', ''),
-(NULL, '8647-81105', '21/06/2023', 'qqq aaa', '324424', '[{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":5,\"totalCost\":25000}]', 25000, 0, 'fullypaid', 'Cash', ''),
-(NULL, '9001-58735', '27/06/2023', 'Qaz Zaq', '0775149572', '[{\"id\":5,\"name\":\"Avocado Oil\",\"unitCost\":3500,\"discount\":0,\"quantity\":5,\"totalCost\":17500},{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":5,\"totalCost\":37500}]', 55000, 0, 'fullypaid', 'MTN MoMo', ''),
-(NULL, '9112-59252', '27/06/2023', 'Asia Europe', '123456789', '[{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":7,\"totalCost\":52500},{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":3,\"totalCost\":45000}]', 97500, 0, 'fullypaid', 'Cash', ''),
-(NULL, '9199-21293', '21/06/2023', 'Wakibu Peter', '12345678', '[{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":5,\"totalCost\":25000},{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":5,\"totalCost\":75000}]', 100000, 0, 'fullypaid', 'Cash', ''),
-(NULL, '9866-23093', '21/06/2023', 'nnnnnnn lala', '12345678', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":10,\"totalCost\":150000}]', 150000, 30000, 'partiallypaid', 'Cash', ''),
-(NULL, '9933-76973', '21/06/2023', 'Naki Sharon', '0701303137', '[{\"id\":8,\"name\":\"Collodial Silver 20 mls\",\"unitCost\":2500,\"discount\":0,\"quantity\":5,\"totalCost\":12500}]', 12500, 0, 'fullypaid', 'MTN MoMo', '');
+INSERT INTO `masanafuShopSales` (`saleId`, `receiptNumber`, `saleDate`, `customerNames`, `customerContact`, `itemsSold`, `totalAmount`, `balance`, `paymentStatus`, `paymentMethod`, `additionalinfo`, `transactionID`) VALUES
+(NULL, '0116-41156', '27/06/2023', 'Nsubuga Raymond', '0775563800', '[{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":1,\"totalCost\":7500}]', 7500, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '0321-39203', '27/06/2023', 'Aketch Sonia', '0775563760', '[{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":1,\"totalCost\":7500}]', 7500, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '0486-29236', '7/18/2023', 'Zziwa Raymond', '0783765062', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":2,\"quantity\":2,\"totalCost\":29400},{\"id\":5,\"name\":\"Avocado Oil\",\"unitCost\":3500,\"discount\":1,\"quantity\":2,\"totalCost\":6930},{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":3,\"quantity\":2,\"totalCost\":9700}]', 46030, 34030, 'partiallypaid', 'Cash', '', NULL),
+(NULL, '0542-98097', '21/06/2023', 'qqqq aaaaazzz', '123345', '[{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":5,\"totalCost\":25000}]', 25000, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '0596-4229', '27/06/2023', 'Ssali Sean Paul', '0775563805', '[{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":1,\"totalCost\":7500}]', 7500, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '0731-64378', '17/07/2023', 'James Owori', '111-222-333', '[{\"id\":5,\"name\":\"Avocado Oil\",\"unitCost\":3500,\"discount\":5,\"quantity\":15,\"totalCost\":49875},{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":5,\"totalCost\":37500}]', 87375, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '0824-96361', '27/06/2023', 'scvc sdcvsd', '345', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000}]', 15000, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '0977-88268', '22/06/2023', 'cfv vfv', '4536', '[]', 0, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '112512', '20/05/2023', 'Zziwa Raymond', '0701303137', '[{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":15,\"totalCost\":75000}]', 75000, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '1168972', '21/06/2023', 'Naki Sharon', '0701303137', '[{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":10,\"totalCost\":75000},{\"id\":8,\"name\":\"Collodial Silver 20 mls\",\"unitCost\":2500,\"discount\":0,\"quantity\":10,\"totalCost\":25000}]', 100000, 50000, 'partiallypaid', 'Cash', 'Testing', NULL),
+(0, '139473', '17/05/2023', 'Mukisa Tricia', '0775149572', '[{\"id\":6,\"name\":\"Stevia 50 grams\",\"unitCost\":8000,\"discount\":0,\"quantity\":1,\"totalCost\":8000},{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000},{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":1,\"totalCost\":7500}]', 30500, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '1415103', '21/06/2023', 'Naki Sharon', '0701303137', '[{\"id\":8,\"name\":\"Collodial Silver 20 mls\",\"unitCost\":2500,\"discount\":0,\"quantity\":10,\"totalCost\":25000}]', 25000, -25000, 'partiallypaid', 'Cash', '', NULL),
+(NULL, '1590-26995', '21/06/2023', '1 1', '1', '[{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":1,\"totalCost\":5000}]', 5000, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '1621171', '15/06/2023', 'Zziwa Raymond', '0701303137', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":50,\"totalCost\":750000}]', 750000, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '178566', '27/06/2023', 'Nayiga Carol', '123456789', '[{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":2,\"quantity\":10,\"totalCost\":49000},{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":5,\"quantity\":10,\"totalCost\":142500}]', 191500, 0, 'fullypaid', 'Cash', 'Paying Partially', NULL),
+(NULL, '1883-13434', '27/06/2023', 'Asia Europe', '123456789', '[{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":7,\"totalCost\":52500},{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":3,\"totalCost\":45000}]', 97500, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '1935-52439', '21/06/2023', '1 1', '1', '[{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":1,\"totalCost\":5000}]', 5000, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '2036-55133', '08/07/2023', 'zz aa', '1234', '[{\"id\":\"S-2\",\"name\":\"Full Body Massage\",\"unitCost\":50000,\"discount\":0,\"quantity\":1,\"totalCost\":50000},{\"id\":\"S-1\",\"name\":\"Foot Massage\",\"unitCost\":25000,\"discount\":0,\"quantity\":1,\"totalCost\":25000},{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000},{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":1,\"totalCost\":7500}]', 97500, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '2185-93093', '27/06/2023', 'Nalwadda Leila', '0701303137', '[{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":2,\"totalCost\":15000}]', 15000, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '2278-78472', '21/06/2023', 'fdv xc s', '5654', '[{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":12,\"totalCost\":60000}]', 60000, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '2341-34281', '17/07/2023', 'James Peter', '111-222-233', '[{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":20,\"totalCost\":150000},{\"id\":5,\"name\":\"Avocado Oil\",\"unitCost\":3500,\"discount\":0,\"quantity\":15,\"totalCost\":52500}]', 202500, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '258494', '01/06/2023', 'Isaac Jjingo', '123456789', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":10,\"totalCost\":150000},{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":10,\"totalCost\":50000}]', 200000, 0, 'fullypaid', 'Cash', 'Fully paid', NULL),
+(NULL, '2864-61038', '27/06/2023', 'Naomi Mary', '0775563805', '[{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":1,\"totalCost\":7500}]', 7500, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '2907-30902', '21/06/2023', 'Wakibu Shona', '12345678', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":5,\"totalCost\":75000}]', 75000, 45000, 'partiallypaid', 'Cash', '', NULL),
+(NULL, '2995-54334', '21/06/2023', 'qqq aaa', '324424', '[{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":5,\"totalCost\":25000}]', 25000, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '32623', '20/06/2023', 'Zziwa Raymond', '0701303137', '[{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":15,\"totalCost\":75000}]', 75000, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '3376-177', '17/07/2023', 'prof test', '111-222-333', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000},{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":1,\"totalCost\":5000}]', 20000, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '3486-87584', '27/06/2023', 'Nalwadda Leila', '0701303137', '[{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":2,\"totalCost\":15000}]', 15000, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '3602-73780', '27/06/2023', 'Kibumba Moses', '0701303137', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":5,\"quantity\":15,\"totalCost\":213750}]', 213750, 0, 'fullypaid', 'Airtel Money', '', NULL),
+(NULL, '3643-1122', '27/06/2023', 'Nalwadda Leila', '0701303137', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000}]', 15000, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '3726-5061', '06/07/2023', 'xx xx', '324', '[{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":1,\"totalCost\":7500},{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000}]', 22500, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '3736-38282', '21/06/2023', 'Lwasa Peter', '4254354435', '[{\"id\":5,\"name\":\"Avocado Oil\",\"unitCost\":3500,\"discount\":0,\"quantity\":10,\"totalCost\":35000},{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":10,\"totalCost\":75000}]', 110000, 0, 'fullypaid', 'Airtel Money', '', NULL),
+(NULL, '4014-95364', '21/06/2023', 'css zaz', '44', '[{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":1,\"totalCost\":5000}]', 5000, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '4094-63412', '27/06/2023', 'Lwasa Reagan', '0701303137', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":2,\"totalCost\":30000}]', 30000, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '423926', '21/06/2023', 'Nakigudde Sharon', '0701303137', '[{\"id\":8,\"name\":\"Collodial Silver 20 mls\",\"unitCost\":2500,\"discount\":0,\"quantity\":10,\"totalCost\":25000}]', 25000, 15000, 'partiallypaid', 'Cash', '', NULL),
+(NULL, '4293-43481', '06/07/2023', 'Test22 Test22', '12345', '[{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":1,\"totalCost\":7500}]', 7500, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '4301-33254', '21/06/2023', 'Lemi Sharon', '0701303137', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":10,\"totalCost\":150000},{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":10,\"totalCost\":50000}]', 200000, 50000, 'partiallypaid', 'MTN MoMo', '', NULL),
+(NULL, '4361-36890', '27/06/2023', 'test45 das', '1234567', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000}]', 15000, 0, 'fullypaid', 'Cash', '', NULL),
+(0, '436517', '17/06/2023', 'John Aduman', '0701303137', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":2,\"totalCost\":30000},{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":5,\"totalCost\":25000},{\"id\":6,\"name\":\"Stevia 50 grams\",\"unitCost\":8000,\"discount\":0,\"quantity\":10,\"totalCost\":80000}]', 135000, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '4534-88847', '27/06/2023', 'Lwasa Reagan', '0701303137', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":2,\"totalCost\":30000}]', 30000, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '475704', '19/06/2023', 'Makubuya Moses', '0701303137', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":5,\"totalCost\":75000},{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":16,\"totalCost\":80000}]', 155000, 0, 'fullypaid', 'Prof MM', 'Partially Paid', NULL),
+(NULL, '5226-77067', '08/07/2023', 'zz aa', '1234', '[{\"id\":\"S-2\",\"name\":\"Full Body Massage\",\"unitCost\":50000,\"discount\":0,\"quantity\":1,\"totalCost\":50000},{\"id\":\"S-1\",\"name\":\"Foot Massage\",\"unitCost\":25000,\"discount\":0,\"quantity\":1,\"totalCost\":25000},{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000},{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":1,\"totalCost\":7500}]', 97500, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '5271-31026', '21/06/2023', 'zzzzzzz ssssss', '12345678', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":5,\"totalCost\":75000}]', 75000, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '5287-92060', '7/19/2023', 'Lwasa Reagan Peter', '+256704259828', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":2,\"quantity\":12,\"totalCost\":176400},{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":2,\"quantity\":10,\"totalCost\":49000},{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":2,\"quantity\":12,\"totalCost\":88200}]', 313600, 63600, 'partiallypaid', 'Visa', '', NULL),
+(NULL, '5371-14626', '21/06/2023', 'zz aa', '324', '[{\"id\":8,\"name\":\"Collodial Silver 20 mls\",\"unitCost\":2500,\"discount\":0,\"quantity\":1,\"totalCost\":2500}]', 2500, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '5373-30738', '27/06/2023', 'test tester', '0701393137', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000}]', 15000, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '5579-61061', '23/06/2023', 'Zziwa Raymond', '1234567', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":5,\"totalCost\":75000},{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":5,\"totalCost\":37500}]', 112500, 0, 'fullypaid', 'Cash', 'New Sale', NULL),
+(0, '706427', '2/06/2023', 'Mwesigwa Joseph', '0701303137', '[{\"id\":6,\"name\":\"Stevia 50 grams\",\"unitCost\":8000,\"discount\":0,\"quantity\":15,\"totalCost\":120000},{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":20,\"totalCost\":100000}]', 220000, 0, 'fullypaid', 'Prof MM', '', NULL),
+(NULL, '7649-83257', '27/06/2023', 'Aketch Sonia', '0701303133', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000},{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":1,\"totalCost\":7500}]', 22500, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '7652-84744', '21/06/2023', 'aaaa zzzzz', '1234567', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":5,\"totalCost\":75000}]', 75000, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '8074-68501', '27/06/2023', 'Adut Mary', '0775563805', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":1,\"totalCost\":15000}]', 15000, 0, 'fullypaid', 'Cash', '', NULL),
+(0, '857015', '9/06/2023', 'Mwesigwa Joseph', '0701303137', '[{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":2,\"totalCost\":15000},{\"id\":6,\"name\":\"Stevia 50 grams\",\"unitCost\":8000,\"discount\":0,\"quantity\":15,\"totalCost\":120000},{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":20,\"totalCost\":100000},{\"id\":5,\"name\":\"Avocado Oil\",\"unitCost\":3500,\"discount\":0,\"quantity\":10,\"totalCost\":35000}]', 270000, 30000, 'partiallypaid', 'Cash', '', NULL),
+(NULL, '8647-81105', '21/06/2023', 'qqq aaa', '324424', '[{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":5,\"totalCost\":25000}]', 25000, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '8842-15582', '7/18/2023', 'Lwasa Reagan Peter', '+256704259828', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":15,\"totalCost\":225000},{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":12,\"totalCost\":60000}]', 285000, 0, 'fullypaid', 'Cash', 'Testing printer', NULL),
+(NULL, '9001-58735', '27/06/2023', 'Qaz Zaq', '0775149572', '[{\"id\":5,\"name\":\"Avocado Oil\",\"unitCost\":3500,\"discount\":0,\"quantity\":5,\"totalCost\":17500},{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":5,\"totalCost\":37500}]', 55000, 0, 'fullypaid', 'MTN MoMo', '', NULL),
+(NULL, '9112-59252', '27/06/2023', 'Asia Europe', '123456789', '[{\"id\":3,\"name\":\"Ginger 50 grams\",\"unitCost\":7500,\"discount\":0,\"quantity\":7,\"totalCost\":52500},{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":3,\"totalCost\":45000}]', 97500, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '9199-21293', '21/06/2023', 'Wakibu Peter', '12345678', '[{\"id\":1,\"name\":\"Cedar\",\"unitCost\":5000,\"discount\":0,\"quantity\":5,\"totalCost\":25000},{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":5,\"totalCost\":75000}]', 100000, 0, 'fullypaid', 'Cash', '', NULL),
+(NULL, '9366-52285', '17/07/2023', 'Prof Test 22', '444-555-666', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":10,\"quantity\":50,\"totalCost\":675000}]', 675000, 375000, 'partiallypaid', 'Cash', '', NULL),
+(NULL, '9866-23093', '21/06/2023', 'nnnnnnn lala', '12345678', '[{\"id\":2,\"name\":\"Levanda Oil 20 mls\",\"unitCost\":15000,\"discount\":0,\"quantity\":10,\"totalCost\":150000}]', 150000, 30000, 'partiallypaid', 'Cash', '', NULL),
+(NULL, '9933-76973', '21/06/2023', 'Naki Sharon', '0701303137', '[{\"id\":8,\"name\":\"Collodial Silver 20 mls\",\"unitCost\":2500,\"discount\":0,\"quantity\":5,\"totalCost\":12500}]', 12500, 0, 'fullypaid', 'MTN MoMo', '', NULL);
 
 -- --------------------------------------------------------
 
@@ -1276,6 +1760,7 @@ CREATE TABLE `massageServices` (
 INSERT INTO `massageServices` (`productId`, `productName`, `unitPrice`, `discount`) VALUES
 ('S-1', 'Foot Massage', 25000, 0),
 ('S-2', 'Full Body Massage', 50000, 0),
+('S-24', 'Nuru Massage', 50000, 0),
 ('S-93', 'Head Massage', 35000, 0);
 
 -- --------------------------------------------------------
@@ -1322,7 +1807,7 @@ CREATE TABLE `mgeneralstore` (
 --
 
 INSERT INTO `mgeneralstore` (`name`, `quantityinstock`, `measurementunits`) VALUES
-('Black seeds', 12, 'KG');
+('Black seeds', 7, 'KG');
 
 -- --------------------------------------------------------
 
@@ -1469,6 +1954,7 @@ CREATE TABLE `ProjectsItems` (
 
 INSERT INTO `ProjectsItems` (`productId`, `productName`, `unitPrice`, `discount`) VALUES
 ('PJ-26', 'Biomass Dryer (BIG)', 500000, 0),
+('PJ-38', 'Blowers (SMALL)', 35000, 0),
 ('PJ-39', 'Stand', 120000, 0),
 ('PJ-97', 'Biomass Dryer (SMALL)', 250000, 0);
 
@@ -1646,6 +2132,79 @@ INSERT INTO `store` (`name`, `quantityinstock`, `measurementunits`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `supplierpaymentrecords`
+--
+
+CREATE TABLE `supplierpaymentrecords` (
+  `paymentDate` varchar(30) NOT NULL,
+  `supplyId` varchar(15) NOT NULL,
+  `itemName` text,
+  `Quantity` float DEFAULT NULL,
+  `Units` varchar(10) DEFAULT NULL,
+  `amountPaid` float NOT NULL,
+  `paymentmethod` text NOT NULL,
+  `transactionId` varchar(20) DEFAULT NULL,
+  `chequenumber` varchar(50) DEFAULT NULL,
+  `PaidBy` text NOT NULL,
+  `notes` text
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+--
+-- Dumping data for table `supplierpaymentrecords`
+--
+
+INSERT INTO `supplierpaymentrecords` (`paymentDate`, `supplyId`, `itemName`, `Quantity`, `Units`, `amountPaid`, `paymentmethod`, `transactionId`, `chequenumber`, `PaidBy`, `notes`) VALUES
+('29/07/2023, 00:40:34', 'SP-12', NULL, NULL, NULL, 20000, 'Cash', NULL, NULL, 'Bridget', 'Testing Form once'),
+('29/07/2023, 00:41:49', 'SP-12', NULL, NULL, NULL, 62000, 'cheque', NULL, '534654365536346', 'Prof', 'Testing Again'),
+('29/07/2023, 00:42:22', 'SP-28', NULL, NULL, NULL, 100000, 'Cash', NULL, NULL, 'Bridget', 'Testing form twice'),
+('29/07/2023, 01:14:24', 'SP-12', NULL, NULL, NULL, 50000, 'cheque', NULL, '3753254767652', 'Prof', ''),
+('13/08/2023, 12:49:21', 'SP-8', NULL, NULL, NULL, 50000, 'Airtel Money', '4856245872520', NULL, 'Bridget', 'Testing Supplier Payment Form'),
+('13/08/2023, 14:09:35', 'SP-12', NULL, NULL, NULL, 1500000, '', NULL, NULL, '', ''),
+('13/08/2023, 14:52:06', 'SP-12', NULL, NULL, NULL, 50000, 'Cash', NULL, NULL, 'Bridget', 'Test 11'),
+('13/08/2023, 15:07:09', 'SP-12', NULL, NULL, NULL, 0, '', NULL, NULL, '', ''),
+('13/08/2023, 19:10:59', 'SP-12', 'PJ-38', 5, 'Pcs', 175000, '', NULL, NULL, 'Prof', 'Testing Item Form'),
+('13/08/2023, 19:37:19', 'SP-12', 'Levanda Oil 20 mls', 3, 'Pcs', 0, '', NULL, NULL, 'Bridget', 'RRRR'),
+('13/08/2023, 19:50:32', 'SP-12', '4', 4, '', 14000, '', NULL, NULL, 'Bridget', 'Testing'),
+('13/08/2023, 20:15:33', 'SP-12', NULL, 2, 'Pcs', 16000, '', NULL, NULL, 'Bridget', 'YY Form'),
+('13/08/2023, 20:17:52', 'SP-12', 'Levanda Oil 20 mls', 2, 'Pcs', 30000, '', NULL, NULL, 'Bridget', 'QQ Form Testing');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `suppliers`
+--
+
+CREATE TABLE `suppliers` (
+  `supplyId` varchar(10) NOT NULL,
+  `suppliernames` text NOT NULL,
+  `supplydate` varchar(30) NOT NULL,
+  `branchsupplied` text NOT NULL,
+  `itemssupplied` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+  `quantitysupplied` float NOT NULL,
+  `units` varchar(30) NOT NULL,
+  `totalsupplycost` float NOT NULL,
+  `balance` float NOT NULL,
+  `paymentmethod` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci,
+  `paymentstatus` text NOT NULL,
+  `transactionId` varchar(20) DEFAULT NULL,
+  `chequenumber` varchar(50) DEFAULT NULL,
+  `receivedBy` text NOT NULL,
+  `notes` text
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+--
+-- Dumping data for table `suppliers`
+--
+
+INSERT INTO `suppliers` (`supplyId`, `suppliernames`, `supplydate`, `branchsupplied`, `itemssupplied`, `quantitysupplied`, `units`, `totalsupplycost`, `balance`, `paymentmethod`, `paymentstatus`, `transactionId`, `chequenumber`, `receivedBy`, `notes`) VALUES
+('SP-12', 'xxx zzz aaa', '12/07/2023', 'masanafu', 'cedar', 32, 'KG', 400000, 93000, NULL, 'partially paid', NULL, NULL, 'Gloria', 'test'),
+('SP-28', 'ZZIWA RAYMOND IAN', '28/07/2023, 23:30:00', 'namungoona', 'Levanda Oil', 25, 'L', 250000, 150000, 'Cash', 'partially paid', NULL, NULL, 'Brenda', ''),
+('SP-38', 'LWASA  REAGAN', '28/07/2023, 23:31:06', 'namungoona', 'Avocado Oil', 12, 'L', 75000, 55000, 'MTN MoMo', 'partially Paid', '85693475682451', NULL, 'Brenda', 'Test'),
+('SP-8', 'ZZIWA RAYMOND IAN', '13/08/2023, 12:11:56', 'namungoona', 'Levandah Oil', 56, 'L', 560000, 260000, 'Cash', 'partially paid', NULL, NULL, 'Brenda', 'Testing Form');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -1679,6 +2238,9 @@ INSERT INTO `users` (`username`, `firstname`, `lastname`, `branch`, `department`
 ('za3', 'zziwa', 'raymond', 'equatorial', 'shop', 'equatorialshopmanager', '2001-07-02', '0701303137', 'ee@gmail.com', 'Male', '7-07-2023', '$2a$10$TvfDqyy3qAPoN5.pvesbqOykXx.RX2.bgb0wRElBU2GfV33WzLA6a'),
 ('za4', 'Zziwa', 'Raymond', 'equatorial', 'projects', 'equatorialprojectsmanager', '2001-07-02', '0775149572', 'raymondzian@gmail.com', 'Male', '7-07-2023', '$2a$10$TvfDqyy3qAPoN5.pvesbqOykXx.RX2.bgb0wRElBU2GfV33WzLA6a'),
 ('za5', 'Zziwa', 'Raymond Ian', 'equatorial', 'labelling', 'supervisor', '02-07-2001', '0701303137', 'raymondzian@gmail.com', 'Male', '7-02-2023', '$2a$10$TvfDqyy3qAPoN5.pvesbqOykXx.RX2.bgb0wRElBU2GfV33WzLA6a'),
+('za6', 'zz', 'rr', 'equatorial', 'shop', 'equatorialinventorycustodian', '2001-07-02', '0775149572', 'raymondzian@gmial.ocm', 'male', '2023-08-1', '$2a$10$TvfDqyy3qAPoN5.pvesbqOykXx.RX2.bgb0wRElBU2GfV33WzLA6a'),
+('za7', 'aa', 'qq', 'equatorial', 'shop', 'equatorialdebtmanager', '2001-07-02', '0775149572', 'qq@gmail.com', 'male', '2023-08-1', '$2a$10$TvfDqyy3qAPoN5.pvesbqOykXx.RX2.bgb0wRElBU2GfV33WzLA6a'),
+('za8', 'zz', 'rr', 'equatorial', 'labelling', 'equatoriallabellingmanager', '2001-07-02', '0775149572', 'raymondzian@gmial.ocm', 'male', '2023-08-1', '$2a$10$TvfDqyy3qAPoN5.pvesbqOykXx.RX2.bgb0wRElBU2GfV33WzLA6a'),
 ('zaz', 'zaz', 'zaz', 'masanafu', 'projects', 'projectsmanager', '2001-07-02', '0775563805', 'raymondzian@gmail.com', 'male', '2023-05-18', '$2a$10$TvfDqyy3qAPoN5.pvesbqOykXx.RX2.bgb0wRElBU2GfV33WzLA6a'),
 ('zray', 'Zziwa', 'Raymond ', 'masanafu', 'production', 'manager', '2001-07-02', '0779632420', 'raymondzian@gmail.com', 'Male', '2023-03-06 10:44:00.779', '$2a$10$TvfDqyy3qAPoN5.pvesbqOykXx.RX2.bgb0wRElBU2GfV33WzLA6a'),
 ('zray1', 'zziwa', 'raymond', 'masanafu', 'farm', 'farmmanager', '02-07-2001', '0775149572', 'raymondzian@gmail.com', 'female', '9-05-2023', '$2a$10$TvfDqyy3qAPoN5.pvesbqOykXx.RX2.bgb0wRElBU2GfV33WzLA6a');
@@ -1720,6 +2282,19 @@ ALTER TABLE `chickenbatchmortalities`
   ADD KEY `batchnumber` (`batchnumber`);
 
 --
+-- Indexes for table `clientprojectorders`
+--
+ALTER TABLE `clientprojectorders`
+  ADD PRIMARY KEY (`orderId`),
+  ADD KEY `itemname` (`itemname`);
+
+--
+-- Indexes for table `clientprojectspayments`
+--
+ALTER TABLE `clientprojectspayments`
+  ADD KEY `supplyId` (`orderId`);
+
+--
 -- Indexes for table `departments`
 --
 ALTER TABLE `departments`
@@ -1733,11 +2308,50 @@ ALTER TABLE `eggproductionrecords`
   ADD KEY `batchnumber` (`batchnumber`);
 
 --
+-- Indexes for table `equatorialcustodianreleasedinventory`
+--
+ALTER TABLE `equatorialcustodianreleasedinventory`
+  ADD PRIMARY KEY (`releaseId`),
+  ADD KEY `itemreleasedId` (`itemreleasedId`);
+
+--
 -- Indexes for table `equatorialexpensesreceipts`
 --
 ALTER TABLE `equatorialexpensesreceipts`
   ADD KEY `expenditureid` (`expenditureid`),
   ADD KEY `expenditureid_2` (`expenditureid`);
+
+--
+-- Indexes for table `equatorialgeneralstoreinventory`
+--
+ALTER TABLE `equatorialgeneralstoreinventory`
+  ADD KEY `productId` (`productId`);
+
+--
+-- Indexes for table `equatorialgeneralstorerestockrecords`
+--
+ALTER TABLE `equatorialgeneralstorerestockrecords`
+  ADD KEY `itemid` (`itemid`);
+
+--
+-- Indexes for table `equatoriallabellingdailyoutput`
+--
+ALTER TABLE `equatoriallabellingdailyoutput`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `itemid` (`itemid`);
+
+--
+-- Indexes for table `equatoriallabellinginventory`
+--
+ALTER TABLE `equatoriallabellinginventory`
+  ADD KEY `productId` (`itemid`);
+
+--
+-- Indexes for table `equatoriallabellinginventoryrecords`
+--
+ALTER TABLE `equatoriallabellinginventoryrecords`
+  ADD PRIMARY KEY (`restockId`),
+  ADD KEY `itemId` (`itemId`);
 
 --
 -- Indexes for table `equatorialMassageInventory`
@@ -1752,6 +2366,12 @@ ALTER TABLE `equatorialmassageinventoryrecords`
   ADD KEY `itemid` (`itemid`);
 
 --
+-- Indexes for table `equatorialmassagemoneysubmission`
+--
+ALTER TABLE `equatorialmassagemoneysubmission`
+  ADD PRIMARY KEY (`submissionId`);
+
+--
 -- Indexes for table `equatorialMassageSales`
 --
 ALTER TABLE `equatorialMassageSales`
@@ -1763,6 +2383,33 @@ ALTER TABLE `equatorialMassageSales`
 ALTER TABLE `equatorialmassagesalespayments`
   ADD KEY `receiptNumber` (`receiptNumber`),
   ADD KEY `receiptNumber_2` (`receiptNumber`);
+
+--
+-- Indexes for table `equatorialMassageServicesRecords`
+--
+ALTER TABLE `equatorialMassageServicesRecords`
+  ADD PRIMARY KEY (`receiptNumber`);
+
+--
+-- Indexes for table `equatorialmassagesubscriptions`
+--
+ALTER TABLE `equatorialmassagesubscriptions`
+  ADD PRIMARY KEY (`subscriptionId`);
+
+--
+-- Indexes for table `equatorialmassagesubscriptionusage`
+--
+ALTER TABLE `equatorialmassagesubscriptionusage`
+  ADD KEY `subscriptionId` (`subscriptionId`,`serviceOfferedId`),
+  ADD KEY `serviceOfferedId` (`serviceOfferedId`);
+
+--
+-- Indexes for table `equatorialncts`
+--
+ALTER TABLE `equatorialncts`
+  ADD PRIMARY KEY (`transactionId`),
+  ADD KEY `iteminid` (`iteminid`,`itemoutid`),
+  ADD KEY `itemoutid` (`itemoutid`);
 
 --
 -- Indexes for table `equatorialprojectsclientpaymentplans`
@@ -1831,7 +2478,27 @@ ALTER TABLE `equatorialShopSales`
 --
 ALTER TABLE `equatorialshopsalespayments`
   ADD KEY `receiptNumber` (`receiptNumber`),
-  ADD KEY `receiptNumber_2` (`receiptNumber`);
+  ADD KEY `receiptNumber_2` (`receiptNumber`),
+  ADD KEY `itemin` (`itemin`);
+
+--
+-- Indexes for table `exhibitionincome`
+--
+ALTER TABLE `exhibitionincome`
+  ADD KEY `exhibitionId` (`exhibitionId`);
+
+--
+-- Indexes for table `exhibitions`
+--
+ALTER TABLE `exhibitions`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `exhibitionsales`
+--
+ALTER TABLE `exhibitionsales`
+  ADD PRIMARY KEY (`receiptNumber`),
+  ADD KEY `exhibitionId` (`exhibitionId`);
 
 --
 -- Indexes for table `expensesreceipts`
@@ -1871,6 +2538,13 @@ ALTER TABLE `inventorytransactions`
   ADD KEY `inventoryname` (`inventoryname`),
   ADD KEY `recievedby` (`recievedby`),
   ADD KEY `broughtby` (`broughtby`);
+
+--
+-- Indexes for table `labelledinventorydeliveryrecords`
+--
+ALTER TABLE `labelledinventorydeliveryrecords`
+  ADD PRIMARY KEY (`deliveryId`),
+  ADD KEY `itemId` (`itemId`);
 
 --
 -- Indexes for table `machinery`
@@ -2051,6 +2725,18 @@ ALTER TABLE `store`
   ADD KEY `name` (`name`);
 
 --
+-- Indexes for table `supplierpaymentrecords`
+--
+ALTER TABLE `supplierpaymentrecords`
+  ADD KEY `supplyId` (`supplyId`);
+
+--
+-- Indexes for table `suppliers`
+--
+ALTER TABLE `suppliers`
+  ADD PRIMARY KEY (`supplyId`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -2062,10 +2748,40 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `equatorialcustodianreleasedinventory`
+--
+ALTER TABLE `equatorialcustodianreleasedinventory`
+  MODIFY `releaseId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `equatoriallabellingdailyoutput`
+--
+ALTER TABLE `equatoriallabellingdailyoutput`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `equatorialncts`
+--
+ALTER TABLE `equatorialncts`
+  MODIFY `transactionId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
 -- AUTO_INCREMENT for table `equatorialshopexpenditure`
 --
 ALTER TABLE `equatorialshopexpenditure`
   MODIFY `expenditureid` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `exhibitions`
+--
+ALTER TABLE `exhibitions`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `labelledinventorydeliveryrecords`
+--
+ALTER TABLE `labelledinventorydeliveryrecords`
+  MODIFY `deliveryId` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `machinery`
@@ -2089,7 +2805,7 @@ ALTER TABLE `masanafuchickenmedicine`
 -- AUTO_INCREMENT for table `masanafushopexpenditure`
 --
 ALTER TABLE `masanafushopexpenditure`
-  MODIFY `expenditureid` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `expenditureid` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `materials`
@@ -2140,6 +2856,18 @@ ALTER TABLE `chickenbatchmortalities`
   ADD CONSTRAINT `chickenbatchmortalities_ibfk_1` FOREIGN KEY (`batchnumber`) REFERENCES `masanafuchickenfarmbatches` (`batchnumber`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Constraints for table `clientprojectorders`
+--
+ALTER TABLE `clientprojectorders`
+  ADD CONSTRAINT `clientprojectorders_ibfk_1` FOREIGN KEY (`itemname`) REFERENCES `ProjectsItems` (`productId`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `clientprojectspayments`
+--
+ALTER TABLE `clientprojectspayments`
+  ADD CONSTRAINT `clientprojectspayments_ibfk_1` FOREIGN KEY (`orderId`) REFERENCES `clientprojectorders` (`orderId`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints for table `departments`
 --
 ALTER TABLE `departments`
@@ -2152,10 +2880,40 @@ ALTER TABLE `eggproductionrecords`
   ADD CONSTRAINT `eggproductionrecords_ibfk_1` FOREIGN KEY (`batchnumber`) REFERENCES `masanafuchickenfarmbatches` (`batchnumber`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Constraints for table `equatorialcustodianreleasedinventory`
+--
+ALTER TABLE `equatorialcustodianreleasedinventory`
+  ADD CONSTRAINT `equatorialcustodianreleasedinventory_ibfk_1` FOREIGN KEY (`itemreleasedId`) REFERENCES `shopProducts` (`productId`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints for table `equatorialexpensesreceipts`
 --
 ALTER TABLE `equatorialexpensesreceipts`
   ADD CONSTRAINT `equatorialexpensesreceipts_ibfk_1` FOREIGN KEY (`expenditureid`) REFERENCES `equatorialshopexpenditure` (`expenditureid`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `equatorialgeneralstoreinventory`
+--
+ALTER TABLE `equatorialgeneralstoreinventory`
+  ADD CONSTRAINT `equatorialgeneralstoreinventory_ibfk_1` FOREIGN KEY (`productId`) REFERENCES `shopProducts` (`productId`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `equatoriallabellingdailyoutput`
+--
+ALTER TABLE `equatoriallabellingdailyoutput`
+  ADD CONSTRAINT `equatoriallabellingdailyoutput_ibfk_1` FOREIGN KEY (`itemid`) REFERENCES `shopProducts` (`productId`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `equatoriallabellinginventory`
+--
+ALTER TABLE `equatoriallabellinginventory`
+  ADD CONSTRAINT `equatoriallabellinginventory_ibfk_1` FOREIGN KEY (`itemid`) REFERENCES `shopProducts` (`productId`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `equatoriallabellinginventoryrecords`
+--
+ALTER TABLE `equatoriallabellinginventoryrecords`
+  ADD CONSTRAINT `equatoriallabellinginventoryrecords_ibfk_1` FOREIGN KEY (`itemId`) REFERENCES `shopProducts` (`productId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `equatorialMassageInventory`
@@ -2168,6 +2926,20 @@ ALTER TABLE `equatorialMassageInventory`
 --
 ALTER TABLE `equatorialmassagesalespayments`
   ADD CONSTRAINT `equatorialmassagesalespayments_ibfk_1` FOREIGN KEY (`receiptNumber`) REFERENCES `equatorialMassageSales` (`receiptNumber`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `equatorialmassagesubscriptionusage`
+--
+ALTER TABLE `equatorialmassagesubscriptionusage`
+  ADD CONSTRAINT `equatorialmassagesubscriptionusage_ibfk_1` FOREIGN KEY (`subscriptionId`) REFERENCES `equatorialmassagesubscriptions` (`subscriptionId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `equatorialmassagesubscriptionusage_ibfk_2` FOREIGN KEY (`serviceOfferedId`) REFERENCES `massageServices` (`productId`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `equatorialncts`
+--
+ALTER TABLE `equatorialncts`
+  ADD CONSTRAINT `equatorialncts_ibfk_1` FOREIGN KEY (`iteminid`) REFERENCES `shopProducts` (`productId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `equatorialncts_ibfk_2` FOREIGN KEY (`itemoutid`) REFERENCES `shopProducts` (`productId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `equatorialprojectsclientpaymentplans`
@@ -2218,6 +2990,18 @@ ALTER TABLE `equatorialshopsalespayments`
   ADD CONSTRAINT `equatorialshopsalespayments_ibfk_1` FOREIGN KEY (`receiptNumber`) REFERENCES `equatorialShopSales` (`receiptNumber`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Constraints for table `exhibitionincome`
+--
+ALTER TABLE `exhibitionincome`
+  ADD CONSTRAINT `exhibitionincome_ibfk_1` FOREIGN KEY (`exhibitionId`) REFERENCES `exhibitions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `exhibitionsales`
+--
+ALTER TABLE `exhibitionsales`
+  ADD CONSTRAINT `exhibitionsales_ibfk_1` FOREIGN KEY (`exhibitionId`) REFERENCES `exhibitions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints for table `expensesreceipts`
 --
 ALTER TABLE `expensesreceipts`
@@ -2228,6 +3012,12 @@ ALTER TABLE `expensesreceipts`
 --
 ALTER TABLE `inventorytransactions`
   ADD CONSTRAINT `inventorytransactions_ibfk_1` FOREIGN KEY (`inventoryname`) REFERENCES `inventory` (`name`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `labelledinventorydeliveryrecords`
+--
+ALTER TABLE `labelledinventorydeliveryrecords`
+  ADD CONSTRAINT `labelledinventorydeliveryrecords_ibfk_1` FOREIGN KEY (`itemId`) REFERENCES `shopProducts` (`productId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `masanafuchickenfeedsinventory`
@@ -2324,6 +3114,12 @@ ALTER TABLE `requirements`
 --
 ALTER TABLE `store`
   ADD CONSTRAINT `store_ibfk_1` FOREIGN KEY (`name`) REFERENCES `inventory` (`name`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `supplierpaymentrecords`
+--
+ALTER TABLE `supplierpaymentrecords`
+  ADD CONSTRAINT `supplierpaymentrecords_ibfk_1` FOREIGN KEY (`supplyId`) REFERENCES `suppliers` (`supplyId`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

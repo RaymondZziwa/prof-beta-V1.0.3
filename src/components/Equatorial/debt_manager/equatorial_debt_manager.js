@@ -25,7 +25,7 @@ const EquatorialDebtManagerDashboard = () => {
                             View All Unpaid Sales
                         </div>
                     </Link>
-                    <Link className="tab_nav" to="#">
+                    <Link className="tab_nav" to="/manageclientprojectsupgrades">
                         <div className="mb-3 mclickable_option">
                             Client Projects Upgrade
                         </div>
@@ -35,16 +35,16 @@ const EquatorialDebtManagerDashboard = () => {
                             Point Of Sale
                         </div>
                     </Link>
-                    <Link className="tab_nav" to="#">
+                   {/* <Link className="tab_nav" to="#">
                         <div className="mb-3 mclickable_option">
                             Register Exhibition Sale
                         </div>
                     </Link>
-                    <Link className="tab_nav" to="#">
+                     <Link className="tab_nav" to="#">
                         <div className="mb-3 mclickable_option">
                             Exhibition Sale Records
                         </div>
-                    </Link>
+                    </Link> */}
                     <Link className="tab_nav" to="/equatorialshopstocktaking">
                         <div className="mb-3 mclickable_option">
                             Shop Inventory Stock Taking

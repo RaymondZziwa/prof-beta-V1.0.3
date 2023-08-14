@@ -1671,7 +1671,7 @@ app.post('/fetchallshopinventory', (req, res) => {
         if (err) {
             res.status(403).send("You are not authorized to perform this action.");
         } else {
-            db.query('SELECT * FROM shopProducts ;', (error, results) => {
+            db.query('SELECT * FROM shopProducts', (error, results) => {
                 //if the query is faulty , throw the error
                 if (error) console.log(error);
                 //if account exists
@@ -5415,6 +5415,9 @@ app.post('/savesupplierpayment', (req, res) => {
 
         const date = req.body.date;
         const supplyId = req.body.supplyId;
+        const itemName = req.body.itemName
+        const quantity = req.body.quantity
+        const units = req.body.units
         const amountPaid = req.body.amountPaid;
         const paymentMethod = req.body.paymentMethod;
         const transactionId = req.body.transactionId;
@@ -5431,7 +5434,7 @@ app.post('/savesupplierpayment', (req, res) => {
                 const newBalance = results[0].balance - parseFloat(amountPaid);
                 let newStatus = newBalance <= 0 ? 'fully paid' : 'partially paid';
 
-                db.query('INSERT INTO supplierpaymentrecords (paymentDate, supplyId, amountPaid, paymentmethod, transactionId, chequenumber, PaidBy, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [date, supplyId, amountPaid, paymentMethod, transactionId, chequeNumber, paidBy, notes], (error) => {
+                db.query('INSERT INTO supplierpaymentrecords (paymentDate, supplyId, itemName, Quantity, Units, amountPaid, paymentmethod, transactionId, chequenumber, PaidBy, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [date, supplyId, itemName, quantity, units, amountPaid, paymentMethod, transactionId, chequeNumber, paidBy, notes], (error) => {
                     if (error) {
                         return res.status(500).send("Error saving payment record.");
                     }
@@ -6106,6 +6109,157 @@ app.post('/rejectnct', (req, res) => {
 
                 })
         }
+    })
+})
+
+
+app.post('/saveclientprojectsorder', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+      if (err) {
+        res.status(403).send("You are not authorized to perform this action.");
+      } else {
+            const timestamp = new Date().getTime().toString(); // Example timestamp: "1647824898645"
+            const reducedTimestamp = timestamp.substring(9, 14); // Extract 5 digits from index 9 to 13
+            const random = Math.floor(Math.random() * 1000); // Example random number: 7453
+            const orderId = `POE -${reducedTimestamp}-${random}`
+            const fName = req.body.fName
+            const lName = req.body.lName
+            const contact1 = req.body.contactNo_1
+            const contact2 = req.body.contactNo_2
+            const address  = req.body.address
+            const itemName  = req.body.itemname
+            const quantity = req.body.quantity
+            const units = req.body.units
+            const totalPrice = req.body.totalprice
+            const balance = req.body.balance
+            const notes = req.body.notes
+  
+        // Process the sale if all items have sufficient stock
+        db.query('INSERT INTO clientprojectorders (orderId, firstname, lastname, contact1, contact2, address, itemname, quantity, units, totalprice, balance, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', [orderId, fName, lName, contact1, contact2, address, itemName, quantity, units, totalPrice, balance, notes], (error) => {
+                if (error) {
+                  console.log(error);
+                  res.status(500).send('Error occurred during sale.');
+                } else {
+                res.send({ status: '200', msg: 'success' })
+                }
+              });
+            }
+          })
+})
+
+app.post('/fetchallclientprojectorders', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                db.query('SELECT * FROM clientprojectorders JOIN ProjectsItems ON clientprojectorders.itemname = ProjectsItems.productId', (error, results) => {
+                    if (error) throw (error);
+
+                    if (results.length > 0) {
+                        res.send(results)
+                    } else {
+                        res.send(`There are no records found.`)
+                    }
+                })
+        }
+    })
+})
+
+app.post('/fetchclientprojectspayment', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                db.query('SELECT * FROM clientprojectspayments', (error, results) => {
+                    if (error) throw (error);
+
+                    if (results.length > 0) {
+                        res.send(results)
+                    } else {
+                        res.send(`There are no records found.`)
+                    }
+                })
+        }
+    })
+})
+
+app.post('/saveclientprojectspayment', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            return res.status(403).send("You are not authorized to perform this action.");
+        }
+
+        const date = req.body.date;
+        const orderId = req.body.orderId;
+        const itemName = req.body.itemName
+        const quantity = req.body.quantity
+        const units = req.body.units
+        const amountPaid = req.body.amountPaid;
+        const paymentMethod = req.body.paymentMethod;
+        const transactionId = req.body.transactionId;
+        const chequeNumber = req.body.chequeNumber;
+        const paidBy = req.body.paidBy;
+        const notes = req.body.notes;
+
+        db.query('SELECT * FROM clientprojectorders WHERE orderId = ?;', orderId, function (error, results) {
+            if (error) {
+                return res.status(500).send("Error retrieving projects order data.");
+            }
+
+            if (results.length > 0 && results[0].balance > 0) {
+                const newBalance = results[0].balance - parseFloat(amountPaid);
+
+                db.query('INSERT INTO clientprojectspayments (paymentDate, orderId, itemName, Quantity, Units, amountPaid, paymentmethod, transactionId, chequenumber, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [date, orderId, itemName, quantity, units, amountPaid, paymentMethod, transactionId, chequeNumber, notes], (error) => {
+                    if (error) {
+                        return res.status(500).send("Error saving payment record.");
+                    }
+
+                    db.query('UPDATE clientprojectorders SET balance = ? WHERE orderId = ?;', [newBalance, orderId], (error) => {
+                        if (error) {
+                            return res.status(500).send("Error updating supplier data.");
+                        }
+
+                        return res.send({
+                            status: 200,
+                            msg: 'success'
+                        });
+                    });
+                });
+            } else {
+                res.send('No data found.');
+            }
+        })
+    })
+})
+
+app.post('/saveclientprojectsupgrade', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            return res.status(403).send("You are not authorized to perform this action.");
+        }
+
+        const date = req.body.date;
+        const orderId = req.body.orderId;
+        const itemName = req.body.itemName
+        const quantity = req.body.quantity
+        const units = req.body.units
+        const totalPrice = req.body.totalPrice
+        const balance = req.body.newBalance
+        const notes = req.body.notes
+
+        console.log(orderId, itemName , balance, notes)
+
+        db.query('UPDATE clientprojectorders SET itemname = ?, quantity = ?, units = ?, totalprice = ?, balance = ? , notes = ? WHERE orderId = ?;', [itemName, quantity, units, totalPrice, balance, notes, orderId], (error) => {
+            if (error) {
+                return res.status(500).send("Error updating  data.");
+            }else{
+                return res.send({
+                    status: 200,
+                    msg: 'success'
+                });
+            }
+            
+        });
     })
 })
 app.listen(port, () => {

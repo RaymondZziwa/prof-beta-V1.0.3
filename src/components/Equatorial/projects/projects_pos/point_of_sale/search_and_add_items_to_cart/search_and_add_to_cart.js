@@ -15,8 +15,7 @@ const SearchAndAddToCart = () => {
   const fetchAllMaterials = async () => {
     let res = await axios.post('http://82.180.136.230:3005/fetchallprojectsdata', {
       token: localStorage.getItem('token')
-    });
-    console.log('lsssss', res.data)
+    })
 
     if (Array.isArray(res.data)) {
       const transformedOptions = res.data.map((item) => ({
