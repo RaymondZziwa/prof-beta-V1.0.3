@@ -69,6 +69,11 @@ return(
                 Manage Suppliers
             </div>
         </Link>
+        <Link className="tab_nav" to="/managecheques">
+            <div className="mb-3 mclickable_option">
+                Manage Cheques
+            </div>
+        </Link>
         <Link className="tab_nav" to="/viewequatorialexpenditurereceipts">
             <div className="mb-3 mclickable_option">
                 View Shop Expenditure Receipts
@@ -94,6 +99,11 @@ return(
                 Expenditure Records
             </div>
         </Link>
+        <Link className="tab_nav" to="/equatorialprojectsdepartmentstocktaking">
+            <div className="mb-3 mclickable_option">
+                Projects Store Stock Taking
+            </div>
+                </Link>
         <Link className="tab_nav" to="/accountsettings">
             <div className="mb-3 mclickable_option">
                 Settings

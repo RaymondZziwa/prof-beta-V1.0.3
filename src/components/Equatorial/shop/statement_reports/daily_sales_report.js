@@ -399,7 +399,7 @@ const EquatorialShopDailySalesReport = () => {
                                 <p>Total Expenditure Amount Spent: UGX {totalExpenditureAmountPaid}</p>
                                 <p>Total Sales Amount Not Recieved: UGX {balance}</p>
                                 <p>Total Expenditure Amount Not Paid: UGX {expenditureBalance}</p>
-                                <p>Total Income Amount From Massage Department: UGX </p>
+                                {/* <p>Total Income Amount From Massage Department: UGX </p> */}
                                 <p>Total Net Income Available (Cash): UGX {paymentMethodTotals.Cash-expensePaymentMethodTotals.Cash}</p>
                                 <p>Total Net Income Available (MTN MoMo): UGX {paymentMethodTotals.MTNMoMo-expensePaymentMethodTotals.MTNMoMo}</p>
                                 <p>Total Net Income Available (Airtel Money): UGX {paymentMethodTotals.AirtelMoney-expensePaymentMethodTotals.AirtelMoney}</p>

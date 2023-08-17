@@ -75,18 +75,18 @@ const SaveNewNctForm = ({fetchNCTRecords}) => {
                             <form>
                             <Row>
                                 <Col sm='12' md='4' lg='4' xl='4' style={{borderRight:'1px black dashed'}}>
-                                <div className="mb-3">
-                                    <label htmlFor="firstName" className="form-label">
-                                        First Name
-                                    </label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        id="firstName"
-                                        //value={firstName}
-                                        onChange={(e)=>setFName(e.target.value)}
-                                        required
-                                    />
+                                    <div className="mb-3">
+                                        <label htmlFor="firstName" className="form-label">
+                                            First Name
+                                        </label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            id="firstName"
+                                            //value={firstName}
+                                            onChange={(e)=>setFName(e.target.value)}
+                                            required
+                                        />
                                     </div>
                                     <div className="mb-3">
                                     <label htmlFor="lastName" className="form-label">

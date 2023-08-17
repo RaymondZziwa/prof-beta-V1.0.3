@@ -208,7 +208,7 @@ const EquatorialMassageMonthlyServicesReport = () => {
                                                 <tbody style={{ textAlign: 'center' }}>
                                                     {JSON.parse(item.servicesOffered).map(itemordered =>
                                                         <tr>
-                                                            <td>{itemordered.name}</td>
+                                                            <td>{itemordered.productName}</td>
                                                             <td>{itemordered.quantity}</td>
                                                             <td>{itemordered.unitCost}</td>
                                                             <td>{itemordered.discount}</td>

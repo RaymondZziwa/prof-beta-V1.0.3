@@ -9,7 +9,8 @@ const jwt = require('jsonwebtoken')
 const multer = require('multer')
 const path = require('path')
 const escpos = require('escpos')
-const USB = require('escpos-usb')
+const USB = require('escpos-usb');
+const { Notes } = require('@mui/icons-material');
 const upload = multer({dest: 'receipt_uploads/'})
 
 const corsOptions = {
@@ -6262,6 +6263,102 @@ app.post('/saveclientprojectsupgrade', (req, res) => {
         });
     })
 })
+
+
+app.post('/savechequedata', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+      if (err) {
+        res.status(403).send("You are not authorized to perform this action.");
+      } else {
+            const timestamp = new Date().getTime().toString(); // Example timestamp: "1647824898645"
+            const reducedTimestamp = timestamp.substring(9, 14); // Extract 5 digits from index 9 to 13
+            const random = Math.floor(Math.random() * 1000); // Example random number: 7453
+            const ChequeId = `C-${reducedTimestamp}-${random}`
+            const chequeNumber = req.body.chequeNumber
+            const drawerNames = req.body.drawerNames
+            const drawerContact = req.body.drawerContact
+            const bankName = req.body.bankName
+            const paymentReason = req.body.paymentReason
+            const amount = req.body.amount
+            const dateIssued = req.body.dateIssued
+            const bankingDate = req.body.bankingDate
+            const chequeIssuedBy = req.body.chequeIssuedBy
+            const notes = req.body.notes
+  
+        // Process the sale if all items have sufficient stock
+        db.query('INSERT INTO companycheques (chequeId, chequeNumber, DrawerNames, DrawerContact, BankName, PaymentReason, amount,  DateIssued, BankingDate, ChequeIssuedBy, Notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [ChequeId, chequeNumber, drawerNames, drawerContact, bankName, paymentReason, amount, dateIssued, bankingDate, chequeIssuedBy, Notes], (error) => {
+                if (error) {
+                  console.log(error);
+                  res.status(500).send('Error saving cheque data.');
+                } else {
+                res.send({ status: '200', msg: 'success' })
+                }
+              });
+            }
+          }) 
+})
+
+app.post('/fetchallchequeData', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                db.query('SELECT * FROM companycheques', (error, results) => {
+                    if (error) throw (error);
+
+                    if (results.length > 0) {
+                        res.send(results)
+                    } else {
+                        res.send(`There are no records found.`)
+                    }
+                })
+        }
+    })
+})
+
+
+app.post('/markchequeaspaid', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const chequeId = req.body.chequeId
+            const newStatus = 'Paid'
+
+            db.query('UPDATE companycheques SET status = ? WHERE chequeId = ? ', [newStatus, chequeId], error => {
+                if (error) {
+                    console.log(error);
+                    res.status(500).send('Error while changing cheque status.');
+                } else {
+                    res.send({ status: '200', msg: 'success' });
+                }
+            });
+
+        }
+    });
+})
+
+app.post('/markchequeasbounced', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const chequeId = req.body.chequeId
+            const newStatus = 'Bounced'
+
+            db.query('UPDATE companycheques SET status = ? WHERE chequeId = ? ', [newStatus, chequeId], error => {
+                if (error) {
+                    console.log(error);
+                    res.status(500).send('Error while changing cheque status.');
+                } else {
+                    res.send({ status: '200', msg: 'success' });
+                }
+            });
+
+        }
+    });
+});
+
 app.listen(port, () => {
     console.log(`Server is listening on port ${port}`);
 })

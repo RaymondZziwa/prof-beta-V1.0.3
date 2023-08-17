@@ -177,6 +177,7 @@ import DebtManagerPOS from './components/Equatorial/debt_manager/POS/point_of_sa
 import NoneCashTransactionsMgt from './components/Equatorial/debt_manager/NCTs/none_cash_transactions';
 import ManageNCTs from './components/Equatorial/shop/NCTs/manage_NCTs';
 import ClientProjectsUpgrade from './components/Equatorial/debt_manager/client_projects_upgrade/client_projects_upgrade';
+import ChequeManagement from './components/Equatorial/shop/cheque_management/cheque_management';
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -802,6 +803,9 @@ useEffect(() => {
           </Route>)}
           {authCtx.isLoggedIn && (<Route path="/manageclientprojectsupgrades">
             <ClientProjectsUpgrade />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/managecheques">
+            <ChequeManagement />
           </Route>)}
       </BrowserRouter>
     </div>
