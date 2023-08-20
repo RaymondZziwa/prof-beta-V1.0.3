@@ -1,7 +1,7 @@
 import { useState } from "react"
 import axios from 'axios'
 
-const SaveNewChequeData = ({setStatus}) => {
+const SaveNewChequeData = ({setStatus, fetchAllChequeRecords}) => {
     const [fName, setFName] = useState('')
     const [lName, setLName] = useState('')
     const [contact, setContact] = useState('')
@@ -16,7 +16,7 @@ const SaveNewChequeData = ({setStatus}) => {
     const handleSubmit = async (event) => {
         event.preventDefault()
         try {
-            let res = await axios.post('',{
+            let res = await axios.post('http://82.180.136.230:3005/savechequedata',{
                 token: localStorage.getItem('token'),
                 drawerNames: `${fName} ${lName}`,
                 drawerContact: contact,
@@ -31,6 +31,8 @@ const SaveNewChequeData = ({setStatus}) => {
             })
             
             setStatus({ type: 'success' })
+            fetchAllChequeRecords()
+
         } catch (error) {
             setStatus({ type: 'error', err: error });
         }

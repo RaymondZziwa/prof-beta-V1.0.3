@@ -14,6 +14,11 @@ const EquatorialCustodianDashboard = () => {
                     Manage General Store Inventory
                 </div>
             </Link>
+            <Link className="tab_nav" to="/trackequatorialdnns">
+                <div className="mb-3 mclickable_option">
+                   Track Delivery Note Numbers
+                </div>
+            </Link>
             <Link className="tab_nav" to="/custodianreleaseinventorymgt">
                 <div className="mb-3 mclickable_option">
                    Release Inventory 

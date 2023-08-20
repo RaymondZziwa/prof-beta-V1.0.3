@@ -8,9 +8,6 @@ const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken')
 const multer = require('multer')
 const path = require('path')
-const escpos = require('escpos')
-const USB = require('escpos-usb');
-const { Notes } = require('@mui/icons-material');
 const upload = multer({dest: 'receipt_uploads/'})
 
 const corsOptions = {
@@ -3839,78 +3836,6 @@ app.post('/fetchmasanafuexpensesreceipts', (req, res) => {
     })
 })
 
-//7. fetch all fcr external receipts
-app.post('/printposreceipt', (req, res) => {
-    jwt.verify(req.body.token, 'SECRETKEY', async (err) => {
-        if (err) {
-            res.status(403).send("You are not authorized to perform this action.");
-        } else {
-            const receiptNumber = req.body.receiptNo
-            const firstName = req.body.firstName
-            const lastName = req.body.lastName
-            const clientcontact = req.body.clientcontact
-            const total = req.body.total
-            const amountPaid = req.body.amountPaid
-            const balance = req.body.balance
-            const cart = req.body.cart
-            const servedBy = req.body.servedBy
-
-            try {
-            //create a new USB instance and open the connection
-            const usb = new USB()
-            await usb.open()
-
-            //set desired encoding and code page
-            await usb.set({encoding: 'GB18030', codepage: 1 })
-
-            //reset the thermal printer
-            await usb.write('\x1b\x40')
-
-            //send commands and content to the printer
-            await usb.write('\x1b\x61\x01'); // Center align text
-            await usb.write('\x1b\x21\x30'); // Set text size to double width and double height
-            await usb.write('\x1b\x45\x01'); // Emphasized mode on
-
-            // Print header
-            await usb.write('=== RECEIPT ===\n');
-            await usb.write(`Date: ${new Date().toLocaleDateString()}\n`);
-            await usb.write('----------------\n');
-
-            // Print receipt content
-            await usb.write(`Receipt Number: ${receiptNumber}\n`);
-            await usb.write(`Client First Name: ${firstName}\n`);
-            await usb.write(`Client Last Name: ${lastName}\n`);
-            await usb.write(`Client Contact: ${clientcontact}\n`);
-            await usb.write(`Items Total Amount: UGX ${total}\n`);
-            await usb.write(`Items Amount Paid: UGX ${amountPaid}\n`);
-            await usb.write(`Balance: UGX ${balance}\n`);
-
-            // Print the items table
-            await usb.write('Item Name      Unit Cost (UGX)   Discount (%)   Total Quantity   Total Cost (UGX)\n');
-            cart.forEach(async item => {
-            await usb.write(`${item.name}   ${item.unitCost}   ${item.discount}   ${item.quantity}   ${item.totalCost}\n`);
-            });
-
-            await usb.write(`Served By: ${servedBy}`);
-
-            await usb.write('\x1b\x45\x00'); // Emphasized mode off
-            await usb.cut(); // Cut the paper
-
-            // Close the USB connection
-            await usb.close();
-
-            // Send a success response
-            res.status(200).json({ status: 'success' });
-            } catch (error) {
-                console.error('Printing error:', error);
-                // Send an error response
-                res.status(500).json({ status: 'error', error: 'Printing error' });  
-            }
-        }
-    })
-})
-
-
 
 //save massage restock data
 app.post('/saveequatorialmassagerestockdata', (req, res) => {
@@ -5742,12 +5667,12 @@ app.post('/labellingdepartmentstorerestock', upload.single('file'), (req, res) =
                     console.log(error);
                     res.send('Error')
                 } else {
-                        db.query('SELECT * FROM equatoriallabellinginventory WHERE productid = ?;', [itemid], function (err, results) {
+                        db.query('SELECT * FROM equatoriallabellinginventory WHERE itemid = ?;', [itemid], function (err, results) {
                             // If there is an issue with the query, output the error
                             if (err) throw err;
                             // If the account exists
                             if (results.length === 0) {
-                                const sqlStockCount = "Insert into equatoriallabellinginventory(productid,quantityinstock,munits) values(?,?,?)"
+                                const sqlStockCount = "Insert into equatoriallabellinginventory(itemid,quantityinstock,munits) values(?,?,?)"
                                 db.query(sqlStockCount, [itemid, quantity, units], (err) => {
                                     if (err) {
                                         console.log(err)
@@ -5758,7 +5683,7 @@ app.post('/labellingdepartmentstorerestock', upload.single('file'), (req, res) =
                                 })
                             } else if (results.length > 0) {
                                 let newStockCount = parseFloat(results[0].quantityinstock) + parseFloat(quantity);
-                                const sqlStockCount = "UPDATE equatoriallabellinginventory SET quantityinstock = ? WHERE productid = ?"
+                                const sqlStockCount = "UPDATE equatoriallabellinginventory SET quantityinstock = ? WHERE itemid = ?"
                                 db.query(sqlStockCount, [newStockCount, itemid], (err) => {
                                     if (err) {
                                         console.log(err)
@@ -6278,7 +6203,7 @@ app.post('/savechequedata', (req, res) => {
             const drawerNames = req.body.drawerNames
             const drawerContact = req.body.drawerContact
             const bankName = req.body.bankName
-            const paymentReason = req.body.paymentReason
+            const paymentReason = req.body.reason
             const amount = req.body.amount
             const dateIssued = req.body.dateIssued
             const bankingDate = req.body.bankingDate
@@ -6286,7 +6211,7 @@ app.post('/savechequedata', (req, res) => {
             const notes = req.body.notes
   
         // Process the sale if all items have sufficient stock
-        db.query('INSERT INTO companycheques (chequeId, chequeNumber, DrawerNames, DrawerContact, BankName, PaymentReason, amount,  DateIssued, BankingDate, ChequeIssuedBy, Notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [ChequeId, chequeNumber, drawerNames, drawerContact, bankName, paymentReason, amount, dateIssued, bankingDate, chequeIssuedBy, Notes], (error) => {
+        db.query('INSERT INTO companycheques (chequeId, chequeNumber, DrawerNames, DrawerContact, BankName, PaymentReason, amount,  DateIssued, BankingDate, ChequeIssuedBy, Notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [ChequeId, chequeNumber, drawerNames, drawerContact, bankName, paymentReason, amount, dateIssued, bankingDate, chequeIssuedBy, notes], (error) => {
                 if (error) {
                   console.log(error);
                   res.status(500).send('Error saving cheque data.');
@@ -6298,12 +6223,31 @@ app.post('/savechequedata', (req, res) => {
           }) 
 })
 
+
 app.post('/fetchallchequeData', (req, res) => {
     jwt.verify(req.body.token, 'SECRETKEY', (err) => {
         if (err) {
             res.status(403).send("You are not authorized to perform this action.");
         } else {
                 db.query('SELECT * FROM companycheques', (error, results) => {
+                    if (error) throw (error);
+
+                    if (results.length > 0) {
+                        res.send(results)
+                    } else {
+                        res.send(`There are no records found.`)
+                    }
+                })
+        }
+    })
+})
+
+app.post('/fetchallequatorialcustodianrecievedrecords', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                db.query('SELECT * FROM equatorialgeneralstoreinventoryrestockrecords', (error, results) => {
                     if (error) throw (error);
 
                     if (results.length > 0) {
@@ -6335,8 +6279,9 @@ app.post('/markchequeaspaid', (req, res) => {
             });
 
         }
-    });
+    })
 })
+
 
 app.post('/markchequeasbounced', (req, res) => {
     jwt.verify(req.body.token, 'SECRETKEY', (err) => {
@@ -6353,11 +6298,12 @@ app.post('/markchequeasbounced', (req, res) => {
                 } else {
                     res.send({ status: '200', msg: 'success' });
                 }
-            });
+            })
 
         }
-    });
-});
+    })
+})
+
 
 app.listen(port, () => {
     console.log(`Server is listening on port ${port}`);

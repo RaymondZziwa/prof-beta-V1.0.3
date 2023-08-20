@@ -361,7 +361,6 @@ const EquatorialShopDailySalesReport = () => {
                         {totalAmount ? 
                             <>
                                 <p>Total Amount From Sales: UGX {totalAmount}</p>
-                                <p>Total Amount From Sales: UGX {totalAmount}</p>
                                 <p>Amount Recieved (Cash): UGX {paymentMethodTotals.Cash}</p>
                                 <p>Amount Recieved (MTN MoMo): UGX {paymentMethodTotals.MTNMoMo}</p>
                                 <p>Amount Recieved (Airtel Money): UGX {paymentMethodTotals.AirtelMoney}</p>
