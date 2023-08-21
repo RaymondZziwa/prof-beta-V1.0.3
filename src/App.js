@@ -179,6 +179,8 @@ import ManageNCTs from './components/Equatorial/shop/NCTs/manage_NCTs';
 import ClientProjectsUpgrade from './components/Equatorial/debt_manager/client_projects_upgrade/client_projects_upgrade';
 import ChequeManagement from './components/Equatorial/shop/cheque_management/cheque_management';
 import TrackDnns from './components/Equatorial/inventory_custodian/track_delivery_note_numbers/track_dnns';
+import ExhibitionSalesRecords from './components/Equatorial/inventory_custodian/exhibition_sales_records/exhibition_sales_records';
+import ExhibitionPOS from './components/Equatorial/inventory_custodian/exhibition_pos/point_of_sale/pos';
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -810,6 +812,13 @@ useEffect(() => {
           </Route>)}
           {authCtx.isLoggedIn && (<Route path="/trackequatorialdnns">
             <TrackDnns />
+          </Route>)}
+
+          {authCtx.isLoggedIn && (<Route path="/exhibitionsalesrecords">
+            <ExhibitionSalesRecords />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/exhibitionpos">
+            <ExhibitionPOS />
           </Route>)}
       </BrowserRouter>
     </div>

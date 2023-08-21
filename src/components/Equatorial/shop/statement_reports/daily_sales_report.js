@@ -19,10 +19,11 @@ const EquatorialShopDailySalesReport = () => {
     const [totalExpenditureAmount, setTotalExpenditureAmount] = useState(0);
     const [totalExpenditureAmountPaid, setTotalExpenditureAmountPaid] = useState(0);
     const [expenditureBalance, setExpenditureBalance] = useState(0)
-    //const [paymentMethods, setPaymentMethods] = useState({})
     const [massageData,  setMassageData] = useState([])
     const [filteredMassageData,  setFilteredMassageData] = useState([])
     const [isCalculationsLoading, setIsCalculationsLoading] = useState(true)
+
+    const [totalMassageAmount, setTotalMassageAmount] = useState(0)
 
     const [paymentMethodTotals, setPaymentMethodTotals] = useState({
         Cash: 0,
@@ -75,18 +76,36 @@ const EquatorialShopDailySalesReport = () => {
                 return expenseDate === formattedDate;
             });
 
-            const filteredMassageSalesData = salesData.filter((sale) => {
-                const saleDate = moment(sale.saleDate, 'DD/MM/YYYY').format('DD/MM/YYYY');
-                return saleDate === formattedDate;
-            });
-
-            setFilteredMassageData(filteredMassageSalesData)
-            
             setFilteredSales(filteredSalesData)
             setFilteredExpenses(filteredExpensesData)
        }
 
     },[selectedDay])
+
+    useEffect(()=>{
+      const formattedDate = moment(selectedDay).format('DD/MM/YYYY')
+
+      const filteredData = massageData.filter((data)=>{
+        const saleDate = moment(data.submissionDate, 'DD/MM/YYYY').format('DD/MM/YYYY');
+        return saleDate === formattedDate
+      })
+      setFilteredMassageData(filteredData)
+
+      let grandTotalMassageAmount = 0;
+      let grandTotalProductAmount = 0;
+
+      // Calculate totals for each object and accumulate them
+      filteredData.forEach(item => {
+          const totalMassageAmount = item.massageamount;
+          const totalProductAmount = item.productamount;
+
+          grandTotalMassageAmount += totalMassageAmount;
+          grandTotalProductAmount += totalProductAmount;
+      })
+      setTotalMassageAmount(grandTotalMassageAmount+grandTotalProductAmount)
+
+  },[massageData, selectedDay])
+
 
     useEffect(() => {
         // Calculate totalAmount, totalAmountPaid, and balance
@@ -105,15 +124,15 @@ const EquatorialShopDailySalesReport = () => {
           balance += sale.balance;
 
           if (sale.paymentMethod === 'Cash') {
-            paymentMethods.Cash += sale.totalAmount;
+            paymentMethods.Cash += sale.totalAmount-sale.balance;
           } else if (sale.paymentMethod === 'Prof MM') {
-            paymentMethods.ProfMM += sale.totalAmount;
+            paymentMethods.ProfMM += sale.totalAmount-sale.balance;
           } else if (sale.paymentMethod === 'Visa') {
-            paymentMethods.Visa += sale.totalAmount;
+            paymentMethods.Visa += sale.totalAmount-sale.balance;
           }else if (sale.paymentMethod === 'MTN MoMo') {
-            paymentMethods.MTNMoMo += sale.totalAmount;
+            paymentMethods.MTNMoMo += sale.totalAmount-sale.balance;
           }else if (sale.paymentMethod === 'Airtel Money') {
-            paymentMethods.AirtelMoney += sale.totalAmount;
+            paymentMethods.AirtelMoney += sale.totalAmount-sale.balance;
           }
         });
       
@@ -165,7 +184,7 @@ const EquatorialShopDailySalesReport = () => {
 
       useEffect(() => {
         const fetchMassageData = async () => {
-          let res = await axios.post('http://82.180.136.230:3005/fetchallservicesalesrecords', {
+          let res = await axios.post('http://82.180.136.230:3005/fetchallincomesubmissionrecords', {
             token: localStorage.getItem('token')
           });
       
@@ -201,7 +220,7 @@ const EquatorialShopDailySalesReport = () => {
                     <Navbar />
                 </Col>
                 <Col sm='12' md='10' lg='10' xl='10'>
-                    <h1 style={{textAlign:'center', color:'black',marginTop:'60px'}}>Masanafu Shop Daily Report <span style={{float:'right',marginRight:'10px'}}><ReportPrintingButton /></span></h1>
+                    <h1 style={{textAlign:'center', color:'black',marginTop:'60px'}}>Equatorial Shop Daily Report <span style={{float:'right',marginRight:'10px'}}><ReportPrintingButton /></span></h1>
                     <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <label htmlFor="date-select" style={{color:'black'}}>Select The Day:</label>
                         <input type="date" id="date-select" className="form-control" style={{ width: '300px' }} onChange={selectedDateHandler}/>
@@ -395,10 +414,10 @@ const EquatorialShopDailySalesReport = () => {
                                 <p>Total Amount From Sales: UGX {totalAmount}</p>
                                 <p>Total Expenditure Amount: UGX {totalExpenditureAmount}</p>
                                 <p>Total Sales Amount Recieved: UGX {totalAmountPaid}</p>
+                                <p>Total Income Amount From Massage Department: UGX {totalMassageAmount}</p> 
                                 <p>Total Expenditure Amount Spent: UGX {totalExpenditureAmountPaid}</p>
                                 <p>Total Sales Amount Not Recieved: UGX {balance}</p>
                                 <p>Total Expenditure Amount Not Paid: UGX {expenditureBalance}</p>
-                                {/* <p>Total Income Amount From Massage Department: UGX </p> */}
                                 <p>Total Net Income Available (Cash): UGX {paymentMethodTotals.Cash-expensePaymentMethodTotals.Cash}</p>
                                 <p>Total Net Income Available (MTN MoMo): UGX {paymentMethodTotals.MTNMoMo-expensePaymentMethodTotals.MTNMoMo}</p>
                                 <p>Total Net Income Available (Airtel Money): UGX {paymentMethodTotals.AirtelMoney-expensePaymentMethodTotals.AirtelMoney}</p>

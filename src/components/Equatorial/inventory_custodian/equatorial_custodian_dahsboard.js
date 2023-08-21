@@ -44,6 +44,16 @@ const EquatorialCustodianDashboard = () => {
                     View Massage Inventory
                 </div>
             </Link>
+            <Link className="tab_nav" to="/exhibitionpos">
+                <div className="mb-3 mclickable_option">
+                    Exhibition Point Of Sale
+                </div>
+            </Link>
+            <Link className="tab_nav" to="/exhibitionsalesrecords">
+                <div className="mb-3 mclickable_option">
+                    Exhibition Sales Records
+                </div>
+            </Link>
             <Link className="tab_nav" to="/accountsettings">
                 <div className="mb-3 mclickable_option">
                     Settings

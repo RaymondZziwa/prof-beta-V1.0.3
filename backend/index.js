@@ -1273,6 +1273,7 @@ app.post('/exhibitionlist', (req, res) => {
     })
 })
 
+
 //5. fetching exhibition list from database ---route is tested and it is working as expected
 app.post('/fetchallexhibitiondata', (req, res) => {
     jwt.verify(req.body.token, 'SECRETKEY', (err) => {
@@ -5593,7 +5594,7 @@ app.post('/equatorialgeneralstorerestock', (req, res) => {
             let notes = req.body.notes
             let deliveryNoteNumber = req.body.deliveryNoteNumber
 
-            db.query('INSERT INTO equatorialgeneralstoreinventoryrestockrecords (date, deliverynotenumber, itemid, quantityin, munits, restocksource, externalsourcedetails, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?);', [date, deliveryNoteNumber, itemid, quantity, units, source, externalSourceDetails, notes], error => {
+            db.query('INSERT INTO equatorialgeneralstorerestockrecords (date, deliverynotenumber, itemid, quantityin, munits, restocksource, externalsourcedetails, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?);', [date, deliveryNoteNumber, itemid, quantity, units, source, externalSourceDetails, notes], error => {
                 //if the query is faulty , throw the error
                 if (error) {
                     console.log(error);
@@ -5737,7 +5738,7 @@ app.post('/transferlabelledinventorytocustodian', (req, res) => {
         const dnn = req.body.deliveryNoteNumber
         const notes = req.body.notes
         
-        db.query('SELECT * FROM equatoriallabellinginventory WHERE productid = ?;', [itemId], function (err, results) {
+        db.query('SELECT * FROM equatoriallabellinginventory WHERE itemid = ?;', [itemId], function (err, results) {
             // If there is an issue with the query, output the error
             if (err) throw err;
             // If the account exists
@@ -5745,7 +5746,7 @@ app.post('/transferlabelledinventorytocustodian', (req, res) => {
                 res.send('This item is not in stock')
             } else if (results.length > 0) {
                 let newStockCount = parseFloat(results[0].quantityinstock) - parseFloat(quantity);
-                const sqlStockCount = "UPDATE equatoriallabellinginventory SET quantityinstock = ? WHERE productid = ?"
+                const sqlStockCount = "UPDATE equatoriallabellinginventory SET quantityinstock = ? WHERE itemid = ?"
                 db.query(sqlStockCount, [newStockCount, itemId], (err) => {
                     if (err) {
                         console.log(err)
@@ -6247,7 +6248,7 @@ app.post('/fetchallequatorialcustodianrecievedrecords', (req, res) => {
         if (err) {
             res.status(403).send("You are not authorized to perform this action.");
         } else {
-                db.query('SELECT * FROM equatorialgeneralstoreinventoryrestockrecords', (error, results) => {
+                db.query('SELECT * FROM equatorialgeneralstorerestockrecords', (error, results) => {
                     if (error) throw (error);
 
                     if (results.length > 0) {
@@ -6304,6 +6305,93 @@ app.post('/markchequeasbounced', (req, res) => {
     })
 })
 
+
+app.post('/fetchpreexhibitionlist', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const status = 'preexhibition'
+            db.query('SELECT * FROM exhibitions WHERE status = ?;',[status], (error, results) => {
+                if (error) throw (error);
+
+                if (results.length > 0) {
+                    res.send(results)
+                } else {
+                    res.send('There are no saved exhibitions.')
+                }
+            })
+        }
+    })
+})
+app.post('/fetchallexhibitionslist', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            db.query('SELECT * FROM exhibitions',(error, results) => {
+                if (error) throw (error);
+
+                if (results.length > 0) {
+                    res.send(results)
+                } else {
+                    res.send('There are no saved exhibitions.')
+                }
+            })
+        }
+    })
+})
+
+
+app.post('/fetchallexhibitionsales', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const status = 'preexhibition'
+            db.query('SELECT * FROM exhibitionsales JOIN exhibitions WHERE exhibitionsales.exhibitionId = exhibitions.id',[status], (error, results) => {
+                if (error) throw (error);
+
+                if (results.length > 0) {
+                    res.send(results)
+                } else {
+                    res.send('There are no saved exhibitions.')
+                }
+            })
+        }
+    })
+})
+
+app.post('/exhibitioncheckout', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+      if (err) {
+        res.status(403).send("You are not authorized to perform this action.");
+      } else {
+        const exhibitionId = req.body.exhibitionId
+        const receiptNumber = req.body.receiptNo;
+        const total = req.body.total;
+        const items = req.body.items
+        const additionalInfo = req.body.additionalInfo;
+        const paymentMethod = req.body.paymentMethod;
+        const paymentStatus = req.body.paymentStatus;
+        const balance = req.body.balance;
+        const customerNames = req.body.customerNames;
+        const customerContact = req.body.customerContact;
+        const date = req.body.date;
+        const transactionId = req.body.transactionId
+  
+        // Process the sale if all items have sufficient stock
+        db.query('INSERT INTO exhibitionsales (receiptNumber,exhibitionId, saleDate, customerNames, customerContact, itemsSold, totalAmount, balance, paymentStatus, paymentMethod, additionalinfo, transactionID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', [receiptNumber, exhibitionId, date, customerNames, customerContact, items, total, balance, paymentStatus, paymentMethod, additionalInfo, transactionId], (error) => {
+                if (error) {
+                  console.log(error);
+                  res.status(500).send('Error occurred during sale.');
+                } else {
+                res.send({ status: '200', msg: 'success' })
+                }
+              });
+            }
+          })
+})
 
 app.listen(port, () => {
     console.log(`Server is listening on port ${port}`);

@@ -18,6 +18,9 @@ const EquatorialShopMonthlySalesReport = () => {
     const [totalAmount, setTotalAmount] = useState(0);
     const [totalAmountPaid, setTotalAmountPaid] = useState(0);
     const [balance, setBalance] = useState(0)
+    const [massageData,  setMassageData] = useState([])
+    const [filteredMassageData,  setFilteredMassageData] = useState([])
+    const [totalMassageAmount, setTotalMassageAmount] = useState(0)
 
     const [totalExpenditureAmount, setTotalExpenditureAmount] = useState(0);
     const [totalExpenditureAmountPaid, setTotalExpenditureAmountPaid] = useState(0);
@@ -173,15 +176,15 @@ const EquatorialShopMonthlySalesReport = () => {
           balance += sale.balance;
 
           if (sale.paymentMethod === 'Cash') {
-            paymentMethods.Cash += sale.totalAmount;
+            paymentMethods.Cash += sale.totalAmount-sale.balance;
           } else if (sale.paymentMethod === 'Prof MM') {
-            paymentMethods.ProfMM += sale.totalAmount;
+            paymentMethods.ProfMM += sale.totalAmount-sale.balance;
           } else if (sale.paymentMethod === 'Visa') {
-            paymentMethods.Visa += sale.totalAmount;
+            paymentMethods.Visa += sale.totalAmount-sale.balance;
           }else if (sale.paymentMethod === 'MTN MoMo') {
-            paymentMethods.MTNMoMo += sale.totalAmount;
+            paymentMethods.MTNMoMo += sale.totalAmount-sale.balance;
           }else if (sale.paymentMethod === 'Airtel Money') {
-            paymentMethods.AirtelMoney += sale.totalAmount;
+            paymentMethods.AirtelMoney += sale.totalAmount-sale.balance;
           }
         });
       
@@ -214,7 +217,59 @@ const EquatorialShopMonthlySalesReport = () => {
         setTotalExpenditureAmountPaid(totalExpenseAmountPaid);
         setExpenditureBalance(expenseAmountNotPaid);
         //setIsCalculationsLoading(false);
-      }, [filteredSales, filteredExpenses]);
+      }, [filteredSales, filteredExpenses])
+
+      useEffect(() => {
+        const fetchMassageData = async () => {
+          let res = await axios.post('http://82.180.136.230:3005/fetchallincomesubmissionrecords', {
+            token: localStorage.getItem('token')
+          });
+      
+          if (Array.isArray(res.data)) {
+            setIsLoading(false);
+            setMassageData(res.data);
+          }
+        }
+      
+        fetchMassageData()
+      }, [])
+
+      useEffect(()=>{
+
+        const filteredData = massageData.filter((data)=>{
+          const saleDate = data.submissionDate.split("/"); // Split date into day, month, year
+          const saleDay = parseInt(saleDate[0], 10);
+          const saleMonth = parseInt(saleDate[1], 10);
+          const saleYear = parseInt(saleDate[2], 10);
+  
+          if (
+            selectedMonth !== "" &&
+            selectedMonth === saleMonth.toString() && // Compare selected month with sale month
+            selectedYear !== "" &&
+            selectedYear === saleYear.toString() // Compare selected year with sale year
+          ) {
+            return true;
+          }
+  
+          return false;
+        })
+        setFilteredMassageData(filteredData)
+
+                  let grandTotalMassageAmount = 0;
+                  let grandTotalProductAmount = 0;
+            
+                  // Calculate totals for each object and accumulate them
+                  filteredData.forEach(item => {
+                      const totalMassageAmount = item.massageamount;
+                      const totalProductAmount = item.productamount;
+            
+                      grandTotalMassageAmount += totalMassageAmount;
+                      grandTotalProductAmount += totalProductAmount;
+                  })
+                  setTotalMassageAmount(grandTotalMassageAmount+grandTotalProductAmount)
+      
+    },[massageData, selectedMonth, selectedYear])
+
 
     return(
         <div style={{backgroundColor:'#E9E9E9', color:'black'}}>
@@ -223,7 +278,7 @@ const EquatorialShopMonthlySalesReport = () => {
                     <Navbar />
                 </Col>
                 <Col sm='12' md='10' lg='10' xl='10'>
-                    <h1 style={{textAlign:'center', color:'black',marginTop:'60px'}}>Masanafu Shop Monthly Report <span style={{float:'right',marginRight:'10px'}}><ReportPrintingButton /></span></h1>
+                    <h1 style={{textAlign:'center', color:'black',marginTop:'60px'}}>Equatorial Shop Monthly Report <span style={{float:'right',marginRight:'10px'}}><ReportPrintingButton /></span></h1>
                     <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center',marginTop:'10px' }}>
                         <label htmlFor="week" style={{color:'black'}}>Select Year: </label>
                         <select id="week" value={selectedYear}  style={{ width: '300px' }} className="form-control" onChange={handleYearChange}>
@@ -408,7 +463,6 @@ const EquatorialShopMonthlySalesReport = () => {
                         {totalAmount ? 
                             <>
                                 <p>Total Amount From Sales: UGX {totalAmount}</p>
-                                <p>Total Amount From Sales: UGX {totalAmount}</p>
                                 <p>Amount Recieved (Cash): UGX {paymentMethodTotals.Cash}</p>
                                 <p>Amount Recieved (MTN MoMo): UGX {paymentMethodTotals.MTNMoMo}</p>
                                 <p>Amount Recieved (Airtel Money): UGX {paymentMethodTotals.AirtelMoney}</p>
@@ -443,6 +497,7 @@ const EquatorialShopMonthlySalesReport = () => {
                                 <p>Total Amount From Sales: UGX {totalAmount}</p>
                                 <p>Total Expenditure Amount: UGX {totalExpenditureAmount}</p>
                                 <p>Total Sales Amount Recieved: UGX {totalAmountPaid}</p>
+                                <p>Total Income Amount From Massage Department: UGX {totalMassageAmount}</p> 
                                 <p>Total Expenditure Amount Spent: UGX {totalExpenditureAmountPaid}</p>
                                 <p>Total Sales Amount Not Recieved: UGX {balance}</p>
                                 <p>Total Expenditure Amount Not Paid: UGX {expenditureBalance}</p>

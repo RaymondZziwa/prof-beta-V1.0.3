@@ -7,6 +7,23 @@ import DisplayDnnRecords from './display_records/display_table'
 const TrackDnns = () => {
     const [generalStoreRestockRecords, setGeneralStoreRestockRecords] = useState([])
     const [labellingStoreRestockRecords, setLabellingStoreRestockRecords] = useState([])
+    const [tableData, setTableData] = useState([]);
+    const [areInventoryRecordsLoading, setAreInventoryRecordsLoading] = useState(true)
+    const [inventoryRecords, setInventoryRecords] = useState([])
+
+    const fetchShopInventoryRecords = async () => {
+      let res = await axios.post('http://82.180.136.230:3005/fetchallequatorialgeneralstoreinventroyrestockrecords',{
+          token: localStorage.getItem('token'),
+          branch: localStorage.getItem('branch')
+      })
+      console.log(res.data)
+      if(Array.isArray(res.data)){
+          setAreInventoryRecordsLoading(false);
+          setInventoryRecords(res.data);
+
+         // setInventoryRecords(res.data)
+      }
+  }
 
 
     const fetchGeneralStoreInventoryRecords = async () => {
@@ -32,11 +49,54 @@ const TrackDnns = () => {
     useEffect(()=>{
         fetchGeneralStoreInventoryRecords()
         fetchLabellingStoreInventoryRecords()
+        fetchShopInventoryRecords()
     },[])
 
     useEffect(()=>{
-        console.log('gr', generalStoreRestockRecords)
-        console.log('lr', labellingStoreRestockRecords)
+        // Process your data here and set the result in tableData state using for loops
+    const combinedData = [];
+
+    for (let i = 0; i < generalStoreRestockRecords.length; i++) {
+      for (let j = 0; j < labellingStoreRestockRecords.length; j++) {
+        if (
+          generalStoreRestockRecords[i].itemid === labellingStoreRestockRecords[j].itemId &&
+          generalStoreRestockRecords[i].deliverynotenumber === labellingStoreRestockRecords[j].deliverynotenumber
+        ) {
+         // Check if the record already exists in combinedData
+         const existingRecordIndex = combinedData.findIndex(
+            (record) =>
+              record.itemid === generalStoreRestockRecords[i].itemid &&
+              record.deliverynotenumber === generalStoreRestockRecords[i].deliverynotenumber
+          )
+
+          if (existingRecordIndex !== -1) {
+            // If the record already exists, add the quantity
+            combinedData[existingRecordIndex].quantitySubmittedToCustodian +=
+              generalStoreRestockRecords[i].quantityin;
+
+            //updating discrepancy
+            combinedData[existingRecordIndex].discrepancy = combinedData[existingRecordIndex].quantityin - combinedData[existingRecordIndex].quantitySubmittedToCustodian
+          }else{
+            const quantitySubmittedToCustodian = generalStoreRestockRecords[i].quantityin;
+            const quantityin = labellingStoreRestockRecords[j].quantity
+            const discrepancy = quantityin-quantitySubmittedToCustodian
+
+          combinedData.push({
+            deliverynotenumber: generalStoreRestockRecords[i].deliverynotenumber,
+            itemid: generalStoreRestockRecords[i].itemid,
+            itemName: labellingStoreRestockRecords[j].productName,
+            quantitySubmittedToCustodian,
+            units: labellingStoreRestockRecords[j].units,
+            quantityin,
+            discrepancy,
+            deliverynoteimage: labellingStoreRestockRecords[j].deliverynoteimage
+          });
+          }
+        }
+      }
+    }
+
+    setTableData(combinedData)
     },[generalStoreRestockRecords, labellingStoreRestockRecords])
 
     return (
@@ -48,7 +108,7 @@ const TrackDnns = () => {
             <h1 style={{textAlign:'center'}}>Track Delivery Note Numbers</h1>
             <Row>
                 <Col sm='12' md='12' lg='12' xl='12'>
-                    <DisplayDnnRecords labellingStoreRestockRecords={labellingStoreRestockRecords}/>
+                    <DisplayDnnRecords labellingStoreRestockRecords={tableData}/>
                 </Col>
             </Row>
         </div>
