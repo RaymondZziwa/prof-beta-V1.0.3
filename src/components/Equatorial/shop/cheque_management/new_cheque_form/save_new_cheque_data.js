@@ -18,7 +18,7 @@ const SaveNewChequeData = ({setStatus, fetchAllChequeRecords}) => {
         try {
             let res = await axios.post('http://82.180.136.230:3005/savechequedata',{
                 token: localStorage.getItem('token'),
-                drawerNames: `${fName} ${lName}`,
+                drawerNames: `${fName.toLocaleUpperCase().trim()} ${lName.toUpperCase().trim()}`,
                 drawerContact: contact,
                 bankName: bankName,
                 chequeNumber: chequeNumber,
@@ -32,7 +32,6 @@ const SaveNewChequeData = ({setStatus, fetchAllChequeRecords}) => {
             
             setStatus({ type: 'success' })
             fetchAllChequeRecords()
-
         } catch (error) {
             setStatus({ type: 'error', err: error });
         }

@@ -103,12 +103,12 @@ return(
             <div className="mb-3 mclickable_option">
                 Projects Store Stock Taking
             </div>
-                </Link>
+        </Link> 
         <Link className="tab_nav" to="/accountsettings">
             <div className="mb-3 mclickable_option">
                 Settings
             </div>
-        </Link>
+    </Link>
     </div>
     <Col sm='12' md='1' lg='1' xl='1'>
     </Col>

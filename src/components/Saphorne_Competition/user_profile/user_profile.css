@@ -1,0 +1,45 @@
+.profile-picture {
+    position: relative;
+    display: inline-block;
+}
+
+.picture {
+    max-width: 50%;
+    height: auto;
+    transition: transform 0.3s;
+  }
+  
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 100%;
+    /* Grey overlay color with transparency */
+    opacity: 0; /* Initially hidden */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s;
+  }
+  
+  .change-profile {
+    text-align: center;
+  }
+  
+  .change-button {
+    background-color: #007BFF; /* Change button background color */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .profile-picture:hover .picture {
+    transform: scale(1.1); /* Zoom in effect on hover */
+  }
+  
+  .profile-picture:hover .overlay {
+    opacity: 1; /* Show overlay on hover */
+  }

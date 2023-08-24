@@ -60,16 +60,15 @@ const ChequeManagement = () => {
     return(
         <>
         <Row>
-                <Col sm='12' md='1' lg='1' xl='1'></Col>
-                <Col sm='12' md='10' lg='10' xl='10'>
+                <Col sm='12' md='11' lg='11' xl='11'>
                     <Row>
-                        <Col sm='12' md='3' lg='3' xl='3' style={{marginLeft:'20px'}}>
+                        <Col sm='12' md='2' lg='2' xl='2' style={{marginLeft:'20px'}}>
                             <h2 style={{textAlign:'center', marginTop:'60px'}}>Save Cheque Details</h2>
                             {status?.type === 'success' && <p style={{ margin: '20px' }} class="alert alert-success" role="alert">Success</p>}
                             {status?.type === 'error' && <p style={{ margin: '20px' }} class="alert alert-danger" role="alert">Error!</p>}
                             <SaveNewChequeData setStatus={setStatus} fetchAllChequeRecords={fetchAllChequeRecords}/>
                         </Col>
-                        <Col sm='12' md='8' lg='8' xl='8' style={{marginLeft:'20px'}}>
+                        <Col sm='12' md='9' lg='9' xl='9' style={{marginLeft:'2px'}}>
                             <h2 style={{textAlign:'center', marginTop:'60px'}}>Cheques Scheduled To Be Banked Today</h2>
                             <p style={{textAlign:'center'}}>Today's Date: {new Date().toLocaleDateString()}</p>
                             <DisplayTodayCheques chequeData={todayCheques} openModal={openModal} fetchAllChequeRecords={fetchAllChequeRecords}/>

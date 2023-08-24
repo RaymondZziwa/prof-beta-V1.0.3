@@ -6,6 +6,7 @@ const ViewAllChequesModal = ({chequeData}) => {
     const [fromDate, setFromDate] = useState()
     const [toDate, setToDate] = useState()
     const [filteredData, setFilteredData] = useState([])
+    const [drawerNames, setDrawerNames] = useState('')
 
     const filterChequeData = () => {
         const filteredCheques = chequeData.filter(cheque => {
@@ -15,6 +16,21 @@ const ViewAllChequesModal = ({chequeData}) => {
 
         setFilteredData(filteredCheques)
     }
+
+    const filterByNames = (e) => {
+        const drawerNames = e.target.value
+
+        if(drawerNames.length > 0){
+            const names = drawerNames.toUpperCase().trim()
+            const filteredCheques = chequeData.filter(cheque => {
+                return names === cheque.DrawerNames
+              })
+    
+            setFilteredData(filteredCheques)
+        }
+    }
+
+
 
 
     return (
@@ -51,6 +67,12 @@ const ViewAllChequesModal = ({chequeData}) => {
         </div>
         </div>
         <button className="btn btn-primary" onClick={filterChequeData}><FontAwesomeIcon icon={faFilter} fade style={{color: "white"}} />Filter</button>
+        <div className="mb-3">
+            <div className="form-floating">
+                <input className="form-control" id="floatingPassword" placeholder="Password" onChange={filterByNames} required/>
+                <label for="floatingPassword">Filter By Drawer's Names</label>
+            </div>
+        </div>
         <table className="table table-light" style={{ marginTop: '2px' }}>
         <thead>
             <tr>

@@ -181,15 +181,23 @@ import ChequeManagement from './components/Equatorial/shop/cheque_management/che
 import TrackDnns from './components/Equatorial/inventory_custodian/track_delivery_note_numbers/track_dnns';
 import ExhibitionSalesRecords from './components/Equatorial/inventory_custodian/exhibition_sales_records/exhibition_sales_records';
 import ExhibitionPOS from './components/Equatorial/inventory_custodian/exhibition_pos/point_of_sale/pos';
+import SaphroneCompetitionAuth from './components/Saphorne_Competition/authentication/auth';
+import ParticipantDashboard from './components/Saphorne_Competition/Dashboard/participant_dashboard';
+import UserProfile from './components/Saphorne_Competition/user_profile/user_profile';
+import CompleteUserProfile from './components/Saphorne_Competition/user_profile/complete_your_profile';
+import FilteredParticipantDashboard from './components/Saphorne_Competition/filtered_leaderboard/filtered_dashboard';
 
 function App() {
   const authCtx = useContext(AuthContext);
   const logoutTimerIdRef = useRef(null);
 
-useEffect(() => {
   const logoutUser = () => {
-    localStorage.clear()
+    localStorage.clear();
+    window.location.href = '/Login'
   }
+
+  useEffect(() => {
+
   const autoLogout = () => {
     if (document.visibilityState === 'hidden') {
       const timeOutId = window.setTimeout(logoutUser, 100 * 60 * 1000);
@@ -204,18 +212,19 @@ useEffect(() => {
   return () => {
     document.removeEventListener('visibilitychange', autoLogout);
   };
-}, []);
+}, [])
+
 
   return (
     <div className="App">
       <BrowserRouter>
-          {!authCtx.isLoggedIn && (<Route path="/Login" >
+         {!authCtx.isLoggedIn && (<Route path="/Login" >
             <Login />
           </Route>
-          )}
-          {!authCtx.isLoggedIn && (
+        )}
+          {/* {!authCtx.isLoggedIn && (
             <Redirect to='/Login' />
-          )}
+          )} */}
 
           {/* {authCtx.isLoggedIn && (<Route path="*">
             <Redirect to={localStorage.getItem('home')} />
@@ -820,6 +829,25 @@ useEffect(() => {
           {authCtx.isLoggedIn && (<Route path="/exhibitionpos">
             <ExhibitionPOS />
           </Route>)}
+
+          {/* Buwama */}
+
+          {/* Prof Saphrone Competition Routes */}
+          <Route path="/profbioresearchsaphronecompetitionauth" >
+            <SaphroneCompetitionAuth />
+          </Route>
+          <Route path="/saphroneparticipantdashboard" >
+            <ParticipantDashboard />
+          </Route>
+          <Route path="/manageuserprofile" >
+            <UserProfile />
+          </Route>
+          <Route path="/completeuserprofile" >
+            <CompleteUserProfile />
+          </Route>
+          <Route path="/filtersaphroneparticipantdashboard" >
+            <FilteredParticipantDashboard />
+          </Route>
       </BrowserRouter>
     </div>
   );

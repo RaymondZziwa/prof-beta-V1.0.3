@@ -4,16 +4,18 @@ import axios from 'axios'
 
 const DisplayTodayCheques = ({chequeData, openModal, fetchAllChequeRecords}) => {
 
-    const confirmChequePayment = async (event) => {
-        let res = await axios.post('http://82.180.136.230:3005/markchequeaspaid',{
+    const confirmChequePayment = (event) => {
+        event.preventDefault()
+        let res = axios.post('http://82.180.136.230:3005/markchequeaspaid',{
             token: localStorage.getItem('token'),
             chequeId: event.target.id
         })
         .then(fetchAllChequeRecords)
     }
 
-    const rejectChequePayment = async (event) => {
-        let res = await axios.post('http://82.180.136.230:3005/markchequeasbounced',{
+    const rejectChequePayment = (event) => {
+        event.preventDefault()
+        let res =  axios.post('http://82.180.136.230:3005/markchequeasbounced',{
             token: localStorage.getItem('token'),
             chequeId: event.target.id
         })
@@ -36,7 +38,6 @@ const DisplayTodayCheques = ({chequeData, openModal, fetchAllChequeRecords}) => 
                     <th scope="col">Amount Paid (UGX)</th>
                     <th scope="col">Date Issued</th>
                     <th scope="col">Banking Date</th>
-                    <th scope="col">Cheque Issued By</th>
                     <th scope="col">Notes</th>
                     <th scope="col">Cheque Status</th>
                     <th scope="col">Action</th>
@@ -53,16 +54,15 @@ const DisplayTodayCheques = ({chequeData, openModal, fetchAllChequeRecords}) => 
                         <td>{data.amount}</td>
                         <td>{data.DateIssued}</td>
                         <td>{data.BankingDate}</td>
-                        <td>{data.ChequeIssuedBy}</td>
                         <td>{data.Notes}</td>
                         <td>{data.status}</td>
                         <td>
-                        <button id={data.chequeId} className='btn btn-success' onClick={confirmChequePayment}><FontAwesomeIcon icon={faCheck} bounce style={{color: "white"}} onClick={(e) => e.stopPropagation()}/></button>
-                        <button id={data.chequeId} className='btn btn-danger' style={{marginTop:'2px'}} onClick={rejectChequePayment}><FontAwesomeIcon icon={faCircleXmark} fade style={{color: "white"}} onClick={(e) => e.stopPropagation()}/></button>
+                        <button type='button'  id={data.chequeId} className='btn btn-success' onClick={confirmChequePayment}>Paid</button>
+                        <button type='button' id={data.chequeId} className='btn btn-danger' style={{marginTop:'2px'}} onClick={rejectChequePayment}>Rejected</button>
                         </td>
                     </tr>
                 ):(
-                    <tr><td colSpan='12'>There are not cheques that are expected to be banked today.</td></tr>
+                    <tr><td colSpan='11'>There are not cheques that are expected to be banked today.</td></tr>
                 )}
             </tbody>
         </table>
