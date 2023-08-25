@@ -186,10 +186,12 @@ import ParticipantDashboard from './components/Saphorne_Competition/Dashboard/pa
 import UserProfile from './components/Saphorne_Competition/user_profile/user_profile';
 import CompleteUserProfile from './components/Saphorne_Competition/user_profile/complete_your_profile';
 import FilteredParticipantDashboard from './components/Saphorne_Competition/filtered_leaderboard/filtered_dashboard';
+import { useSelector } from 'react-redux';
 
 function App() {
   const authCtx = useContext(AuthContext);
   const logoutTimerIdRef = useRef(null);
+ const isParticipantLoggedIn = useSelector((state) => state.tokenmgt.isParticipantLoggedIn)
 
   const logoutUser = () => {
     localStorage.clear();
@@ -833,21 +835,28 @@ function App() {
           {/* Buwama */}
 
           {/* Prof Saphrone Competition Routes */}
-          <Route path="/profbioresearchsaphronecompetitionauth" >
-            <SaphroneCompetitionAuth />
-          </Route>
-          <Route path="/saphroneparticipantdashboard" >
-            <ParticipantDashboard />
-          </Route>
-          <Route path="/manageuserprofile" >
-            <UserProfile />
-          </Route>
-          <Route path="/completeuserprofile" >
-            <CompleteUserProfile />
-          </Route>
-          <Route path="/filtersaphroneparticipantdashboard" >
-            <FilteredParticipantDashboard />
-          </Route>
+              <Route path="/profbioresearchsaphronecompetitionauth" >
+                <SaphroneCompetitionAuth />
+              </Route>
+              {/* Private routes */}
+              {isParticipantLoggedIn ? (
+                <>
+                  <Route path="/saphroneparticipantdashboard" >
+                    <ParticipantDashboard />
+                  </Route>
+                  <Route path="/manageuserprofile" >
+                    <UserProfile />
+                  </Route>
+                  <Route path="/completeuserprofile" >
+                    <CompleteUserProfile />
+                  </Route>
+                  <Route path="/filtersaphroneparticipantdashboard" >
+                    <FilteredParticipantDashboard />
+                  </Route>
+                </>
+              ) : (
+                <Redirect to="/profbioresearchsaphronecompetitionauth" />
+              )}
       </BrowserRouter>
     </div>
   );

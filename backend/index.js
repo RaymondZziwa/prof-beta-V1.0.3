@@ -20,6 +20,7 @@ app.use(cors(corsOptions))
 // Add this code before defining your routes
 app.use('/receipt_uploads', express.static('receipt_uploads'));
 app.use('/delivery_notes_uploads', express.static('receipt_uploads'));
+app.use('/saphrone_participants_profile_pictures_uploads', express.static('receipt_uploads'));
 
 const port = process.env.SERVER_PORT;
 
@@ -6392,6 +6393,121 @@ app.post('/exhibitioncheckout', (req, res) => {
             }
           })
 })
+
+//Saphrone Routes
+//1. Route to register new participants
+app.post('/newsaphroneparticipantregistration', (req, res) => {
+            const employeeId = `E-${Math.floor(Math.random() * 1000)}`
+            const username = req.body.username
+            const firstname = req.body.fName
+            const lastname = req.body.lName
+            const gender = req.body.gender
+            const dateofregistration = req.body.dateofregistration
+            const password = req.body.password
+
+            // console.log(Id,username,firstname,lastname,gender)
+            const saltRounds = 12;
+            const encryptedPwd = bcrypt.hashSync(password, saltRounds);
+            //missing code to check if user already exists
+            db.query('SELECT * FROM saphroneparticipants WHERE username = ?;', username, function (error, results) {
+                // If there is an issue with the query, output the error
+                if (error) throw error;
+                // If the account exists
+                if (results.length > 0) {
+                    res.send({
+                        status: 403,
+                        msg: 'This username is already in use.'
+                    })
+                } else {
+                    const sqlInsert = "Insert into saphroneparticipants(employeeId,username,firstName,lastName,gender,password,registrationdate) values(?,?,?,?,?,?,?)"
+                    db.query(sqlInsert, [employeeId, username, firstname, lastname, gender, encryptedPwd, dateofregistration], (err) => {
+                        if (err) {
+                            console.log(err)
+                            res.send({
+                                status: 403,
+                                msg: "An error occured. Ensure all fields are filled in and try again."
+                            });
+                        } else {
+                            res.send({
+                                status: 200,
+                                msg: "Your registration has been successful. Please login with your credentials."
+                            });
+                        }
+                    })
+                }
+            })
+})
+
+//2.login route for all saphrone competition participants
+app.post('/saphroneparticipantlogin', (req, res) => {
+    const username = req.body.username
+    const password = req.body.password
+
+    db.query('SELECT * FROM saphroneparticipants WHERE username= ?;', username , (error, results) => {
+        //if the query is faulty , throw the error
+        if (error) console.log(error);
+        //if account exists
+        if (results.length > 0) {
+                bcrypt.compare(password, results[0].password, (error, response) => {
+                if (error) throw error;
+                if (response) {
+                    const token = jwt.sign({
+                        employeeId: results[0].employeeId
+                    }, 'SECRETKEY', {
+                        expiresIn: '1d'
+                    }
+                    )
+                    res.send({
+                        status: 200,
+                        token:token,
+                        employeeId: results[0].employeeId,
+                        branch: results[0].branch,
+                        userData: results[0]
+                    })
+                } else {
+                    res.send({
+                        status: 403,
+                        msg: 'Incorrect credentials.'
+                    });
+                }
+            })
+        } else {
+            res.send({
+                status: 403,
+                msg: 'User doesnot exist.'
+            });
+        }
+    })
+})
+
+//Complete participant profile
+app.post('/completeparticipantprofile', upload.single('file'), (req, res) => {
+    // Handle the uploaded file
+    const employeeId = req.body.employeeId
+    const contact1 = req.body.contact1
+    const contact2 = req.body.contact2
+    const address = req.body.address
+    const branch = req.body.branch 
+
+    if (!req.file) {
+        console.log('No image detected')
+        return res.status(400).json({ error: 'No file uploaded.' });
+    }
+  
+
+    const imagePath = path.join('saphrone_participants_profile_pictures_uploads/', req.file.filename)
+  
+    // Save the image source to the database
+    const sqlInsert = "UPDATE saphroneparticipants SET contact1 = ? , contact2 = ?, address = ?, branch = ?, profilepicture = ? WHERE employeeId = ?";
+    db.query(sqlInsert, [contact1, contact2, address, branch, imagePath, employeeId], (err) => {
+      if (err) {
+        console.error('Error saving receipt to the database:', err);
+        return res.status(500).json({ msg: 'Error updating your profile' });
+      }else{
+        res.send({ status: 200, msg: 'Your profile has been successfully updated.' });
+      }
+    });
+  });
 
 app.listen(port, () => {
     console.log(`Server is listening on port ${port}`);

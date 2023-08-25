@@ -36,9 +36,7 @@ const MasanafuExpenseReceiptViewer = () => {
 
   const handleViewReceipt = (event) => {
     event.preventDefault()
-    console.log('Expense ID:', expenseId);
-    console.log('Receipts:', receipts);
-    
+
     const filteredReceipt = receipts.find((receipt) => parseInt(receipt.expenditureid) === parseInt(expenseId))
     setFilteredReceipt(filteredReceipt);
   };

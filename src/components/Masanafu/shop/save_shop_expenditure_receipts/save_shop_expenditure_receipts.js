@@ -34,7 +34,6 @@ const SaveShopExpenditureReceipts = () => {
             }
           }).then(() => setStatus({ type: 'success' }))
           .catch((err) => setStatus({ type: 'error', err }))
-          console.log('Response:', res.data);
         } catch (error) {
           console.error('Error:', error);
         }

@@ -3,48 +3,99 @@ import '../Dashboard/leaderboard.css'
 import bkg from '../../../imgs/bkg.jpg'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faX, faUser, faCamera } from '@fortawesome/free-solid-svg-icons'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import SaphroneNavbar from '../nav_bar/saphrone_navbar'
-import sampledp from '../../../imgs/sampledp.jpg'
 import './user_profile.css'
-
+import { useSelector } from 'react-redux'
+import axios from 'axios'
+import { useHistory } from 'react-router-dom'
 
 const CompleteUserProfile = () => {
+    const [selectedImage, setSelectedImage] = useState(null)
+    const [selectedFile, setSelectedFile] = useState(null)
+    const [contact1, setContact1] = useState('')
+    const [contact2, setContact2] = useState('')
+    const [address, setAddress] = useState('')
+    const [branch, setBranch] = useState('')
     const [isOpen, setIsOpen] = useState(false)
-    const [passwordShown, setPasswordShown] = useState(false)
-    const [pwd, setPwd] = useState('')
-    const [confirmPwd, setConfirmPwd] = useState('')
-    const [arePasswordsMatching, setArePasswordsMatching] = useState(undefined)
-    const [isDisabled, setIsDisabled] = useState(true)
-    const confirmPasswordRef = useRef()
+    const [serverMsg, setServerMsg] = useState('')
 
-        const showPwd = event => {
-            event.preventDefault()
-            setPasswordShown(!passwordShown);
-        }
- 
-    const confirmPwdHandler = event => {
-        event.preventDefault()
-        setConfirmPwd(event.target.value) 
-        if(pwd !== confirmPasswordRef.current.value){
-            setArePasswordsMatching('Passwords do not match!')
-            setIsDisabled(true)
-        }else{
+    const [isDisabled, setIsDisabled] = useState(true)
+    const fileInputRef = useRef()
+    const history = useHistory()
+
+
+    const userData = useSelector((state)=>state.tokenmgt.userData)
+
+    useEffect(()=>{
+        const  areFieldsEmpty = () => {
+            // Check if any of the fields are empty
+            if (
+                !contact1.trim() ||
+                !contact2.trim() ||
+                !address.trim() ||
+                !branch.trim()
+            ) {
+                setIsDisabled(true)
+            }
+    
             setIsDisabled(false)
-            setArePasswordsMatching(null)
-        }     
+        }
+        areFieldsEmpty()
+    },[contact1, contact2, address, branch])
+    
+    const handleImageChange = (event) => {
+        const file = event.target.files[0];
+        setSelectedFile(file)// Get the first selected file
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = () => {
+            setSelectedImage(reader.result);
+          };
+          reader.readAsDataURL(file);
+        }
     }
+
 
     const toggleNavbar = () => {
       setIsOpen(!isOpen);
     }
+
+    const saveProfileDataHandler = async (event) => {
+        event.preventDefault()
+        const formData = new FormData();
+        formData.append('token', localStorage.getItem('token'))
+        formData.append('employeeId', userData.employeeId)
+        formData.append('file', selectedFile)
+        formData.append('contact1', contact1)
+        formData.append('contact2', contact2)
+        formData.append('address', address)
+        formData.append('branch', branch)
+
+        try {
+            const res = await axios.post('http://82.180.136.230:3005/completeparticipantprofile', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            if(res.data.status === 200){
+                history.replace('/saphroneparticipantdashboard')
+            }  else{
+                setServerMsg(res.data.msg)
+            }
+        } catch (error) {
+           console.error('Error:', error);
+        }
+    }
+
 
     return(
         <div style={{backgroundImage:`url(${bkg})`, backgroundSize:'cover', height:'125vh'}}>
         <Row>
              <Col sm='12' md='12' lg='12' xl='12'>
                  {isOpen === true ? <FontAwesomeIcon icon={faX} style={{color: "#ffffff", fontSize:'40px', float:'right', margin:'10px', cursor:'pointer'}} onClick={toggleNavbar}/> : <FontAwesomeIcon icon={faBars} style={{color: "#ffffff", fontSize:'40px', float:'right', margin:'10px', cursor:'pointer'}} onClick={toggleNavbar}/>}
-                 <div style={{backgroundColor:'red'}}>
+                 <div>
                      <SaphroneNavbar isOpen={isOpen} />
                  </div>
              </Col>
@@ -56,39 +107,55 @@ const CompleteUserProfile = () => {
                  <Row>
                     <Col sm='12' md='4' lg='4' xl='4' style={{textAlign:'center'}}>
                     <div className="profile-picture">
-                        <FontAwesomeIcon icon={faUser}  style={{borderRadius:'100%', height:'230px', color:'white'}}/>
-                        {/* <img src={sampledp} className='picture' alt="dp" height='230px' style={{borderRadius:'100%'}}/> */}
+                        {selectedImage ? <img src={selectedImage} alt="Selected Profile" style={{borderRadius:'100%', height:'230px'}} /> : <FontAwesomeIcon icon={faUser}  style={{borderRadius:'100%', height:'230px', color:'white'}} />}
                         <div className="overlay">
                             <div className="change-profile">
-                                <FontAwesomeIcon icon={faCamera} style={{color: "grey", cursor:'pointer', fontSize:'50px'}} />
+                                <FontAwesomeIcon icon={faCamera} style={{color: "grey", cursor:'pointer', fontSize:'50px'}} onClick={() => fileInputRef.current.click()}/>
+                                <input
+                                    type="file"
+                                    name='file'
+                                    accept="image/png, image/gif, image/jpeg"
+                                    capture="user"
+                                    style={{ display: 'none' }}
+                                    onChange={handleImageChange}
+                                    ref={fileInputRef}
+                                />
                             </div>
                         </div>
                     </div>
-                        
-                        <p style={{textAlign:'center',color:'white'}}><span style={{color:'gold'}}>Name:</span> Zziwa Raymond</p>
-                        <p style={{textAlign:'center',color:'white'}}><span style={{color:'gold'}}>Username:@</span> zray</p>
+                    {userData ? (
+                        <div>
+                            <p style={{textAlign:'center',color:'white'}}><span style={{color:'gold'}}>Name:</span>{userData.firstName} {userData.lastName}</p>
+                            <p style={{textAlign:'center',color:'white'}}><span style={{color:'gold'}}>Username:@</span> {userData.username}</p>
+                            <p style={{textAlign:'center',color:'white'}}><span style={{color:'gold'}}>Gender:</span> {userData.gender}</p>
+                        </div>
+                    ) : (
+                        <p style={{textAlign:'center',color:'white'}}>Loading user data...</p>
+                    )}
                     </Col>
                     <Col sm='12' md='4' lg='4' xl='4' style={{display:'flex', flexDirection: 'column', alignItems: 'center'}}>
+                        {serverMsg.length > 0 && <p style={{ margin: '5px',wordWrap:'break-word', width:'358px', textAlign:'center' }} className="alert alert-danger" role="alert">{serverMsg}</p>}
+                        <p style={{color:'white'}}>*Ensure to fill in all the fields*</p>
                         <div className="mb-3">
                             <div className="form-floating" id='saphroneAuthInput'>
-                                <input className="form-control" id="floatingPassword" placeholder="Password" required/>
+                                <input className="form-control" id="floatingPassword" placeholder="Password" onChange={(e)=>setContact1(e.target.value)} required/>
                                 <label for="floatingPassword">Contact 1</label>
                             </div>
                         </div>
                         <div className="mb-3">
                             <div className="form-floating" id='saphroneAuthInput'>
-                                <input className="form-control" id="floatingPassword" placeholder="Password" required/>
+                                <input className="form-control" id="floatingPassword" placeholder="Password" onChange={(e)=>setContact2(e.target.value)} required/>
                                 <label for="floatingPassword">Contact 2</label>
                             </div>
                         </div>
                         <div className="mb-3">
                             <div className="form-floating" id='saphroneAuthInput'>
-                                <input className="form-control" id="floatingPassword" placeholder="Password" required/>
+                                <input className="form-control" id="floatingPassword" placeholder="Password" onChange={(e)=>setAddress(e.target.value)} required/>
                                 <label for="floatingPassword">Address</label>
                             </div>
                         </div>
                         <div className="mb-3">
-                            <select className="form-select" id='select' aria-label="Default select example" style={{ height: "60px", color: 'rgb(1, 1, 87)' }} required>
+                            <select className="form-select" id='select' aria-label="Default select example" style={{ height: "60px", color: 'rgb(1, 1, 87)' }} onChange={(e)=> setBranch(e.target.value)} required>
                                 <option defaultValue>Branch</option>
                                 <option value="Masanafu">Masanafu</option>
                                 <option value="Namungoona">Namungoona</option>
@@ -97,17 +164,7 @@ const CompleteUserProfile = () => {
                             </select>
                         </div>
                         <div className="mb-3">
-                            <select className="form-select" id='select' aria-label="Default select example" style={{ height: "60px", color: 'rgb(1, 1, 87)' }} required>
-                                <option defaultValue>Department</option>
-                            </select>
-                        </div>
-                        <div className="mb-3">
-                            <select className="form-select" id='select' aria-label="Default select example" style={{ height: "60px", color: 'rgb(1, 1, 87)' }} required>
-                                <option defaultValue>Role</option>
-                            </select>
-                        </div>
-                        <div className="mb-3">
-                            <button style={{ width: "100%", border: "none", color: "white", height: "45px", background: '-webkit-linear-gradient(right, #003366, #004080, #0059b3, #0073e6)' }} className={typeof arePasswordsMatching === 'string' ? 'disabled' : ''} disabled={isDisabled}>SAVE PROFILE DATA</button>
+                            <button style={{ width: "100%", border: "none", color: "white", height: "45px", background: '-webkit-linear-gradient(right, #003366, #004080, #0059b3, #0073e6)' }} disabled={isDisabled} onClick={saveProfileDataHandler}>SAVE PROFILE DATA</button>
                         </div>
                     </Col>
                  </Row>

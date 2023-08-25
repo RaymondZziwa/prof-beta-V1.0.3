@@ -10,6 +10,7 @@ module.exports = function override(config) {
     path: require.resolve('path-browserify'),
     zlib: require.resolve('browserify-zlib'),
     stream: require.resolve('stream-browserify'),
+    crypto: require.resolve('crypto-browserify')
   };
 
   // Add polyfill for process

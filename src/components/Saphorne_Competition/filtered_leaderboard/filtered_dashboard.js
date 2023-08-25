@@ -3,7 +3,7 @@ import SaphroneLeaderboard from '../Leaderboard/leaderboard'
 import '../Leaderboard/leaderboard'
 import bkg from '../../../imgs/bkg.jpg'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars, faX } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faX, faFilter } from '@fortawesome/free-solid-svg-icons'
 import { useState } from 'react'
 import SaphroneNavbar from '../nav_bar/saphrone_navbar'
 
@@ -39,8 +39,40 @@ const FilteredParticipantDashboard = () => {
                                 <option value="Female">Female</option>
                             </select>
                     </div>
-                    <SaphroneLeaderboard /> 
-                </div>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ marginRight: '10px' }}>
+            <div className="mb-3">
+            <label htmlFor="fromDate" className="form-label" style={{ marginRight: '5px' }}>
+                From
+            </label>
+            <input
+                type="date"
+                className="form-control"
+                id="fromDate"
+                onChange={(e) => setFromDate(e.target.value)}
+                required
+            />
+            </div>
+        </div>
+        -
+        <div style={{ marginLeft: '10px' }}>
+            <div className="mb-3">
+            <label htmlFor="toDate" className="form-label" style={{ marginRight: '5px' }}>
+                To
+            </label>
+            <input
+                type="date"
+                className="form-control"
+                id="toDate"
+                onChange={(e) => setToDate(e.target.value)}
+                required
+            />
+            </div>
+        </div>
+        </div>
+        <button className="btn btn-primary" ><FontAwesomeIcon icon={faFilter} fade style={{color: "white"}} />Filter</button>
+            <SaphroneLeaderboard /> 
+        </div>
             </Col>
 
         </Row>
