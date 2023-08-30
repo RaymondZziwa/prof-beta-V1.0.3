@@ -1,12 +1,21 @@
 import { useState } from "react";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import axios from 'axios'
+import Modal from 'react-modal'
+import EditChequeData from "../edit_cheque_data/edit_cheque_data";
 
-const ViewAllChequesModal = ({chequeData}) => {
+const ViewAllChequesModal = ({chequeData, fetchAllChequeRecords}) => {
     const [fromDate, setFromDate] = useState()
     const [toDate, setToDate] = useState()
     const [filteredData, setFilteredData] = useState([])
     const [drawerNames, setDrawerNames] = useState('')
+    const [editableChequeData, setEditableChequeData] = useState({})
+    const [isModalOpen, setIsModalOpen] = useState(false)
+
+    const closeModal = () => {
+        setIsModalOpen(false)
+    }
 
     const filterChequeData = () => {
         const filteredCheques = chequeData.filter(cheque => {
@@ -24,9 +33,39 @@ const ViewAllChequesModal = ({chequeData}) => {
             const names = drawerNames.toUpperCase().trim()
             const filteredCheques = chequeData.filter(cheque => {
                 return names === cheque.DrawerNames
-              })
+            })
     
             setFilteredData(filteredCheques)
+        }
+    }
+
+    const editChequeData = async (event) => {
+        event.preventDefault()
+        const chequeId = event.target.id;
+
+        const chequeToEdit = chequeData.filter(cheque => {
+            return chequeId === cheque.chequeId
+        })
+
+        setEditableChequeData(chequeToEdit)
+
+        if(editableChequeData){
+            setIsModalOpen(true)
+        }
+    }
+
+    const deleteChequeData = async (event) => {
+        event.preventDefault();
+        const chequeId = event.target.id;
+        try {
+            let res = await axios.post('http://82.180.136.230:3005/deletechequedata', {
+                token: localStorage.getItem('token'),
+                chequeId: chequeId
+            });
+            await fetchAllChequeRecords();
+        } catch (error) {
+            console.error('Error deleting cheque data:', error);
+
         }
     }
 
@@ -37,6 +76,7 @@ const ViewAllChequesModal = ({chequeData}) => {
         <>
         <div style={{ display: 'flex', alignItems: 'center' }}>
         <div style={{ marginRight: '10px' }}>
+            <button onClick={window.print}>Print</button>
             <div className="mb-3">
             <label htmlFor="fromDate" className="form-label" style={{ marginRight: '5px' }}>
                 From
@@ -87,6 +127,7 @@ const ViewAllChequesModal = ({chequeData}) => {
                 <th scope="col">Cheque Issued By</th>
                 <th scope="col">Notes</th>
                 <th scope="col">Cheque Status</th>
+                <th scope="col">Action</th>
             </tr>
         </thead>
         <tbody style={{ textAlign: 'center' }}>
@@ -103,6 +144,10 @@ const ViewAllChequesModal = ({chequeData}) => {
                     <td>{data.ChequeIssuedBy}</td>
                     <td>{data.Notes}</td>
                     <td>{data.status}</td>
+                    <td>
+                        {/* <button id={data.chequeId} onClick={editChequeData}>Edit</button> */}
+                        <button id={data.chequeId} onClick={deleteChequeData}>Delete</button>
+                    </td>
                 </tr>
             ):(
                 filteredData.map(data =>
@@ -118,10 +163,23 @@ const ViewAllChequesModal = ({chequeData}) => {
                         <td>{data.ChequeIssuedBy}</td>
                         <td>{data.Notes}</td>
                         <td>{data.status}</td>
+                        <td>
+                            {/* <button id={data.chequeId} onClick={editChequeData}>Edit</button> */}
+                            <button id={data.chequeId} onClick={deleteChequeData}>Delete</button>
+                        </td>
                     </tr>
             ))}
         </tbody>
         </table>
+        {/* Modal */}
+        <Modal
+            isOpen={isModalOpen}
+            onRequestClose={closeModal}
+        >
+            <h2 style={{textAlign:'center'}}>Edit Cheque Data</h2>
+            <button className='btn btn-danger' style={{float:'right', marginBottom:'20px'}} onClick={closeModal}>Close</button>
+            <EditChequeData editableChequeData={editableChequeData} fetchAllChequeRecords={fetchAllChequeRecords}/>
+        </Modal>
         </>
     )
 }

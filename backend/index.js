@@ -6325,6 +6325,7 @@ app.post('/fetchpreexhibitionlist', (req, res) => {
         }
     })
 })
+
 app.post('/fetchallexhibitionslist', (req, res) => {
     jwt.verify(req.body.token, 'SECRETKEY', (err) => {
         if (err) {
@@ -6449,28 +6450,28 @@ app.post('/saphroneparticipantlogin', (req, res) => {
         //if account exists
         if (results.length > 0) {
                 bcrypt.compare(password, results[0].password, (error, response) => {
-                if (error) throw error;
-                if (response) {
-                    const token = jwt.sign({
-                        employeeId: results[0].employeeId
-                    }, 'SECRETKEY', {
-                        expiresIn: '1d'
+                    if (error) throw error;
+                    if (response) {
+                        const token = jwt.sign({
+                            employeeId: results[0].employeeId
+                        }, 'SECRETKEY', {
+                            expiresIn: '1d'
+                        }
+                        )
+                        res.send({
+                            status: 200,
+                            token:token,
+                            employeeId: results[0].employeeId,
+                            branch: results[0].branch,
+                            userData: results[0]
+                        })
+                    } else {
+                        res.send({
+                            status: 403,
+                            msg: 'Incorrect credentials.'
+                        });
                     }
-                    )
-                    res.send({
-                        status: 200,
-                        token:token,
-                        employeeId: results[0].employeeId,
-                        branch: results[0].branch,
-                        userData: results[0]
-                    })
-                } else {
-                    res.send({
-                        status: 403,
-                        msg: 'Incorrect credentials.'
-                    });
-                }
-            })
+                })
         } else {
             res.send({
                 status: 403,
@@ -6508,6 +6509,181 @@ app.post('/completeparticipantprofile', upload.single('file'), (req, res) => {
       }
     });
   });
+
+  //update participant password
+  app.post('/updateparticipantpassword', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+      if (err) {
+        res.status(403).send("You are not authorized to perform this action.");
+      } else {
+        const employeeId = req.body.employeeId
+        const oldPwd = req.body.oldPwd
+        const newPwd = req.body.newPwd
+        
+
+        db.query('SELECT * FROM saphroneparticipants WHERE employeeId = ?', employeeId , (error, results) => {
+                if (error) {
+                   console.log(error);
+                   res.send({status:500, msg: 'User does not exist.'})
+                } else if(results.length > 0){
+                    bcrypt.compare(oldPwd, results[0].password, (error, response) => {
+                        if (error) throw error;
+                        if(response){
+                            const saltRounds = 12;
+                            const encryptedPwd = bcrypt.hashSync(newPwd, saltRounds);
+                            const sqlInsert = "UPDATE saphroneparticipants SET password = ? WHERE employeeId = ?";
+                            db.query(sqlInsert, [encryptedPwd, employeeId], (err) => {
+                            if (err) {
+                                console.error('Error:', err);
+                                return res.status(500).json({ msg: 'Error while updating your password.' });
+                            }else{
+                                res.send({ status: 200, msg: 'Your password has been changed.' });
+                            }
+                            });
+                        }
+                    })
+                }
+              });
+            }
+          })
+})
+
+//fetch participant data
+app.post('/fetchallparticipants', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+      if (err) {
+        res.status(403).send("You are not authorized to perform this action.");
+      } else {
+        db.query('SELECT * FROM saphroneparticipants',(error, results) => {
+                if (error) {
+                   console.log(error);
+                   res.send({status:500, msg: 'No users found.'})
+                } else if(results.length > 0){
+                   res.send(results[0])
+                }
+              });
+            }
+          })
+})
+
+//fetch paritcipant performance records
+app.post('/fetchallparticipantperformancerecords', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+      if (err) {
+        res.status(403).send("You are not authorized to perform this action.");
+      } else {
+        db.query('SELECT * FROM saphroneparticipantperformance',(error, results) => {
+                if (error) {
+                   console.log(error);
+                   res.send({status:500, msg: 'No sales records found.'})
+                } else if(results.length > 0){
+                   res.send(results)
+                }
+              });
+            }
+          })
+})
+
+//fetch saphrone sales records
+app.post('/fetchallsaphronesalesdata', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+      if (err) {
+        res.status(403).send("You are not authorized to perform this action.");
+      } else {
+        db.query('SELECT * FROM saphroneperformancerecords',(error, results) => {
+                if (error) {
+                   console.log(error);
+                   res.send({status:500, msg: 'No sales records found.'})
+                } else if(results.length > 0){
+                   res.send(results)
+                }
+              });
+            }
+          })
+})
+
+//fetch saphrone sales records
+app.post('/saveparticipantsale', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+      if (err) {
+        res.status(403).send("You are not authorized to perform this action.");
+      } else {
+        const employeeId = req.body.employeeId
+        const date = req.body.date
+        const merchandisesold = req.body.amountsold
+        const points = req.body.points
+
+        db.query('INSERT INTO saphroneperformancerecords (employeeId, date, merchandisesold) VALUES (?, ?, ?);', [employeeId, date, merchandisesold], (error) => {
+            if (error) {
+              console.log(error);
+              res.status(500).send('Error while saving record.');
+            } else {
+                db.query('INSERT INTO saphroneparticipantperformance (employeeId, merchandisesold, points) VALUES (?, ?, ?);', [employeeId, merchandisesold, points], (error) => {
+                    if (error) {
+                      console.log(error);
+                      res.status(500).send('Error while saving record.');
+                    } else {
+                    res.send({ status: '200', msg: 'success' })
+                    }
+                  });
+            }
+          });
+        }
+      })
+})
+
+
+app.post('/deletechequedata', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const chequeId = req.body.chequeId
+
+            db.query('DELETE FROM companycheques WHERE chequeId = ?',chequeId, (error, results) => {
+                if (error) throw (error);
+
+                if (results.length > 0) {
+                    res.send(results)
+                } else {
+                    res.send('Error')
+                }
+            })
+        }
+    })
+})
+
+app.post('/updatechequedata', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const chequeId = req.body.chequeId
+            const newNames = req.body.drawerNames
+            const newContact = req.body.drawerContact
+            const newBankName = req.body.bankName
+            const newChequeNumber = req.body.chequeNumber
+            const newReason = req.body.reason
+            const newAmount = req.body.amount
+            const newNotes = req.body.notes
+            const newBankingDate = req.body.bankingDate
+
+
+            console.log(chequeId, newNames, newContact, newBankName, newChequeNumber, newReason, newAmount, newNotes)
+
+            db.query('UPDATE companycheques SET chequeNumber = ?, DrawerNames = ?, BankName = ?, PaymentReason = ?, amount = ?, BankingDate = ?, Notes = ? WHERE chequeId = ?',[newChequeNumber, newNames, newContact, newBankName, newReason, newAmount, newBankingDate, newNotes, chequeId], (error) => {
+                if (error){
+                    console.error('Error updating data:', error);
+                    res.status(500).send({ status: 500, msg: "An error occurred while updating data" });
+                } else{
+                    console.log('success')
+                    res.send({status: 200, msg:"Cheque Data has been successfully updated"})
+                }
+            })
+        }
+    })
+})
+
 
 app.listen(port, () => {
     console.log(`Server is listening on port ${port}`);

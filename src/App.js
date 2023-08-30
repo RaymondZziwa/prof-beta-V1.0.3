@@ -187,6 +187,9 @@ import UserProfile from './components/Saphorne_Competition/user_profile/user_pro
 import CompleteUserProfile from './components/Saphorne_Competition/user_profile/complete_your_profile';
 import FilteredParticipantDashboard from './components/Saphorne_Competition/filtered_leaderboard/filtered_dashboard';
 import { useSelector } from 'react-redux';
+import SaphroneCompetitionMenu from './components/Equatorial/shop/other_menus/saphrone_competition_menu';
+import SaveParticipantSale from './components/Equatorial/shop/saphrone_competition/save_participant_sale/save_sale';
+import SaphroneCompetitionAnalysis from './components/Equatorial/shop/saphrone_competition/competition_analysis/competition_analysis';
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -226,9 +229,9 @@ function App() {
         )}
           {/* {!authCtx.isLoggedIn && (
             <Redirect to='/Login' />
-          )} */}
+          )}
 
-          {/* {authCtx.isLoggedIn && (<Route path="*">
+          {authCtx.isLoggedIn && (<Route path="*">
             <Redirect to={localStorage.getItem('home')} />
           </Route> )
           } */}
@@ -831,6 +834,15 @@ function App() {
           {authCtx.isLoggedIn && (<Route path="/exhibitionpos">
             <ExhibitionPOS />
           </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/saphronecompetitionmenu">
+            <SaphroneCompetitionMenu />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/saveparticipantsale">
+            <SaveParticipantSale />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/saphronecompetitionanalysis">
+            <SaphroneCompetitionAnalysis />
+          </Route>)}
 
           {/* Buwama */}
 
@@ -855,7 +867,7 @@ function App() {
                   </Route>
                 </>
               ) : (
-                <Redirect to="/profbioresearchsaphronecompetitionauth" />
+                <Redirect to="/Login" />
               )}
       </BrowserRouter>
     </div>

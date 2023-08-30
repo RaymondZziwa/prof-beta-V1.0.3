@@ -9,6 +9,8 @@ import './user_profile.css'
 import { useSelector } from 'react-redux'
 import axios from 'axios'
 import { useHistory } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { tokenMgtActions } from '../store/store'
 
 const CompleteUserProfile = () => {
     const [selectedImage, setSelectedImage] = useState(null)
@@ -23,6 +25,7 @@ const CompleteUserProfile = () => {
     const [isDisabled, setIsDisabled] = useState(true)
     const fileInputRef = useRef()
     const history = useHistory()
+    const dispatch = useDispatch()
 
 
     const userData = useSelector((state)=>state.tokenmgt.userData)
@@ -69,8 +72,8 @@ const CompleteUserProfile = () => {
         formData.append('file', selectedFile)
         formData.append('contact1', contact1)
         formData.append('contact2', contact2)
-        formData.append('address', address)
-        formData.append('branch', branch)
+        formData.append('address', address.toUpperCase().trim())
+        formData.append('branch', branch.toUpperCase().trim())
 
         try {
             const res = await axios.post('http://82.180.136.230:3005/completeparticipantprofile', formData, {
@@ -80,7 +83,7 @@ const CompleteUserProfile = () => {
                 }
             });
             if(res.data.status === 200){
-                history.replace('/saphroneparticipantdashboard')
+                history.replace('/profbioresearchsaphronecompetitionauth')
             }  else{
                 setServerMsg(res.data.msg)
             }

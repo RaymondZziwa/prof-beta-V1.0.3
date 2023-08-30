@@ -1,12 +1,19 @@
 import './navbar.css'
-import sampleDp from '../../../imgs/sampledp.jpg'
+
 import {Link} from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { tokenMgtActions } from '../store/store'
 
 const SaphroneNavbar = ({isOpen}) => {
   const userData = useSelector((state)=> state.tokenmgt.userData)
+  const dispatch = useDispatch()
+
+  const logoutHandler = () => {
+    localStorage.clear()
+    dispatch(tokenMgtActions.logout())
+  }
     return(
     <div className={`navbar-saphrone ${isOpen ? 'open' : ''}`}>
       {/* <button className="toggle-button" onClick={toggleNavbar}>
@@ -21,7 +28,7 @@ const SaphroneNavbar = ({isOpen}) => {
           <li><Link to="/saphroneparticipantdashboard">Dashboard</Link></li>
           <li><Link to="/filtersaphroneparticipantdashboard">View Filtered Leaderboard</Link></li>
           <li><Link to="/manageuserprofile">Manage Your Profile</Link></li>
-          <li><Link to="/profbioresearchsaphronecompetitionauth">Log Out <FontAwesomeIcon icon={faArrowRightFromBracket}/></Link></li>
+          <li><Link to="/profbioresearchsaphronecompetitionauth" onClick={logoutHandler}>Log Out <FontAwesomeIcon icon={faArrowRightFromBracket}/></Link></li>
         </ul>
       </nav>  
     </div>

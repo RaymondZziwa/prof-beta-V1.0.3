@@ -86,7 +86,7 @@ const EquatorialShopInventoryRestockingForm = () => {
                 <div className="form-floating mb-3">
                     <input className="form-control" id="floatingInput" placeholder="Order-Id" style={{ color: "#8CA6FE" }} value={expenditureDate} required readOnly/>
                     <label htmlFor="floatingInput">Date</label>
-                </div>
+                </div>    
                 <select class="form-select" aria-label="Default select example" style={{ height: "60px", color: "#8CA6FE;" }} onChange={itemNameInput} required>
                     <option selected>Item Name</option>
                         { isItemListLoading ? <option>Loading Items From Database</option> :

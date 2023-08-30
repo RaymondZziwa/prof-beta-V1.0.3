@@ -34,6 +34,11 @@ return(
                 Manage NCTs
             </div>
         </Link>
+        <Link className="tab_nav" to="/saphronecompetitionmenu">
+            <div className="mb-3 mclickable_option">
+                Saphrone Competition
+            </div>
+        </Link>
         <Link className="tab_nav" to="/equatorialshopsalesdataretrieval">
             <div className="mb-3 mclickable_option">
                 Sale Data Retrieval

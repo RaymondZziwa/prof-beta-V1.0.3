@@ -47,7 +47,7 @@ const ChequeManagement = () => {
             const formattedDate = `${year}-${month}-${day}`
 
             const todayCheques = res.data.filter((data)=>
-                data.BankingDate === formattedDate && data.status === 'Pending'
+                 data.status === 'Pending'
             )
             setTodayCheques(todayCheques)
         }
@@ -69,7 +69,7 @@ const ChequeManagement = () => {
                             <SaveNewChequeData setStatus={setStatus} fetchAllChequeRecords={fetchAllChequeRecords}/>
                         </Col>
                         <Col sm='12' md='9' lg='9' xl='9' style={{marginLeft:'2px'}}>
-                            <h2 style={{textAlign:'center', marginTop:'60px'}}>Cheques Scheduled To Be Banked Today</h2>
+                            <h2 style={{textAlign:'center', marginTop:'60px'}}>All Pending Cheques</h2>
                             <p style={{textAlign:'center'}}>Today's Date: {new Date().toLocaleDateString()}</p>
                             <DisplayTodayCheques chequeData={todayCheques} openModal={openModal} fetchAllChequeRecords={fetchAllChequeRecords}/>
                         </Col>
@@ -82,7 +82,7 @@ const ChequeManagement = () => {
                     >
                         <h2 style={{textAlign:'center'}}>View All Cheques</h2>
                         <button className='btn btn-danger' style={{float:'right', marginBottom:'20px'}} onClick={closeModal}>Close</button>
-                        <ViewAllChequesModal chequeData={chequeData}/>
+                        <ViewAllChequesModal chequeData={chequeData} fetchAllChequeRecords={fetchAllChequeRecords}/>
                     </Modal>
                 <Col sm='12' md='1' lg='1' xl='1'>
                     <Navbar />
