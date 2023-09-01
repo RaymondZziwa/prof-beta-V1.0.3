@@ -6,7 +6,7 @@ import axios from 'axios'
 const SaveParticipantSale = () => {
     const [participants, setParticipants] = useState([])
     const [employeeId, setEmployeeId] = useState('')
-    const [quantitySold, setQuantitySold] = useState('')
+    const [quantitySold, setQuantitySold] = useState(0)
     const [points, setPoints] = useState(0)
     const [status, setStatus] = useState('')
 
@@ -20,6 +20,7 @@ const SaveParticipantSale = () => {
             token: localStorage.getItem('token')
         })
         if(Array.isArray(res.data)){
+            console.log('qaz', res.data)
             setParticipants(res.data)
         }
         }
@@ -32,7 +33,7 @@ const SaveParticipantSale = () => {
             token: localStorage.getItem('token'),
             date: new Date().toLocaleDateString(),
             employeeId: employeeId,
-            quantitySold: quantitySold,
+            amountsold: quantitySold,
             points: points
         })
         .then(() => setStatus({ type: 'success' }))
@@ -46,6 +47,8 @@ const SaveParticipantSale = () => {
             </Col>
             <Col sm='12' md='10' lg='10' xl='10' style={{marginTop:'60px'}}>
                 <h2 style={{textAlign:'center'}}>Save Participant Sale</h2>
+                {status?.type === 'success' && <p style={{ margin: '20px' }} class="alert alert-success" role="alert">Success</p>}
+                {status?.type === 'error' && <p style={{ margin: '20px' }} class="alert alert-danger" role="alert">Error!</p>}
                 <select class="form-select" aria-label="Default select example" style={{ height: "60px" }} onChange={(e)=>setEmployeeId(e.target.value)} required>
                     <option selected>Select Participant</option>   
                     { !participants ? <option>Loading Items From Database</option> :

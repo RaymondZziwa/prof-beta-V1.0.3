@@ -6559,7 +6559,7 @@ app.post('/fetchallparticipants', (req, res) => {
                    console.log(error);
                    res.send({status:500, msg: 'No users found.'})
                 } else if(results.length > 0){
-                   res.send(results[0])
+                   res.send(results)
                 }
               });
             }
@@ -6572,7 +6572,7 @@ app.post('/fetchallparticipantperformancerecords', (req, res) => {
       if (err) {
         res.status(403).send("You are not authorized to perform this action.");
       } else {
-        db.query('SELECT * FROM saphroneparticipantperformance',(error, results) => {
+        db.query('SELECT * FROM saphroneparticipantperformance JOIN saphroneparticipants WHERE saphroneparticipantperformance.employeeId = saphroneparticipants.employeeId',(error, results) => {
                 if (error) {
                    console.log(error);
                    res.send({status:500, msg: 'No sales records found.'})
@@ -6590,7 +6590,7 @@ app.post('/fetchallsaphronesalesdata', (req, res) => {
       if (err) {
         res.status(403).send("You are not authorized to perform this action.");
       } else {
-        db.query('SELECT * FROM saphroneperformancerecords',(error, results) => {
+        db.query('SELECT * FROM saphroneperformancerecords JOIN saphroneparticipants WHERE saphroneperformancerecords.employeeId = saphroneparticipants.employeeId',(error, results) => {
                 if (error) {
                    console.log(error);
                    res.send({status:500, msg: 'No sales records found.'})
@@ -6602,36 +6602,60 @@ app.post('/fetchallsaphronesalesdata', (req, res) => {
           })
 })
 
-//fetch saphrone sales records
 app.post('/saveparticipantsale', (req, res) => {
     jwt.verify(req.body.token, 'SECRETKEY', (err) => {
-      if (err) {
-        res.status(403).send("You are not authorized to perform this action.");
-      } else {
-        const employeeId = req.body.employeeId
-        const date = req.body.date
-        const merchandisesold = req.body.amountsold
-        const points = req.body.points
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const employeeId = req.body.employeeId;
+            const date = req.body.date;
+            const merchandisesold = req.body.amountsold;
+            const points = req.body.points;
 
-        db.query('INSERT INTO saphroneperformancerecords (employeeId, date, merchandisesold) VALUES (?, ?, ?);', [employeeId, date, merchandisesold], (error) => {
-            if (error) {
-              console.log(error);
-              res.status(500).send('Error while saving record.');
-            } else {
-                db.query('INSERT INTO saphroneparticipantperformance (employeeId, merchandisesold, points) VALUES (?, ?, ?);', [employeeId, merchandisesold, points], (error) => {
-                    if (error) {
-                      console.log(error);
-                      res.status(500).send('Error while saving record.');
-                    } else {
-                    res.send({ status: '200', msg: 'success' })
-                    }
-                  });
-            }
-          });
+            // Insert data into saphroneperformancerecords table
+            db.query('INSERT INTO saphroneperformancerecords (employeeId, date, merchandisesold) VALUES (?, ?, ?);', [employeeId, date, merchandisesold], (error) => {
+                if (error) {
+                    console.log(error);
+                    res.status(500).send('Error while saving record.');
+                } else {
+                    // Check if the employee exists in saphroneparticipantperformance table
+                    db.query('SELECT * FROM saphroneparticipantperformance WHERE employeeId = ?;', [employeeId], (selectError, results) => {
+                        if (selectError) {
+                            console.log(selectError);
+                            res.status(500).send('Error while checking employee existence.');
+                        } else {
+                            if (results.length > 0) {
+                                // Employee exists, update the existing record by adding points
+                                const existingQty = results[0].merchandisesold
+                                const existingPoints = results[0].points;
+                                const newPoints = existingPoints + points;
+                                const newQty = existingQty + merchandisesold
+                                db.query('UPDATE saphroneparticipantperformance SET merchandisesold = ?, points = ? WHERE employeeId = ?;', [newQty, newPoints, employeeId], (updateError) => {
+                                    if (updateError) {
+                                        console.log(updateError);
+                                        res.status(500).send('Error while updating points.');
+                                    } else {
+                                        res.send({ status: '200', msg: 'success' });
+                                    }
+                                });
+                            } else {
+                                // Employee doesn't exist, insert a new record
+                                db.query('INSERT INTO saphroneparticipantperformance (employeeId, merchandisesold, points) VALUES (?, ?, ?);', [employeeId, merchandisesold, points], (insertError) => {
+                                    if (insertError) {
+                                        console.log(insertError);
+                                        res.status(500).send('Error while saving record.');
+                                    } else {
+                                        res.send({ status: '200', msg: 'success' });
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+            });
         }
-      })
-})
-
+    });
+});
 
 app.post('/deletechequedata', (req, res) => {
     jwt.verify(req.body.token, 'SECRETKEY', (err) => {
@@ -6667,9 +6691,6 @@ app.post('/updatechequedata', (req, res) => {
             const newAmount = req.body.amount
             const newNotes = req.body.notes
             const newBankingDate = req.body.bankingDate
-
-
-            console.log(chequeId, newNames, newContact, newBankName, newChequeNumber, newReason, newAmount, newNotes)
 
             db.query('UPDATE companycheques SET chequeNumber = ?, DrawerNames = ?, BankName = ?, PaymentReason = ?, amount = ?, BankingDate = ?, Notes = ? WHERE chequeId = ?',[newChequeNumber, newNames, newContact, newBankName, newReason, newAmount, newBankingDate, newNotes, chequeId], (error) => {
                 if (error){

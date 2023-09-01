@@ -156,6 +156,7 @@ const EquatorialShopWeeklySalesReport = () => {
         fetchSalesData();
     }, [])
 
+    
     useEffect(() => {
         const filterSalesData = () => {
           const filteredSales = salesData.filter((sale) => {

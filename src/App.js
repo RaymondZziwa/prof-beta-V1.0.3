@@ -190,6 +190,9 @@ import { useSelector } from 'react-redux';
 import SaphroneCompetitionMenu from './components/Equatorial/shop/other_menus/saphrone_competition_menu';
 import SaveParticipantSale from './components/Equatorial/shop/saphrone_competition/save_participant_sale/save_sale';
 import SaphroneCompetitionAnalysis from './components/Equatorial/shop/saphrone_competition/competition_analysis/competition_analysis';
+import SaphroneCompetitionDailyAnalysis from './components/Equatorial/shop/saphrone_competition/competition_analysis/daily_analysis/saphrone_competition_daily_analysis';
+import SaphroneCompetitionWeeklyAnalysis from './components/Equatorial/shop/saphrone_competition/competition_analysis/weekly_analysis/saphrone_competition_weekly_analysis';
+import SaphroneCompetitionMonthlyAnalysis from './components/Equatorial/shop/saphrone_competition/competition_analysis/monthly_analysis/saphrone_competition_monthly_analysis';
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -842,6 +845,15 @@ function App() {
           </Route>)}
           {authCtx.isLoggedIn && (<Route path="/saphronecompetitionanalysis">
             <SaphroneCompetitionAnalysis />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/saphronedailycompetitionanalysis">
+            <SaphroneCompetitionDailyAnalysis />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/saphroneweeklycompetitionanalysis" >
+              <SaphroneCompetitionWeeklyAnalysis />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/saphronemonthlycompetitionanalysis" >
+              <SaphroneCompetitionMonthlyAnalysis />
           </Route>)}
 
           {/* Buwama */}
