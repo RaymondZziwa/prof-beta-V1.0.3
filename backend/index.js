@@ -2011,6 +2011,240 @@ app.post('/rawmaterialrequestsrecords', (req, res) => {
     })
 })
 
+
+
+
+
+
+
+
+
+
+//   farm requests
+app.post('/buwamarequestseeds', (req, res) => {
+    function pad(num) {
+        var s = "" + num;
+        if (num < 10) {
+            s = "0" + num;
+        }
+        return s;
+    }
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const requisitionId = `RFM-${Math.floor(Math.random() * 1800000)}`
+            const tdate = new Date()
+            const month = pad(tdate.getMonth() + 1)
+            const dd = pad(tdate.getDate())
+            const date = `${tdate.getFullYear()}-${month}-${dd}`
+            const batchNo = req.body.batchNo
+            const requesterBranch = req.body.sourcebranch
+            const requesterDepartment = req.body.orderedbydepartment
+            const requesterRole = req.body.orderedbyrole
+            const requestedBy = req.body.orderedby
+
+            const requestedFromBranch = req.body.destinationbranch
+            const recieversDepartment = req.body.recieverdepartment
+            const recieversRole = req.body.recieverrole
+            const recievedBy = req.body.deliveredto
+            const itemsRequested = req.body.itemsrequested
+            const additionalInfo = req.body.additionalInfo
+            const initialStatus = req.body.initialStatus
+
+            const sqlInsert = "Insert into buwamafarmrequests(requisitionid,date,batchno,requesterbranch,requesterdepartment,requesterrole,requestedby,requestedfrombranch,recieverdepartment,recieverrole,recievedby,itemsrequested,additionalinfo,status) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+            db.query(sqlInsert, [requisitionId, date, batchNo, requesterBranch, requesterDepartment, requesterRole, requestedBy, requestedFromBranch, recieversDepartment, recieversRole, recievedBy, itemsRequested,additionalInfo, initialStatus], (err) => {
+                if (err) {
+                    console.log(err)
+                } else {
+                    console.log('success')
+                    res.send('Operation Successful');
+                }
+            })
+        }
+    })
+})
+
+
+
+app.post('/buwamasavebatchstage', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const batchNo = req.body.batchNumber
+            const items = req.body.items
+            const stage = req.body.stage
+            const date = req.body.date
+            db.query('INSERT INTO buwamafarm (batchno, items, stage, stagestartedon) VALUES (?, ?, ?, ?);', [batchNo, items, stage, date], (error, results) => {
+                //if the query is faulty , throw the error
+                if (error) {
+                    console.log(error);
+                } else {
+                    res.send('Success.')
+                }
+            })
+        }
+    })
+})
+
+//route to fetch batch data for stage update
+app.post('/buwamafetchdatafromfarm', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const batchNo = req.body.batchNo
+            db.query('SELECT * FROM buwamafarm WHERE batchno = ? ORDER BY stagestartedon DESC LIMIT 1;', batchNo , (error, results) => {
+                if (error) throw (error);
+
+                if (results.length > 0) {
+                    console.log('latest batch status', results)
+                    res.send(results)
+                } else {
+                    res.send('No Data found.')
+                }
+            })
+        }
+    })
+})
+
+
+
+//route to start growth process for a batch
+app.post('/buwamaregisterbatch', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const batchno = req.body.batchNo
+            const items = req.body.items
+            const stage = req.body.stage
+            const date = req.body.date
+            db.query('INSERT INTO buwamafarm (batchno, items, stage, stagestartedon) VALUES (?, ?, ?, ?);', [batchno, items, stage, date], (error, results) => {
+                //if the query is faulty , throw the error
+                if (error) {
+                    console.log(error);
+                    res.send('Error')
+                } else {
+                    res.send('Success')
+                }
+            })
+        }
+    })
+})
+
+app.post('/buwamafarmfetchbatchdata', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const batchno = req.body.batchNo
+            let status = 'approved'
+            db.query('SELECT batchno, itemsrequested FROM buwamafarmrequests WHERE status = ? AND batchno = ?;', [status, batchno], (error, results) => {
+                //if the query is faulty , throw the error
+                if (error) console.log(error);
+                //if account exists
+                if (results.length > 0) {
+                    console.log(results.length)
+                    res.send(results)
+                } else {
+                    res.send('There are no data matching the provided batch number.')
+                }
+            })
+        }
+    })
+})
+
+app.post('/buwamastartnewfarmbatch', (req, res) => {
+    function pad(num) {
+        var s = "" + num;
+        if (num < 10) {
+            s = "0" + num;
+        }
+        return s;
+    }
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const requisitionId = `RFM-${Math.floor(Math.random() * 1800000)}`
+            const tdate = new Date()
+            const month = pad(tdate.getMonth() + 1)
+            const dd = pad(tdate.getDate())
+            const date = `${tdate.getFullYear()}-${month}-${dd}`
+            const batchNo = req.body.batchNo
+            const requesterBranch = req.body.sourcebranch
+            const requesterDepartment = req.body.orderedbydepartment
+            const requesterRole = req.body.orderedbyrole
+            const requestedBy = req.body.orderedby
+
+            const requestedFromBranch = req.body.destinationbranch
+            const recieversDepartment = req.body.recieverdepartment
+            const recieversRole = req.body.recieverrole
+            const recievedBy = req.body.deliveredto
+            const itemsRequested = req.body.itemsrequested
+            const additionalInfo = req.body.additionalInfo
+            const initialStatus = req.body.initialStatus
+
+            const sqlInsert = "Insert into buwamafarmrequests(requisitionid,date,batchno,requesterbranch,requesterdepartment,requesterrole,requestedby,requestedfrombranch,recieverdepartment,recieverrole,recievedby,itemsrequested,additionalinfo,status) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+            db.query(sqlInsert, [requisitionId, date, batchNo, requesterBranch, requesterDepartment, requesterRole, requestedBy, requestedFromBranch, recieversDepartment, recieversRole, recievedBy, itemsRequested,additionalInfo, initialStatus], (err) => {
+                if (err) {
+                    console.log(err)
+                } else {
+                    console.log('success')
+                    res.send('Operation Successful');
+                }
+            })
+        }
+    })
+})
+
+
+
+//route to get all farm records
+app.post('/buwamaviewfarmrecords', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            db.query('SELECT * FROM buwamafarm', (error, results) => {
+                //if the query is faulty , throw the error
+                if (error) console.log(error);
+                //if account exists
+                if (results.length > 0) {
+                   // console.log(results.length)
+                    res.send(results)
+                } else {
+                    res.send('There are no farm records.')
+                }
+            })
+        }
+    })
+})
+
+
+
+app.post('/buwamafetchallfarmbatchrecords', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            db.query('SELECT * FROM buwamafarmrequests', (error, results) => {
+                //if the query is faulty , throw the error
+                if (error) console.log(error);
+                //if account exists
+                if (results.length > 0) {
+                    res.send(results)
+                } else {
+                    res.send('No Data found.')
+                }
+            })            
+        }
+    })
+})
+
+
 //route to reject product orders
 app.post('/rejectorder', (req, res) => {
     jwt.verify(req.body.token, 'SECRETKEY', (err) => {
@@ -3102,6 +3336,26 @@ app.post('/fetchchickenfeedstock', (req, res) => {
     })
 })
 
+//7. View chicken feeds stock
+app.post('/buwamafetchchickenfeedstock', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                db.query('SELECT * FROM buwamachickenfeedsinventory JOIN masanafuchickenfeeds ON buwamachickenfeedsinventory.productId = masanafuchickenfeeds.productId', (error, results) => {
+                    if (error) throw (error);
+
+                    if (results.length > 0) {
+                        console.log(results)
+                        res.send(results)
+                    } else {
+                        res.send(`There are no stock records found.`)
+                    }
+                })
+        }
+    })
+})
+
 //route to fetch all chicken feeds from db
 app.post('/fetchallchickenfeeds', (req, res) => {
     jwt.verify(req.body.token, 'SECRETKEY', (err) => {
@@ -3180,6 +3434,61 @@ app.post('/savechickenfeedsrestockdata', (req, res) => {
     })
 })
 
+//save chicken feeds restock data
+app.post('/buwamasavechickenfeedsrestockdata', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const date = req.body.date
+            let itemid = req.body.itemid
+            let quantity = req.body.quantity
+            let units = req.body.unit
+            let source = req.body.source
+            let externalSourceDetails = req.body.externalSourceDetails
+            let notes = req.body.notes
+
+            db.query('INSERT INTO 	buwamachickenfeedsinventoryrecords (date, itemid, quantityin, munits, restocksource, externalsourcedetails, notes) VALUES (?, ?, ?, ?, ?, ?, ?);', [date, itemid, quantity, units, source, externalSourceDetails, notes], error => {
+                //if the query is faulty , throw the error
+                if (error) {
+                    console.log(error);
+                    res.send('Error')
+                } else {
+                    res.send('Success')
+                    db.query('SELECT * FROM buwamachickenfeedsinventory WHERE productid = ?;', [itemid], function (err, results) {
+                        // If there is an issue with the query, output the error
+                        if (err) throw err;
+                        // If the account exists
+                        if (results.length === 0) {
+                            const sqlStockCount = "Insert into buwamachickenfeedsinventory(productid,quantityinstock,munits) values(?,?,?)"
+                            db.query(sqlStockCount, [itemid, quantity, units], (err) => {
+                                if (err) {
+                                    console.log(err)
+                                } else {
+                                    console.log('item quantity in stock has been updated successfully')
+                                }
+                            })
+                        } else if (results.length > 0) {
+                            let newStockCount = parseFloat(results[0].quantityinstock) + parseFloat(quantity);
+                            const sqlStockCount = "UPDATE buwamachickenfeedsinventory SET quantityinstock = ? WHERE productid = ?"
+                            db.query(sqlStockCount, [newStockCount, itemid], (err) => {
+                                if (err) {
+                                    console.log(err)
+                                } else {
+                                    console.log('item quantity in stock has been updated successfully')
+                                }
+                            })
+                        } else {
+                            console.log("Error while increasing the item quantity in stock.")
+                        }
+                    })
+                }
+            })
+
+        }
+    })
+})
+
 
 //7. View shop inventory records
 app.post('/fetchmasanafuchickenfeedsinventoryrecords', (req, res) => {
@@ -3202,6 +3511,26 @@ app.post('/fetchmasanafuchickenfeedsinventoryrecords', (req, res) => {
 })
 
 
+//7. View shop inventory records
+app.post('/fetchbuwamachickenfeedsinventoryrecords', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                db.query('SELECT * FROM buwamachickenfeedsinventoryrecords JOIN masanafuchickenfeeds ON buwamachickenfeedsinventoryrecords.itemid = masanafuchickenfeeds.productId', (error, results) => {
+                    if (error) throw (error);
+
+                    if (results.length > 0) {
+                        //console.log(results)
+                        res.send(results)
+                    } else {
+                        res.send(`There are no records found.`)
+                    }
+                })
+        }
+    })
+})
+
 
 
 
@@ -3212,6 +3541,26 @@ app.post('/fetchchickenmedicinestock', (req, res) => {
             res.status(403).send("You are not authorized to perform this action.");
         } else {
                 db.query('SELECT * FROM masanafuchickenmedicineinventory JOIN masanafuchickenmedicine ON masanafuchickenmedicineinventory.productId = 	masanafuchickenmedicine.productId', (error, results) => {
+                    if (error) throw (error);
+
+                    if (results.length > 0) {
+                        console.log(results)
+                        res.send(results)
+                    } else {
+                        res.send(`There are no stock records found.`)
+                    }
+                })
+        }
+    })
+})
+
+//7. View chicken medicines stock
+app.post('/buwamafetchchickenmedicinestock', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                db.query('SELECT * FROM buwamachickenmedicineinventory JOIN masanafuchickenmedicine ON buwamachickenmedicineinventory.productId = 	masanafuchickenmedicine.productId', (error, results) => {
                     if (error) throw (error);
 
                     if (results.length > 0) {
@@ -3245,8 +3594,6 @@ app.post('/fetchallchickenmedicines', (req, res) => {
         }
     })
 })
-
-
 
 
 //save chicken medicine restock data
@@ -3286,6 +3633,61 @@ app.post('/savechickenmedicinerestockdata', (req, res) => {
                         } else if (results.length > 0) {
                             let newStockCount = parseFloat(results[0].quantityinstock) + parseFloat(quantity);
                             const sqlStockCount = "UPDATE masanafuchickenmedicineinventory SET quantityinstock = ? WHERE productid = ?"
+                            db.query(sqlStockCount, [newStockCount, itemid], (err) => {
+                                if (err) {
+                                    console.log(err)
+                                } else {
+                                    console.log('item quantity in stock has been updated successfully')
+                                }
+                            })
+                        } else {
+                            console.log("Error while increasing the item quantity in stock.")
+                        }
+                    })
+                }
+            })
+
+        }
+    })
+})
+
+//save chicken medicine restock data
+app.post('/buwamasavechickenmedicinerestockdata', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const date = req.body.date
+            let itemid = req.body.itemid
+            let quantity = req.body.quantity
+            let units = req.body.unit
+            let source = req.body.source
+            let externalSourceDetails = req.body.externalSourceDetails
+            let notes = req.body.notes
+
+            db.query('INSERT INTO buwamachickenmedicineinventoryrecords (date, itemid, quantityin, munits, restocksource, externalsourcedetails, notes) VALUES (?, ?, ?, ?, ?, ?, ?);', [date, itemid, quantity, units, source, externalSourceDetails, notes], error => {
+                //if the query is faulty , throw the error
+                if (error) {
+                    console.log(error);
+                    res.send('Error')
+                } else {
+                    res.send('Success')
+                    db.query('SELECT * FROM buwamachickenmedicineinventory WHERE productid = ?;', [itemid], function (err, results) {
+                        // If there is an issue with the query, output the error
+                        if (err) throw err;
+                        // If the account exists
+                        if (results.length === 0) {
+                            const sqlStockCount = "Insert into buwamachickenmedicineinventory (productid,quantityinstock,munits) values(?,?,?)"
+                            db.query(sqlStockCount, [itemid, quantity, units], (err) => {
+                                if (err) {
+                                    console.log(err)
+                                } else {
+                                    console.log('item quantity in stock has been updated successfully')
+                                }
+                            })
+                        } else if (results.length > 0) {
+                            let newStockCount = parseFloat(results[0].quantityinstock) + parseFloat(quantity);
+                            const sqlStockCount = "UPDATE buwamachickenmedicineinventory SET quantityinstock = ? WHERE productid = ?"
                             db.query(sqlStockCount, [newStockCount, itemid], (err) => {
                                 if (err) {
                                     console.log(err)
@@ -3348,6 +3750,27 @@ app.post('/fetchmasanafuchickenmedicinesinventoryrecords', (req, res) => {
     })
 })
 
+//7. View chicken medicine inventory records
+app.post('/fetchbuwamachickenmedicinesinventoryrecords', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                db.query('SELECT * FROM	buwamachickenmedicineinventoryrecords JOIN masanafuchickenmedicine ON buwamachickenmedicineinventoryrecords.itemid = masanafuchickenmedicine.productId', (error, results) => {
+                    if (error) throw (error);
+
+                    if (results.length > 0) {
+                        //console.log(results)
+                        res.send(results)
+                    } else {
+                        res.send(`There are no records found.`)
+                    }
+                })
+        }
+    })
+})
+
+
 //route to save new masanafu chicken batches
 app.post('/savenewchickenbatchdata', (req, res) => {
     jwt.verify(req.body.token, 'SECRETKEY', (err) => {
@@ -3361,6 +3784,37 @@ app.post('/savenewchickenbatchdata', (req, res) => {
             const totalSpent = req.body.totalSpent
             const notes = req.body.notes
             db.query('INSERT INTO masanafuchickenfarmbatches (batchnumber, date, numberofchicken, chickenunitprice, totalspent, notes, chickenalive) VALUES (?, ?, ?, ?, ?, ?, ?);', [batchNo, date, quantity, unitPrice, totalSpent, notes, quantity], (error) => {
+                //if the query is faulty , throw the error
+                if (error) {
+                    console.log(error);
+                }else{
+                    res.send({
+                        status: 200,
+                        msg: 'success'                               
+                    })
+                }
+                
+            })
+        }
+    })
+})
+
+
+
+//route to save new masanafu chicken batches
+app.post('/buwamasavenewchickenbatchdata', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const batchNo = req.body.batchNumber
+            const date = req.body.date
+            const quantity = req.body.quantity
+            const unitPrice = req.body.unitPrice
+            const totalSpent = req.body.totalSpent
+            const notes = req.body.notes
+
+            db.query('INSERT INTO buwamachickenfarmbatches (batchnumber, date, numberofchicken, chickenunitprice, totalspent, notes, chickenalive) VALUES (?, ?, ?, ?, ?, ?, ?);', [batchNo, date, quantity, unitPrice, totalSpent, notes, quantity], (error) => {
                 //if the query is faulty , throw the error
                 if (error) {
                     console.log(error);
@@ -3426,6 +3880,57 @@ app.post('/savechickendeaths', (req, res) => {
     })
 })
 
+
+//route to save new masanafu chicken batches deathes
+app.post('/buwamasavechickendeaths', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const batchNo = req.body.batchNumber
+            const date = req.body.date
+            const quantity = req.body.quantity
+            const notes = req.body.notes
+            db.query('INSERT INTO buwamachickenbatchmortalities (date, batchnumber, numberofchickendead,  notes) VALUES (?, ?, ?, ?);', [date, batchNo, quantity, notes], (error) => {
+                //if the query is faulty , throw the error
+                if (error) {
+                    console.log(error);
+                }else{
+                    db.query('SELECT chickenalive, chickendead FROM buwamachickenfarmbatches WHERE batchnumber = ?', [batchNo], (error, results) => {
+                        //if the query is faulty , throw the error
+                        if (error) {
+                            console.log(error);
+                        }
+
+                        if(results.length > 0){
+                            let newChickenAlive = results[0].chickenalive-quantity
+                            let newChickenDead = parseInt(results[0].chickendead)+parseInt(quantity)
+                            db.query('UPDATE buwamachickenfarmbatches SET chickenalive = ? , chickendead = ? WHERE batchnumber = ?', [newChickenAlive, newChickenDead, batchNo], (error) => {
+                                //if the query is faulty , throw the error
+                                if (error) {
+                                    console.log(error);
+                                }else{
+                                    
+                                    res.send({
+                                        status: 200,
+                                        msg: 'success'                               
+                                    })
+                                }
+                                
+                            })
+                        }else{
+                            res.send('No record Found')
+                        }
+                        
+                    })
+                }
+                
+            })
+        }
+    })
+})
+
+
 //7. View chicken health records
 app.post('/fetchchickenhealthrecords', (req, res) => {
     jwt.verify(req.body.token, 'SECRETKEY', (err) => {
@@ -3445,6 +3950,30 @@ app.post('/fetchchickenhealthrecords', (req, res) => {
         }
     })
 })
+
+
+
+
+//7. View chicken health records
+app.post('/buwamafetchchickenhealthrecords', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const batchNo = req.body.batchNumber             
+            db.query('SELECT * FROM buwamachickenbatchhealth JOIN masanafuchickenmedicine ON buwamachickenbatchhealth.medicinename = masanafuchickenmedicine.productId WHERE buwamachickenbatchhealth.batchnumber = ?', [batchNo],(error, results) => {
+                if (error) throw (error);
+                if (results.length > 0) {
+                    res.send(results)
+                } else {
+                    res.send(`There are no records found.`)
+                }
+            })
+        }
+    })
+})
+
+
 
 
 //7. View all chicken health records
@@ -3467,7 +3996,23 @@ app.post('/fetchallchickenhealthrecords', (req, res) => {
 })
 
 
-
+//7. View all chicken health records
+app.post('/buwamafetchallchickenhealthrecords', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {             
+                    db.query('SELECT * FROM buwamachickenbatchhealth JOIN masanafuchickenmedicine ON buwamachickenbatchhealth.medicinename = masanafuchickenmedicine.productId', (error, results) => {
+                        if (error) throw (error);
+                        if (results.length > 0) {
+                            res.send(results)
+                        } else {
+                            res.send(`There are no records found.`)
+                        }
+                    })
+        }
+    })
+})
 
 
 
@@ -3503,6 +4048,36 @@ app.post('/savebatcheggproduction', (req, res) => {
 })
 
 
+
+app.post('/buwamasavebatcheggproduction', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const batchNo = req.body.batchNumber
+            const date = req.body.date
+            const totalEggsCollected = req.body.totalEggsCollected
+            const totalGoodEggsCollected = req.body.totalGoodEggsCollected
+            const totalDamagedEggsCollected = req.body.totalDamagedEggsCollected
+            const totalEggTraysCollected = req.body.totalEggTraysCollected
+            const notes = req.body.notes
+
+            db.query('INSERT INTO buwamaeggproductionrecords (batchnumber, collectiondate, totaleggscollected, totalgoodeggscollected, totaldamagedeggscollected, totaleggtrays, notes) VALUES (?, ?, ?, ?, ?, ?, ?)', [batchNo, date, totalEggsCollected, totalGoodEggsCollected, totalDamagedEggsCollected, totalEggTraysCollected, notes], (error) => {
+                //if the query is faulty , throw the error
+                if (error) {
+                    console.log(error);
+                }else{
+                    res.send({
+                        status: 200,
+                        msg: 'success'                               
+                    })
+                }
+                
+            })
+        }
+    })
+})
+
 //7. View chicken egg production records
 app.post('/fetchbatcheggproduction', (req, res) => {
     jwt.verify(req.body.token, 'SECRETKEY', (err) => {
@@ -3511,6 +4086,26 @@ app.post('/fetchbatcheggproduction', (req, res) => {
         } else {
                 const batchnumber = req.body.batchNumber
                 db.query('SELECT * FROM	eggproductionrecords WHERE batchnumber = ?', [batchnumber] , (error, results) => {
+                    if (error) throw (error);
+
+                    if (results.length > 0) {
+                        console.log(results)
+                        res.send(results)
+                    } else {
+                        res.send(`There are no records found.`)
+                    }
+                })
+        }
+    })
+})
+
+app.post('/buwamafetchbatcheggproduction', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                const batchnumber = req.body.batchNumber
+                db.query('SELECT * FROM	buwamaeggproductionrecords WHERE batchnumber = ?', [batchnumber] , (error, results) => {
                     if (error) throw (error);
 
                     if (results.length > 0) {
@@ -3585,6 +4180,43 @@ app.post('/savechickenhealthrecord', (req, res) => {
 })
 
 
+//route to save chicken health record
+app.post('/buwamasavechickenhealthrecord', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const batchNo = req.body.batchNumber
+            const reason = req.body.reason
+            const tdate = req.body.date
+            const nextDateOfAdministration =  req.body.nextDateOfAdministration
+            const medicineId = req.body.medicineId
+            const drugAmount = req.body.medicineQuantity
+            const diseaseName = req.body.diseaseName
+            const notes = req.body.notes
+            db.query('INSERT INTO buwamachickenbatchhealth (batchnumber, reason, treatmentdate, nextdateofadministration, medicinename, medicinequantityused, diseasename, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [batchNo, reason, tdate, nextDateOfAdministration, medicineId, drugAmount, diseaseName, notes], (error) => {
+                //if the query is faulty , throw the error
+                if (error) {
+                    console.log(error);
+                }else{
+                    db.query('UPDATE buwamachickenmedicineinventory SET quantityinstock = quantityinstock - ? WHERE productid = ?', [drugAmount, medicineId], (error) => {
+                        //if the query is faulty , throw the error
+                        if (error) {
+                            console.log(error);
+                        }else{ 
+                            res.send({
+                                status: 200,
+                                msg: 'success'                               
+                            })
+                        }
+                        
+                    })
+                }
+                
+            })
+        }
+    })
+})
 
 //route to save chicken feeding record
 app.post('/savebatchfeedingrecord', (req, res) => {
@@ -3624,6 +4256,41 @@ app.post('/savebatchfeedingrecord', (req, res) => {
 })
 
 
+app.post('/buwamasavebatchfeedingrecord', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const batchNo = req.body.batchNumber
+            const date = req.body.date
+            const  feedsId = req.body.feedsId
+            const quantity = req.body.quantity
+            const notes = req.body.notes
+            const munits = req.body.munits
+
+            db.query('INSERT INTO buwamabatchfeedingrecords (batchnumber, date, feedsid, feedsquantity, munits, notes) VALUES (?, ?, ?, ?, ?, ?)', [batchNo, date, feedsId, quantity, munits, notes], (error) => {
+                //if the query is faulty , throw the error
+                if (error) {
+                    console.log(error);
+                }else{
+                    db.query('UPDATE buwamachickenfeedsinventory SET quantityinstock = quantityinstock - ? WHERE productid = ?', [quantity, feedsId], (error) => {
+                        //if the query is faulty , throw the error
+                        if (error) {
+                            console.log(error);
+                        }else{ 
+                            res.send({
+                                status: 200,
+                                msg: 'success'                               
+                            })
+                        }
+                        
+                    })
+                }
+                
+            })
+        }
+    })
+})
 
 //7. View batch feeding records
 app.post('/fetchbatchfeedingrecords', (req, res) => {
@@ -3647,6 +4314,27 @@ app.post('/fetchbatchfeedingrecords', (req, res) => {
     })
 })
 
+
+app.post('/buwamafetchbatchfeedingrecords', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                const batchnumber = req.body.batchNumber
+                
+                db.query('SELECT * FROM buwamabatchfeedingrecords JOIN masanafuchickenfeeds ON buwamabatchfeedingrecords.feedsid = masanafuchickenfeeds.productId WHERE buwamabatchfeedingrecords.batchnumber = ?', [batchnumber] , (error, results) => {
+                    if (error) throw (error);
+
+                    if (results.length > 0) {
+                        console.log(results)
+                        res.send(results)
+                    } else {
+                        res.send(`There are no records found.`)
+                    }
+                })
+        }
+    })
+})
 
 //7. View all batch feeding records
 app.post('/fetchallfeedingrecords', (req, res) => {
@@ -3730,6 +4418,25 @@ app.post('/fetchallbatchdata', (req, res) => {
     })
 })
 
+//7. View all egg production records
+app.post('/buwamafetchallbatchdata', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                db.query('SELECT * FROM	buwamachickenfarmbatches', (error, results) => {
+                    if (error) throw (error);
+
+                    if (results.length > 0) {
+                        console.log(results)
+                        res.send(results)
+                    } else {
+                        res.send(`There are no records found.`)
+                    }
+                })
+        }
+    })
+})
 
 
 //7. fetch all fcr values
@@ -3739,6 +4446,25 @@ app.post('/fetchallbatchfcrdata', (req, res) => {
             res.status(403).send("You are not authorized to perform this action.");
         } else {
                 db.query('SELECT * FROM	chickenbatchfcrrecords', (error, results) => {
+                    if (error) throw (error);
+
+                    if (results.length > 0) {
+                        console.log(results)
+                        res.send(results)
+                    } else {
+                        res.send(`There are no records found.`)
+                    }
+                })
+        }
+    })
+})
+
+app.post('/buwamafetchallbatchfcrdata', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                db.query('SELECT * FROM	buwamachickenbatchfcrrecords', (error, results) => {
                     if (error) throw (error);
 
                     if (results.length > 0) {
@@ -6705,6 +7431,85 @@ app.post('/updatechequedata', (req, res) => {
     })
 })
 
+//Buwama Routes
+//route to save batch fcr record
+app.post('/buwamasavebatchfcrvalue', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const batchNo = req.body.batchNumber
+            const totalFeedsConsumed = req.body.totalFeedsConsumed
+            const totalEggsProduced = req.body.totalEggsProduced
+            const fcrValue = req.body.fcrValue
+            const notes = req.body.notes
+
+            db.query('INSERT INTO buwamachickenbatchfcrrecords (batchnumber, totalfeedsconsumed, totaleggsproduced, fcrvalue, notes) VALUES (?, ?, ?, ?, ?)', [batchNo, totalFeedsConsumed, totalEggsProduced, fcrValue, notes], (error) => {
+                //if the query is faulty , throw the error
+                if (error) {
+                    console.log(error);
+                }else{
+                    db.query('UPDATE buwamachickenfarmbatches SET status = ? WHERE batchnumber = ?', ['completed', batchNo], (error) => {
+                        //if the query is faulty , throw the error
+                        if (error) {
+                            console.log(error);
+                        }else{ 
+                            res.send({
+                                status: 200,
+                                msg: 'success'                               
+                            })
+                        }
+                        
+                    })
+                }
+                
+            })
+        }
+    })
+})
+
+
+//7. View all egg production records
+app.post('/buwamafetchalleggproduction', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                const batchnumber = req.body.batchNumber
+                db.query('SELECT * FROM	buwamaeggproductionrecords', (error, results) => {
+                    if (error) throw (error);
+
+                    if (results.length > 0) {
+                        res.send(results)
+                    } else {
+                        res.send(`There are no records found.`)
+                    }
+                })
+        }
+    })
+})
+
+
+//7. View all batch feeding records
+app.post('/buwamafetchallfeedingrecords', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                const batchnumber = req.body.batchNumber
+                db.query('SELECT * FROM buwamabatchfeedingrecords JOIN masanafuchickenfeeds ON buwamabatchfeedingrecords.feedsid = masanafuchickenfeeds.productId', (error, results) => {
+                    if (error) throw (error);
+
+                    if (results.length > 0) {
+                        console.log(results)
+                        res.send(results)
+                    } else {
+                        res.send(`There are no records found.`)
+                    }
+                })
+        }
+    })
+})
 
 app.listen(port, () => {
     console.log(`Server is listening on port ${port}`);

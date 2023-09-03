@@ -193,6 +193,36 @@ import SaphroneCompetitionAnalysis from './components/Equatorial/shop/saphrone_c
 import SaphroneCompetitionDailyAnalysis from './components/Equatorial/shop/saphrone_competition/competition_analysis/daily_analysis/saphrone_competition_daily_analysis';
 import SaphroneCompetitionWeeklyAnalysis from './components/Equatorial/shop/saphrone_competition/competition_analysis/weekly_analysis/saphrone_competition_weekly_analysis';
 import SaphroneCompetitionMonthlyAnalysis from './components/Equatorial/shop/saphrone_competition/competition_analysis/monthly_analysis/saphrone_competition_monthly_analysis';
+import BuwamaDashboard from './components/Buwama/buwama_dashboard';
+import BuwamaChickenMgtDashboard from './components/Buwama/chicken_mgt/chicken_mgt_dashboard';
+import BuwamaChickenFCRCalculator from './components/Buwama/chicken_mgt/FCR/FCR_calculator';
+import BuwamaChickenBatchRecords from './components/Buwama/chicken_mgt/records/records';
+import BuwamaRegisterNewChickenBatch from './components/Buwama/chicken_mgt/register_new_chicken_batch/register_new_chicken_batch';
+import BuwamaRecordChickenMortality from './components/Buwama/chicken_mgt/chicken_mortality/record_chicken_mortality';
+import BuwamaManageChickenVaccination from './components/Buwama/chicken_mgt/manage_chicken_vaccination/chicken_vaccination';
+import BuwamaManageEggProduction from './components/Buwama/chicken_mgt/manage_egg_production/manage_egg_production';
+import BuwamaChickenFarmStatementReport from './components/Buwama/chicken_mgt/Reports/chicken_farm_statment_report';
+import BuwamaChickenMgtReport from './components/Buwama/chicken_mgt/Reports/chicken_mgt_report';
+import BuwamaFeedsInventoryMenu from './components/Buwama/chicken_mgt/other_menus/feeds_inventory_menu';
+import BuwamaMedicineInventoryMenu from './components/Buwama/chicken_mgt/other_menus/medicine_inventory_menu';
+import BuwamaChickenMedicineInventoryRecords from './components/Buwama/chicken_mgt/chicken_medicine_inventory_mgt/chicken_medicine_inventory_records';
+import BuwamaChickenMedicineStockTaking from './components/Buwama/chicken_mgt/chicken_medicine_inventory_mgt/chicken_medicine_stock_taking';
+import BuwamaChickenMedicineRestockingForm from './components/Buwama/chicken_mgt/chicken_medicine_inventory_mgt/chicken_medicine_restock';
+import BuwamaChickenFeedsRestockingForm from './components/Buwama/chicken_mgt/chicken_feeds_inventory_mgt/chicken_feeds_restock';
+import BuwamaChickenFeedsStockTaking from './components/Buwama/chicken_mgt/chicken_feeds_inventory_mgt/chicken_feeds_stock_taking';
+import BuwamaChickenFeedsInventoryRecords from './components/Buwama/chicken_mgt/chicken_feeds_inventory_mgt/chicken_feeds_inventory_records';
+import BuwamaSaveChickenFeedingRecords from './components/Buwama/chicken_mgt/chicken_feeding_records/save_chicken_feeding_records';
+import BuwamaAllFeedingRecords from './components/Buwama/chicken_mgt/chicken_feeding_records/all_feeding_records';
+import BuwamaFarmDashboard from './components/Buwama/farm_mgt/farmdashboard';
+import BuwamaFarmBatchRecords from './components/Buwama/farm_mgt/seed_requisition/farm_requests_records';
+import BuwamaViewBatchRecords from './components/Buwama/farm_mgt/batch_manager/view_batch_records';
+import BuwamaStartBatchFromMotherGarden from './components/Buwama/farm_mgt/batch_manager/start_batch_from_mother_garden';
+import BuwamaManageBatch from './components/Buwama/farm_mgt/batch_manager/batch_manager';
+import BuwamaCattleMgtDashboard from './components/Buwama/cows_mgt/cattle_mgt_dashboard';
+import BuwamaCattleFarmStatementReport from './components/Buwama/cows_mgt/Reports/chicken_farm_statment_report';
+import BuwamaCattleMgtReport from './components/Buwama/cows_mgt/Reports/chicken_mgt_report';
+import BuwamaCattleFCRCalculator from './components/Buwama/cows_mgt/FCR/FCR_calculator';
+import BuwamaManageCattleMilkProduction from './components/Buwama/cows_mgt/manage_milk_production/manage_egg_production';
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -857,6 +887,139 @@ function App() {
           </Route>)}
 
           {/* Buwama */}
+          {authCtx.isLoggedIn && (<Route path="/buwamadashboard" >
+              <BuwamaDashboard />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamachickenmgtdashboard" >
+              <BuwamaChickenMgtDashboard />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamacalculatebatchfcr">
+              <BuwamaChickenFCRCalculator />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamachickenbatchrecords">
+              <BuwamaChickenBatchRecords />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamaregisternewchickenbatch">
+              <BuwamaRegisterNewChickenBatch />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamarecordchickendeath">
+              <BuwamaRecordChickenMortality />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamachickenhealthmgt">
+            <BuwamaManageChickenVaccination />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamachickeneggproductionmgt">
+            <BuwamaManageEggProduction />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamachickenfarmstatementreport">
+            <BuwamaChickenFarmStatementReport />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamachickenfarmreport">
+            <BuwamaChickenMgtReport />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamachickenfeedsmgt">
+            <BuwamaFeedsInventoryMenu />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamachickenmedicinemgt">
+            <BuwamaMedicineInventoryMenu />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamachickenmedicinestocktaking">
+            <BuwamaChickenMedicineStockTaking/>
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamachickenmedicineinventoryrecords">
+            <BuwamaChickenMedicineInventoryRecords />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamachickenmedicinerestockingform">
+            <BuwamaChickenMedicineRestockingForm />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamachickenfeedsstocktaking">
+            <BuwamaChickenFeedsStockTaking />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamachickenfeedsinventoryrecords">
+            <BuwamaChickenFeedsInventoryRecords />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamachickenfeedsrestockingform">
+            <BuwamaChickenFeedsRestockingForm />
+          </Route>)}
+           {authCtx.isLoggedIn && (<Route path="/buwamarecordbatchfeedingrecord">
+            <BuwamaSaveChickenFeedingRecords />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamaallfeedingrecords">
+            <BuwamaAllFeedingRecords />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamafarmdashboard">
+            <BuwamaFarmDashboard />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamafarmbatchrecords">
+            <BuwamaFarmBatchRecords />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamaviewrecords">
+            <BuwamaViewBatchRecords />
+          </Route>)} 
+          {authCtx.isLoggedIn && (<Route path="/buwamastartbatchfrommothergarden">
+            <BuwamaStartBatchFromMotherGarden />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamamanagebatch">
+            <BuwamaManageBatch />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamacattlemgtdashboard" >
+              <BuwamaCattleMgtDashboard />
+          </Route>)}
+          {/* --- */}
+          {authCtx.isLoggedIn && (<Route path="/buwamacattlecalculatebatchfcr">
+              <BuwamaCattleFCRCalculator />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamacattlebatchrecords">
+              <BuwamaChickenBatchRecords />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamaregisternewcattlebatch">
+              <BuwamaRegisterNewChickenBatch />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamarecordcattledeath">
+              <BuwamaRecordChickenMortality />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamacattlehealthmgt">
+            <BuwamaManageChickenVaccination />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamacattlemilkproductionmgt">
+            <BuwamaManageCattleMilkProduction />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamacattlefarmstatementreport">
+            <BuwamaCattleFarmStatementReport />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamacattlegraphicalreport">
+            <BuwamaCattleMgtReport />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamacattlefeedsmgt">
+            <BuwamaFeedsInventoryMenu />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamacattlemedicinemgt">
+            <BuwamaMedicineInventoryMenu />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamacattlemedicinestocktaking">
+            <BuwamaChickenMedicineStockTaking/>
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamacattlemedicineinventoryrecords">
+            <BuwamaChickenMedicineInventoryRecords />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamacattlemedicinerestockingform">
+            <BuwamaChickenMedicineRestockingForm />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamacattlefeedsstocktaking">
+            <BuwamaChickenFeedsStockTaking />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamacattlefeedsinventoryrecords">
+            <BuwamaChickenFeedsInventoryRecords />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamacattlefeedsrestockingform">
+            <BuwamaChickenFeedsRestockingForm />
+          </Route>)}
+           {authCtx.isLoggedIn && (<Route path="/buwamacattlerecordbatchfeedingrecord">
+            <BuwamaSaveChickenFeedingRecords />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamaallcattlefeedingrecords">
+            <BuwamaAllFeedingRecords />
+          </Route>)}
 
           {/* Prof Saphrone Competition Routes */}
               <Route path="/profbioresearchsaphronecompetitionauth" >

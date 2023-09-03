@@ -88,6 +88,7 @@ const Login = () => {
                             <option value="namungoona">Namungoona</option>
                              <option value="masanafu">Masanafu</option>
                              <option value="equatorial">Equatorial</option>
+                             <option value="buwama">Buwama</option>
                          </select>
                      </div>
                      {branch === 'namungoona' &&
@@ -189,6 +190,39 @@ const Login = () => {
                                         <option value="massagemanager">Massage Manager</option>
                                         <option value="equatorialdebtmanager">Debt Manager</option>
                                         <option value="equatorialinventorycustodian">Inventory Custodian</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="mb-3">
+                                <div className="form-floating mb-3">
+                                    <input type="text" className="form-control" id="floatingInput" placeholder="johndoe" style={{ color: "#8CA6FE" }} onChange={handleUsernameData} />
+                                    <label for="floatingInput">Username</label>
+                                </div>
+                            </div>
+                            <div className="mb-3">
+                                <div className="form-floating">
+                                    <input type={passwordShown ? "text" : "password"} className="form-control" id="floatingPassword" placeholder="Password" onChange={handlePwdData} />
+                                    <label for="floatingPassword">Password</label>
+                                    <span style={{ color: 'white', cursor: 'pointer' }} onClick={showPwd}><FontAwesomeIcon icon={faEye} /> show password</span>
+                                </div>
+                            </div>
+                        </>
+                    }
+                    {branch === 'buwama' &&
+                        <>
+                            <div className="mb-3">
+                                <div className="mb-3">
+                                    <select className="form-select" aria-label="Default select example" style={{ height: "60px", color: "#8CA6FE" }} onChange={handleDeptData}>
+                                        <option defaultValue>Department</option>
+                                        <option value="farm">Farm</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="mb-3">
+                                <div className="mb-3">
+                                    <select className="form-select" aria-label="Default select example" style={{ height: "60px", color: "#8CA6FE" }} onChange={handleRoleData}>
+                                        <option defaultValue>Role</option>
+                                        <option value="farmmanager">Farm Manager</option>
                                     </select>
                                 </div>
                             </div>
