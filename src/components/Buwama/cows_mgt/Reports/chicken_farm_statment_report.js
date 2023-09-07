@@ -194,18 +194,18 @@ const BuwamaCattleFarmStatementReport = () => {
           <table className="table table-light">
             <thead>
               <tr>
-                <th scope="col">Batch Registration Date</th>
+              <th scope="col">Batch Registration Date</th>
                 <th scope="col">Batch Number</th>
-                <th scope="col">Number Of Cattle</th>
-                <th scope="col">Cattle Unit Price (UGX)</th>
-                <th scope="col">Total Spent On Cattle Purchase (UGX)</th>
+                <th scope="col">Number Of Livestock</th>
+                <th scope="col">Unit Price (UGX)</th>
+                <th scope="col">Total Spent On  Purchase (UGX)</th>
                 <th scope="col">Total Spent On Feeds (UGX)</th>
                 <th scope="col">Total Spent On Medicine (UGX)</th>
                 <th scope="col">Total Milk (L) Produced</th>
                 <th scope="col">Notes</th>
                 <th scope="col">Batch Status</th>
-                <th scope="col">Alive Cattle</th>
-                <th scope="col">Cattle Lost</th>
+                <th scope="col">Alive Livestock</th>
+                <th scope="col">Livestock Lost</th>
                 <th scope="col">Batch FCR</th>
               </tr>
             </thead>

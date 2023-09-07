@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Row, Col } from 'react-bootstrap';
 import Navbar from '../../../side navbar/sidenav';
 
-const BuwamaChickenBatchRecords = () => {
+const BuwamaLivestockBatchRecords = () => {
   const [isLoading, setIsLoading] = useState([]);
   const [chickenBatches, setChickenBatches] = useState([]);
   const [areRecordsLoading, setAreRecordsLoading] = useState(true);
@@ -17,7 +17,7 @@ const BuwamaChickenBatchRecords = () => {
   const [fcr, setFcr] = useState([]);
 
   const fetchFCRRecords = async () => {
-    const res = await axios.post('http://82.180.136.230:3005/buwamafetchallbatchfcrdata', {
+    const res = await axios.post('http://82.180.136.230:3005/buwamafetchalllivestockbatchfcrdata', {
       token: localStorage.getItem("token")
     });
     if (Array.isArray(res.data)) {
@@ -31,7 +31,7 @@ const BuwamaChickenBatchRecords = () => {
   const [healthRecords, setHealthRecords] = useState([]);
 
   const fetchHealthRecords = async () => {
-    const res = await axios.post('http://82.180.136.230:3005/buwamafetchallchickenhealthrecords', {
+    const res = await axios.post('http://82.180.136.230:3005/buwamafetchalllivestockhealthrecords', {
       token: localStorage.getItem("token")
     });
     console.log('fff', res.data);
@@ -41,7 +41,7 @@ const BuwamaChickenBatchRecords = () => {
   };
 
   const fetchAllMedicines = async () => {
-    let res = await axios.post('http://82.180.136.230:3005/fetchallchickenmedicines', {
+    let res = await axios.post('http://82.180.136.230:3005/fetchallbuwamalivestockmedicines', {
       token: localStorage.getItem('token')
     });
 
@@ -59,7 +59,7 @@ const BuwamaChickenBatchRecords = () => {
   }, []);
 
   const fetchAllFeeds = async () => {
-    let res = await axios.post('http://82.180.136.230:3005/fetchallchickenfeeds', {
+    let res = await axios.post('http://82.180.136.230:3005/buwamafetchalllivestockfeeds', {
       token: localStorage.getItem('token')
     });
 
@@ -75,7 +75,7 @@ const BuwamaChickenBatchRecords = () => {
   }, []);
 
   const fetchBatchData = async () => {
-    const res = await axios.post('http://82.180.136.230:3005/buwamafetchallbatchdata', {
+    const res = await axios.post('http://82.180.136.230:3005/buwamafetchalllivestockbatchdata', {
       token: localStorage.getItem('token')
     });
     if (Array.isArray(res.data)) {
@@ -85,7 +85,7 @@ const BuwamaChickenBatchRecords = () => {
   };
 
   const fetchFeedingRecords = async () => {
-    const res = await axios.post('http://82.180.136.230:3005/buwamafetchallfeedingrecords', {
+    const res = await axios.post('http://82.180.136.230:3005/buwamafetchalllivestockfeedingrecords', {
       token: localStorage.getItem('token')
     });
     if (Array.isArray(res.data)) {
@@ -95,14 +95,15 @@ const BuwamaChickenBatchRecords = () => {
   };
 
   const fetchEggProductionRecords = async () => {
-    const res = await axios.post('http://82.180.136.230:3005/buwamafetchalleggproduction', {
+    const res = await axios.post('http://82.180.136.230:3005/buwamafetchallmilkproduction', {
       token: localStorage.getItem('token')
-    });
+    })
+
     if (Array.isArray(res.data)) {
       setEggRecords(res.data);
       setAreEggRecordsLoading(false);
     }
-  };
+  }
 
   useEffect(() => {
     fetchFeedingRecords();
@@ -157,16 +158,17 @@ const BuwamaChickenBatchRecords = () => {
             <tr>
                 <th scope="col">Batch Registration Date</th>
                 <th scope="col">Batch Number</th>
-                <th scope="col">Number Of Cattle</th>
-                <th scope="col">Cattle Unit Price (UGX)</th>
-                <th scope="col">Total Spent On Cattle Purchase (UGX)</th>
+                <th scope="col">Livestock Name</th>
+                <th scope="col">Number Of Livestock</th>
+                <th scope="col">Unit Price (UGX)</th>
+                <th scope="col">Total Spent On  Purchase (UGX)</th>
                 <th scope="col">Total Spent On Feeds (UGX)</th>
                 <th scope="col">Total Spent On Medicine (UGX)</th>
                 <th scope="col">Total Milk (L) Produced</th>
                 <th scope="col">Notes</th>
                 <th scope="col">Batch Status</th>
-                <th scope="col">Alive Cattle</th>
-                <th scope="col">Cattle Lost</th>
+                <th scope="col">Alive Livestock</th>
+                <th scope="col">Livestock Lost</th>
                 <th scope="col">Batch FCR</th>
             </tr>
           </thead>
@@ -201,7 +203,7 @@ const BuwamaChickenBatchRecords = () => {
                     <td>{item.chickendead}</td>
                     <td>{fcrForBatch}</td>
                   </tr>
-                );
+                )
               })
             )}
           </tbody>
@@ -212,4 +214,4 @@ const BuwamaChickenBatchRecords = () => {
   );
 };
 
-export default BuwamaChickenBatchRecords
+export default BuwamaLivestockBatchRecords

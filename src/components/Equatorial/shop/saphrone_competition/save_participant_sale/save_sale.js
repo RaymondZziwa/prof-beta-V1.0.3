@@ -9,6 +9,7 @@ const SaveParticipantSale = () => {
     const [quantitySold, setQuantitySold] = useState(0)
     const [points, setPoints] = useState(0)
     const [status, setStatus] = useState('')
+    const options = { day: '2-digit', month: '2-digit', year: 'numeric' }
 
     useEffect(()=>{
         setPoints(quantitySold*0.5)
@@ -31,7 +32,7 @@ const SaveParticipantSale = () => {
         event.preventDefault()
         let res = await axios.post('http://82.180.136.230:3005/saveparticipantsale',{
             token: localStorage.getItem('token'),
-            date: new Date().toLocaleDateString(),
+            date: new Date().toLocaleDateString('en-GB', options),
             employeeId: employeeId,
             amountsold: quantitySold,
             points: points

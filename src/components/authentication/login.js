@@ -247,7 +247,7 @@ const Login = () => {
                 </div>
                      </Form>
                         <Link to="/profbioresearchsaphronecompetitionauth" style={{textDecoration:'none'}}>
-                            <p style={{ textAlign: "center", fontSize: "18px", marginTop: "10px", color: "#3E5AA7", cursor:'pointer' }}>Join The Saphrone Competition <img src={award} alt="award" height="50px"/>Here</p>
+                            <p style={{ textAlign: "center", fontSize: "18px", marginTop: "10px", color: "#3E5AA7", cursor:'pointer' }}>Join The Saffron Competition <img src={award} alt="award" height="50px"/>Here</p>
                         </Link> 
                         <p style={{ textAlign: "center", fontSize: "18px", marginTop: "10px", color: "#3E5AA7" }}>Terms &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Privacy</p>
                 </div>

@@ -21,22 +21,12 @@ return(
         </Link>
         <Link className="tab_nav" to="/buwamacattlemgtdashboard">
             <div className="mb-3 mclickable_option">
-                Cattle Management
+                Livestock Management
             </div>
         </Link>
         <Link className="tab_nav" to="/buwamafarmdashboard">
             <div className="mb-3 mclickable_option">
                 Farm Management
-            </div>
-        </Link>
-        <Link className="tab_nav" to="#">
-            <div className="mb-3 mclickable_option">
-                Goats Management
-            </div>
-        </Link>
-        <Link className="tab_nav" to="#">
-            <div className="mb-3 mclickable_option">
-                Rabbits Management
             </div>
         </Link>
         <Link className="tab_nav" to="/accountsettings">

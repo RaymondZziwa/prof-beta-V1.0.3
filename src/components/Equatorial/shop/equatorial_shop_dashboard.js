@@ -9,7 +9,7 @@ return(
         <Navbar />
     </Col>
     <div className="col align-self-center" style={{marginTop:'20px'}}>
-        <Link className="tab_nav" to="/equatorialshopinventorymenu">
+        {/* <Link className="tab_nav" to="/equatorialshopinventorymenu">
             <div className="mb-3 mclickable_option">
                 Manage Shop Inventory
             </div>
@@ -33,10 +33,10 @@ return(
             <div className="mb-3 mclickable_option">
                 Manage NCTs
             </div>
-        </Link>
+        </Link> */}
         <Link className="tab_nav" to="/saphronecompetitionmenu">
             <div className="mb-3 mclickable_option">
-                Saphrone Competition
+                Saffron Competition
             </div>
         </Link>
         <Link className="tab_nav" to="/equatorialshopsalesdataretrieval">
@@ -44,7 +44,7 @@ return(
                 Sale Data Retrieval
             </div>
         </Link>
-        <Link className="tab_nav" to="/recieveexhibitionincome">
+        {/* <Link className="tab_nav" to="/recieveexhibitionincome">
             <div className="mb-3 mclickable_option">
                 Recieve Exhibition Income
             </div>
@@ -73,13 +73,13 @@ return(
             <div className="mb-3 mclickable_option">
                 Manage Suppliers
             </div>
-        </Link>
+        </Link> */}
         <Link className="tab_nav" to="/managecheques">
             <div className="mb-3 mclickable_option">
                 Cheque Management
             </div>
         </Link>
-        <Link className="tab_nav" to="/viewequatorialexpenditurereceipts">
+        {/* <Link className="tab_nav" to="/viewequatorialexpenditurereceipts">
             <div className="mb-3 mclickable_option">
                 View Shop Expenditure Receipts
             </div>
@@ -113,7 +113,7 @@ return(
             <div className="mb-3 mclickable_option">
                 Settings
             </div>
-    </Link>
+    </Link> */}
     </div>
     <Col sm='12' md='1' lg='1' xl='1'>
     </Col>

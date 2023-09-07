@@ -223,6 +223,12 @@ import BuwamaCattleFarmStatementReport from './components/Buwama/cows_mgt/Report
 import BuwamaCattleMgtReport from './components/Buwama/cows_mgt/Reports/chicken_mgt_report';
 import BuwamaCattleFCRCalculator from './components/Buwama/cows_mgt/FCR/FCR_calculator';
 import BuwamaManageCattleMilkProduction from './components/Buwama/cows_mgt/manage_milk_production/manage_egg_production';
+import BuwamaManageCattleVaccination from './components/Buwama/cows_mgt/manage_cattle_vaccination/chicken_vaccination';
+import BuwamaRecordCattleMortality from './components/Buwama/cows_mgt/cattle_mortality/record_chicken_mortality';
+import BuwamaRegisterNewCattleBatch from './components/Buwama/cows_mgt/register_new_cattle_batch/register_new_chicken_batch';
+import BuwamaCattleFeedsInventoryMenu from './components/Buwama/cows_mgt/other_menus/feeds_inventory_menu';
+import BuwamaCattleMedicineInventoryMenu from './components/Buwama/cows_mgt/other_menus/medicine_inventory_menu';
+import BuwamaLivestockBatchRecords from './components/Buwama/cows_mgt/records/records';
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -965,21 +971,25 @@ function App() {
           {authCtx.isLoggedIn && (<Route path="/buwamacattlemgtdashboard" >
               <BuwamaCattleMgtDashboard />
           </Route>)}
+
+
           {/* --- */}
           {authCtx.isLoggedIn && (<Route path="/buwamacattlecalculatebatchfcr">
               <BuwamaCattleFCRCalculator />
           </Route>)}
           {authCtx.isLoggedIn && (<Route path="/buwamacattlebatchrecords">
-              <BuwamaChickenBatchRecords />
+              <BuwamaLivestockBatchRecords />
           </Route>)}
+
+
           {authCtx.isLoggedIn && (<Route path="/buwamaregisternewcattlebatch">
-              <BuwamaRegisterNewChickenBatch />
+              <BuwamaRegisterNewCattleBatch />
           </Route>)}
           {authCtx.isLoggedIn && (<Route path="/buwamarecordcattledeath">
-              <BuwamaRecordChickenMortality />
+              <BuwamaRecordCattleMortality />
           </Route>)}
           {authCtx.isLoggedIn && (<Route path="/buwamacattlehealthmgt">
-            <BuwamaManageChickenVaccination />
+            <BuwamaManageCattleVaccination />
           </Route>)}
           {authCtx.isLoggedIn && (<Route path="/buwamacattlemilkproductionmgt">
             <BuwamaManageCattleMilkProduction />
@@ -991,10 +1001,10 @@ function App() {
             <BuwamaCattleMgtReport />
           </Route>)}
           {authCtx.isLoggedIn && (<Route path="/buwamacattlefeedsmgt">
-            <BuwamaFeedsInventoryMenu />
+            <BuwamaCattleFeedsInventoryMenu />
           </Route>)}
           {authCtx.isLoggedIn && (<Route path="/buwamacattlemedicinemgt">
-            <BuwamaMedicineInventoryMenu />
+            <BuwamaCattleMedicineInventoryMenu />
           </Route>)}
           {authCtx.isLoggedIn && (<Route path="/buwamacattlemedicinestocktaking">
             <BuwamaChickenMedicineStockTaking/>
@@ -1026,7 +1036,7 @@ function App() {
                 <SaphroneCompetitionAuth />
               </Route>
               {/* Private routes */}
-              {isParticipantLoggedIn ? (
+              {isParticipantLoggedIn && (
                 <>
                   <Route path="/saphroneparticipantdashboard" >
                     <ParticipantDashboard />
@@ -1041,8 +1051,6 @@ function App() {
                     <FilteredParticipantDashboard />
                   </Route>
                 </>
-              ) : (
-                <Redirect to="/Login" />
               )}
       </BrowserRouter>
     </div>

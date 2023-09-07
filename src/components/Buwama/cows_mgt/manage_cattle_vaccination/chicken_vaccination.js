@@ -3,7 +3,7 @@ import Navbar from '../../../side navbar/sidenav'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 
-const BuwamaManageChickenVaccination = () => {
+const BuwamaManageCattleVaccination = () => {
     const [batchNumber, setBatchNumber] = useState('')
     const [date, setDate] = useState()
     const [status, setStatus] = useState('')
@@ -111,7 +111,7 @@ const BuwamaManageChickenVaccination = () => {
                 <Navbar />
             </Col>
             <div className="col align-self-center" style={{marginTop:'60px'}}>
-                <h1 style={{textAlign:'center'}}>Chicken Batch Health Manager</h1>
+                <h1 style={{textAlign:'center'}}>Cattle Batch Health Manager</h1>
                 {status?.type === 'success' && <p style={{ margin: '20px' }} class="alert alert-success" role="alert">Success</p>}
                 {status?.type === 'error' && <p style={{ margin: '20px' }} class="alert alert-danger" role="alert">Error!</p>}
                 <div className="form-floating mb-3">
@@ -161,7 +161,7 @@ const BuwamaManageChickenVaccination = () => {
                 <button style={{ width: "86%", border: "none", color: "white", height: "45px", backgroundColor: "#3452A3", marginTop: '5px' }} onClick={saveChickenDeathRecord}>
                     Save Health Record
                 </button>
-                <h1 style={{textAlign:'center'}}>Chicken Batch Health Monitoring Records</h1>
+                <h1 style={{textAlign:'center'}}>Cattle Batch Health Monitoring Records</h1>
                 <table className="table table-light">
                         <thead>
                             <tr>
@@ -193,4 +193,4 @@ const BuwamaManageChickenVaccination = () => {
     )
 }
 
-export default BuwamaManageChickenVaccination
+export default BuwamaManageCattleVaccination

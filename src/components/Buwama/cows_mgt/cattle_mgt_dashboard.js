@@ -9,29 +9,29 @@ const BuwamaCattleMgtDashboard = () => {
                 <Navbar />
             </Col>
             <Col sm='12' md='9' lg='9' xl='9' style={{marginTop:'60px'}}>
-                <Link className="tab_nav" to="/managebuwamacattlefeeds">
+                {/* <Link className="tab_nav" to="/buwamacattlefeedsmgt">
                     <div className="mb-3 mclickable_option">
                         Manage Feeds Inventory
                     </div>
                 </Link>
-                <Link className="tab_nav" to="/managebuwamacattlemedicine">
+                <Link className="tab_nav" to="/buwamacattlemedicinemgt">
                     <div className="mb-3 mclickable_option">
                         Manage Medicine Inventory
                     </div>
-                </Link>
-                <Link className="tab_nav" to="/startnewbuwamacattlebatch">
+                </Link> */}
+                <Link className="tab_nav" to="/buwamaregisternewcattlebatch">
                     <div className="mb-3 mclickable_option">
-                        Register New Cattle Batch
+                        Register New Livestock Batch
                     </div>
                 </Link>
-                <Link className="tab_nav" to="/buwamacattlemortality">
+                <Link className="tab_nav" to="/buwamarecordcattledeath">
                     <div className="mb-3 mclickable_option">
-                        Record Cattle Batch Death
+                        Record Livestock Batch Death
                     </div>
                 </Link>
-                <Link className="tab_nav" to="/buwamacattlehealth">
+                <Link className="tab_nav" to="/buwamacattlehealthmgt">
                     <div className="mb-3 mclickable_option">
-                        Manage Cattle Health
+                        Manage Livestock Health
                     </div>
                 </Link>
                 <Link className="tab_nav" to="/buwamacattlemilkproductionmgt">
@@ -47,11 +47,6 @@ const BuwamaCattleMgtDashboard = () => {
                 <Link className="tab_nav" to="/buwamacattlebatchrecords">
                     <div className="mb-3 mclickable_option">
                         Batch Records
-                    </div>
-                </Link>
-                <Link className="tab_nav" to="/buwamacattlegraphicalreport">
-                    <div className="mb-3 mclickable_option">
-                       Graphical Report Analysis
                     </div>
                 </Link>
                 <Link className="tab_nav" to="/buwamacattlefarmstatementreport">

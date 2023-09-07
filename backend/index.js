@@ -7122,90 +7122,70 @@ app.post('/exhibitioncheckout', (req, res) => {
 })
 
 //Saphrone Routes
-//1. Route to register new participants
-app.post('/newsaphroneparticipantregistration', (req, res) => {
-            const employeeId = `E-${Math.floor(Math.random() * 1000)}`
-            const username = req.body.username
-            const firstname = req.body.fName
-            const lastname = req.body.lName
-            const gender = req.body.gender
-            const dateofregistration = req.body.dateofregistration
-            const password = req.body.password
-
-            // console.log(Id,username,firstname,lastname,gender)
-            const saltRounds = 12;
-            const encryptedPwd = bcrypt.hashSync(password, saltRounds);
-            //missing code to check if user already exists
-            db.query('SELECT * FROM saphroneparticipants WHERE username = ?;', username, function (error, results) {
-                // If there is an issue with the query, output the error
-                if (error) throw error;
-                // If the account exists
-                if (results.length > 0) {
-                    res.send({
-                        status: 403,
-                        msg: 'This username is already in use.'
-                    })
-                } else {
-                    const sqlInsert = "Insert into saphroneparticipants(employeeId,username,firstName,lastName,gender,password,registrationdate) values(?,?,?,?,?,?,?)"
-                    db.query(sqlInsert, [employeeId, username, firstname, lastname, gender, encryptedPwd, dateofregistration], (err) => {
-                        if (err) {
-                            console.log(err)
-                            res.send({
-                                status: 403,
-                                msg: "An error occured. Ensure all fields are filled in and try again."
-                            });
-                        } else {
-                            res.send({
-                                status: 200,
-                                msg: "Your registration has been successful. Please login with your credentials."
-                            });
-                        }
-                    })
-                }
-            })
-})
+app.post('/newsaphroneparticipantregistration', async (req, res) => {
+    try {
+      const employeeId = `E-${Math.floor(Math.random() * 1000)}`;
+      const { username, fName, lName, gender, dateofregistration, password } = req.body;
+  
+      // Check if the user already exists
+      const existingUser = await db.query('SELECT * FROM saphroneparticipants WHERE username = ?;', [username]);
+  
+      if (existingUser.length > 0) {
+        return res.status(403).json({ error: 'This username is already in use.' });
+      }
+  
+      const saltRounds = 12;
+      const encryptedPwd = await bcrypt.hash(password, saltRounds);
+  
+      const sqlInsert = "INSERT INTO saphroneparticipants(employeeId, username, firstName, lastName, gender, password, registrationdate) VALUES (?, ?, ?, ?, ?, ?, ?)";
+      
+      await db.query(sqlInsert, [employeeId, username, fName, lName, gender, encryptedPwd, dateofregistration]);
+      
+      return res.status(200).json({ message: "Your registration has been successful. Please login with your credentials." });
+    } catch (error) {
+      console.error('Registration error:', error);
+      return res.status(500).json({ error: "An error occurred. Please try again later." });
+    }
+  });
+  
 
 //2.login route for all saphrone competition participants
-app.post('/saphroneparticipantlogin', (req, res) => {
-    const username = req.body.username
-    const password = req.body.password
-
-    db.query('SELECT * FROM saphroneparticipants WHERE username= ?;', username , (error, results) => {
-        //if the query is faulty , throw the error
-        if (error) console.log(error);
-        //if account exists
-        if (results.length > 0) {
-                bcrypt.compare(password, results[0].password, (error, response) => {
-                    if (error) throw error;
-                    if (response) {
-                        const token = jwt.sign({
-                            employeeId: results[0].employeeId
-                        }, 'SECRETKEY', {
-                            expiresIn: '1d'
-                        }
-                        )
-                        res.send({
-                            status: 200,
-                            token:token,
-                            employeeId: results[0].employeeId,
-                            branch: results[0].branch,
-                            userData: results[0]
-                        })
-                    } else {
-                        res.send({
-                            status: 403,
-                            msg: 'Incorrect credentials.'
-                        });
-                    }
-                })
-        } else {
-            res.send({
-                status: 403,
-                msg: 'User doesnot exist.'
-            });
-        }
-    })
-})
+app.post('/saphroneparticipantlogin', async (req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+  
+    try {
+      const results = await db.query('SELECT username FROM saphroneparticipants WHERE username = ?;', [username]);
+  
+      if (results.length === 0) {
+        res.status(404).json({ error: 'User does not exist.' });
+        return;
+      }
+  
+      const passwordMatch = await bcrypt.compare(password, results[0].password);
+  
+      if (passwordMatch) {
+        const token = jwt.sign({
+          employeeId: results[0].employeeId
+        }, process.env.JWT_SECRET, {
+          expiresIn: '5h'
+        });
+  
+        res.status(200).json({
+          token,
+          employeeId: results[0].employeeId,
+          branch: results[0].branch,
+          userData: results[0]
+        });
+      } else {
+        res.status(401).json({ error: 'Incorrect credentials.' });
+      }
+    } catch (error) {
+      console.error('Database error:', error);
+      res.status(500).json({ error: 'Internal server error.' });
+    }
+  });
+  
 
 //Complete participant profile
 app.post('/completeparticipantprofile', upload.single('file'), (req, res) => {
@@ -7355,7 +7335,14 @@ app.post('/saveparticipantsale', (req, res) => {
                                 const existingQty = results[0].merchandisesold
                                 const existingPoints = results[0].points;
                                 const newPoints = existingPoints + points;
-                                const newQty = existingQty + merchandisesold
+                                let newQty = 0;
+                                if (isNaN(existingQty) || isNaN(merchandisesold)) {
+                                    console.log(existingQty)
+                                    console.log(merchandisesold)
+                                    console.log("One or both values are not valid numbers.");
+                                } else {
+                                     newQty = parseFloat(existingQty) + parseFloat(merchandisesold);
+                                }
                                 db.query('UPDATE saphroneparticipantperformance SET merchandisesold = ?, points = ? WHERE employeeId = ?;', [newQty, newPoints, employeeId], (updateError) => {
                                     if (updateError) {
                                         console.log(updateError);
@@ -7511,6 +7498,273 @@ app.post('/buwamafetchallfeedingrecords', (req, res) => {
     })
 })
 
+//////////////////////////////////LIVESTOCK///////////////////////////////////////////////////////////
+//route to save new masanafu chicken batches
+app.post('/buwamasavenewlivestockbatchdata', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const batchNo = req.body.batchNumber
+            const date = req.body.date
+            const animalName = req.body.animalName
+            const quantity = req.body.quantity
+            const unitPrice = req.body.unitPrice
+            const totalSpent = req.body.totalSpent
+            const notes = req.body.notes
+
+            db.query('INSERT INTO buwamalivestockfarmbatches (batchnumber, date, animalName, numberofanimals, unitprice, totalspent, notes, animalsalive) VALUES (?, ?, ?, ?, ?, ?, ?, ?);', [batchNo, date, animalName, quantity, unitPrice, totalSpent, notes, quantity], (error) => {
+                //if the query is faulty , throw the error
+                if (error) {
+                    console.log(error);
+                }else{
+                    res.send({
+                        status: 200,
+                        msg: 'success'                               
+                    })
+                }
+            })
+        }
+    })
+})
+
+app.post('/buwamasavelivestockdeaths', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const batchNo = req.body.batchNumber
+            const date = req.body.date
+            const quantity = req.body.quantity
+            const notes = req.body.notes
+            db.query('INSERT INTO buwamalivestockbatchmortalities (date, batchnumber, numberofanimalsdead,  notes) VALUES (?, ?, ?, ?);', [date, batchNo, quantity, notes], (error) => {
+                //if the query is faulty , throw the error
+                if (error) {
+                    console.log(error);
+                }else{
+                    db.query('SELECT animalsalive, animalsdead FROM buwamalivestockfarmbatches WHERE batchnumber = ?', [batchNo], (error, results) => {
+                        //if the query is faulty , throw the error
+                        if (error) {
+                            console.log(error);
+                        }
+
+                        if(results.length > 0){
+                            let newChickenAlive = results[0].animalsalive-quantity
+                            let newChickenDead = parseInt(results[0].animalsdead)+parseInt(quantity)
+                            db.query('UPDATE buwamalivestockfarmbatches SET animalsalive = ? , animalsdead = ? WHERE batchnumber = ?', [newChickenAlive, newChickenDead, batchNo], (error) => {
+                                //if the query is faulty , throw the error
+                                if (error) {
+                                    console.log(error);
+                                }else{
+                                    
+                                    res.send({
+                                        status: 200,
+                                        msg: 'success'                               
+                                    })
+                                }
+                                
+                            })
+                        }else{
+                            res.send('No record Found')
+                        }
+                        
+                    })
+                }
+                
+            })
+        }
+    })
+})
+
+
+app.post('/buwamasavelivestockbatchmilkproduction', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const batchNo = req.body.batchNumber
+            const date = req.body.date
+            const totalEggsCollected = req.body.totalEggsCollected
+            const totalGoodEggsCollected = req.body.totalGoodEggsCollected
+            const totalDamagedEggsCollected = req.body.totalDamagedEggsCollected
+            const notes = req.body.notes
+
+            db.query('INSERT INTO buwamalivestockmilkproductionrecords (batchnumber, collectiondate, totalLitrescollected, exactlitrescollected, totalLitresLost, notes) VALUES (?, ?, ?, ?, ?, ?)', [batchNo, date, totalEggsCollected, totalGoodEggsCollected, totalDamagedEggsCollected, notes], (error) => {
+                //if the query is faulty , throw the error
+                if (error) {
+                    console.log(error);
+                }else{
+                    res.send({
+                        status: 200,
+                        msg: 'success'                               
+                    })
+                }
+                
+            })
+        }
+    })
+})
+
+
+
+app.post('/buwamafetchbatchallmilkproduction', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                const batchnumber = req.body.batchNumber
+                db.query('SELECT * FROM	buwamalivestockmilkproductionrecords WHERE batchnumber = ?', [batchnumber] , (error, results) => {
+                    if (error) throw (error);
+
+                    if (results.length > 0) {
+                        console.log(results)
+                        res.send(results)
+                    } else {
+                        res.send(`There are no records found.`)
+                    }
+                })
+        }
+    })
+})
+
+
+app.post('/buwamafetchallmilkproduction', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                const batchnumber = req.body.batchNumber
+                db.query('SELECT * FROM	buwamalivestockmilkproductionrecords', [batchnumber] , (error, results) => {
+                    if (error) throw (error);
+
+                    if (results.length > 0) {
+                        console.log(results)
+                        res.send(results)
+                    } else {
+                        res.send(`There are no records found.`)
+                    }
+                })
+        }
+    })
+})
+
+
+//7. View all chicken health records
+app.post('/buwamafetchalllivestockhealthrecords', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {             
+                    db.query('SELECT * FROM buwamalivestockbatchhealth JOIN buwamalivestockmedicine ON buwamalivestockbatchhealth.medicinename = buwamalivestockmedicine.productId', (error, results) => {
+                        if (error) throw (error);
+                        if (results.length > 0) {
+                            res.send(results)
+                        } else {
+                            res.send(`There are no records found.`)
+                        }
+                    })
+        }
+    })
+})
+
+
+app.post('/buwamafetchalllivestockbatchfcrdata', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                db.query('SELECT * FROM	buwamalivestockbatchfcrrecords', (error, results) => {
+                    if (error) throw (error);
+
+                    if (results.length > 0) {
+                        console.log(results)
+                        res.send(results)
+                    } else {
+                        res.send(`There are no records found.`)
+                    }
+                })
+        }
+    })
+})
+
+//route to fetch all chicken medicine from db
+app.post('/fetchallbuwamalivestockmedicines', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            db.query('SELECT * FROM buwamalivestockmedicine', (error, results) => {
+                //if the query is faulty , throw the error
+                if (error) console.log(error);
+                //if account exists
+                if (results.length > 0) {
+                    res.send(results)
+                } else {
+                    res.send('No data found.')
+                }
+            })
+        }
+    })
+})
+
+//route to fetch all chicken feeds from db
+app.post('/buwamafetchalllivestockfeeds', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            db.query('SELECT * FROM buwamalivestockfeeds', (error, results) => {
+                //if the query is faulty , throw the error
+                if (error) console.log(error);
+                //if account exists
+                if (results.length > 0) {
+                    res.send(results)
+                } else {
+                    res.send('No data found.')
+                }
+            })
+        }
+    })
+})
+
+//7. View all egg production records
+app.post('/buwamafetchalllivestockbatchdata', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            db.query('SELECT * FROM	buwamachickenfarmbatches', (error, results) => {
+                if (error) throw (error);
+
+                if (results.length > 0) {
+                    res.send(results)
+                } else {
+                    res.send(`There are no records found.`)
+                }
+            })
+        }
+    })
+})
+
+//7. View all batch feeding records
+app.post('/buwamafetchalllivestockfeedingrecords', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                const batchnumber = req.body.batchNumber
+                db.query('SELECT * FROM buwamalivestockbatchfeedingrecords JOIN buwamalivestockfeeds ON buwamalivestockbatchfeedingrecords.feedsid = buwamalivestockfeeds.productId', (error, results) => {
+                    if (error) throw (error);
+
+                    if (results.length > 0) {
+                        res.send(results)
+                    } else {
+                        res.send(`There are no records found.`)
+                    }
+                })
+        }
+    })
+})
 app.listen(port, () => {
     console.log(`Server is listening on port ${port}`);
 })

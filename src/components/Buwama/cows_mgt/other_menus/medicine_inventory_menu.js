@@ -2,29 +2,29 @@ import { Row, Col } from 'react-bootstrap'
 import Navbar from '../../../side navbar/sidenav'
 import { Link } from "react-router-dom"
 
-const BuwamaMedicineInventoryMenu = () => {
+const BuwamaCattleMedicineInventoryMenu = () => {
     return(
         <Row>
         <Col sm='12' md='2' lg='2' xl='2'>
             <Navbar />
         </Col>
         <div className="col align-self-center" style={{marginTop:'20px'}}>
-            <Link className="tab_nav" to="/registerchickenmedicine">
+            <Link className="tab_nav" to="/registercattlemedicine">
                 <div className="mb-3 mclickable_option">
-                    Register Chicken Drug Inventory
+                    Register Cattle Drug Inventory
                 </div>
             </Link>
-            <Link className="tab_nav" to="/buwamachickenmedicinerestockingform">
+            <Link className="tab_nav" to="/buwamacattlemedicinerestockingform">
                 <div className="mb-3 mclickable_option">
                     Restock
                 </div>
             </Link>
-            <Link className="tab_nav" to="/buwamachickenmedicinestocktaking">
+            <Link className="tab_nav" to="/buwamacattlemedicinestocktaking">
                 <div className="mb-3 mclickable_option">
                     Stock Taking
                 </div>
             </Link>
-            <Link className="tab_nav" to="/buwamachickenmedicineinventoryrecords">
+            <Link className="tab_nav" to="/buwamacattlenmedicineinventoryrecords">
                 <div className="mb-3 mclickable_option">
                     Inventory Records
                 </div>
@@ -36,4 +36,4 @@ const BuwamaMedicineInventoryMenu = () => {
     )
 }
 
-export default BuwamaMedicineInventoryMenu
+export default BuwamaCattleMedicineInventoryMenu

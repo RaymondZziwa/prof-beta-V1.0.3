@@ -9,12 +9,10 @@ const BuwamaManageCattleMilkProduction = () => {
     const [quantity, setquantity] = useState(0)
     const [status, setStatus] = useState('')
     const [moreInfo, setMoreInfo] = useState('')
-    const [isItemListLoading, setIsItemLoading] = useState(true)
-    const [itemList, setitemList] = useState('')
-    const [itemName, setitemName] = useState('')
     const [totalEggsCollected, setTotalEggsCollected] = useState(0);
     const [totalGoodEggsCollected, setTotalGoodEggsCollected] = useState(0);
     const [totalDamagedEggsCollected, setTotalDamagedEggsCollected] = useState(0);
+    const [damages, setDamages] = useState(0)
 
     const [areRecordsLoading, setAreRecordsLoading] = useState(true)
     const [records, setRecords] = useState()
@@ -24,7 +22,7 @@ const BuwamaManageCattleMilkProduction = () => {
       };
     
       const handleTotalGoodEggsCollectedChange = (event) => {
-        setTotalGoodEggsCollected(event.target.value);
+        setTotalGoodEggsCollected(event.target.value)
       };
     
       const handleTotalDamagedEggsCollectedChange = (event) => {
@@ -47,10 +45,6 @@ const BuwamaManageCattleMilkProduction = () => {
         setquantity(event.target.value)
     }
 
-    const itemNameInput = event => {
-        event.preventDefault()
-        setitemName(event.target.value)
-    }
 
     useEffect(()=>{
         let date = new Date().toLocaleDateString()
@@ -58,11 +52,10 @@ const BuwamaManageCattleMilkProduction = () => {
     },[])
 
     const fetchRecords = async () => {
-        const res = await axios.post('http://82.180.136.230:3005/buwamafetchbatcheggproduction', {
+        const res = await axios.post('http://82.180.136.230:3005/buwamafetchbatchallmilkproduction', {
             token: localStorage.getItem("token"),
             batchNumber: batchNumber
         })
-        console.log('fff', res.data)
         if(Array.isArray(res.data)){
             setRecords(res.data)
             setAreRecordsLoading(false)
@@ -73,33 +66,23 @@ const BuwamaManageCattleMilkProduction = () => {
         fetchRecords()
     },[batchNumber])
 
-    const fetchItems = async () => {
-        const res = await axios.post('http://82.180.136.230:3005/fetchallchickenmedicines', {
-            token: localStorage.getItem("token")
-        })
-        setitemList(res.data)
-        setIsItemLoading(false)
-    }
 
-    useEffect(()=>{
-        fetchItems()
-    },[])
 
     const saveChickenDeathRecord = async (event) => {
         event.preventDefault()
-        let res = await axios.post('http://82.180.136.230:3005/buwamasavebatcheggproduction',{
-            token: localStorage.getItem('token'),
-            batchNumber: batchNumber,
-            date: date,
-            totalEggsCollected: totalEggsCollected,
-            totalGoodEggsCollected: totalGoodEggsCollected,
-            totalDamagedEggsCollected: totalEggsCollected-totalGoodEggsCollected,
-            //totalEggTraysCollected: (totalGoodEggsCollected/30).toFixed(1),
-            notes: moreInfo
-        })
-        .then(() => setStatus({ type: 'success' }))
-        .catch((err) => setStatus({ type: 'error', err }))
-        //console.log(batchNumber, date, quantity, moreInfo)
+        if(batchNumberInput !== null){
+            let res = await axios.post('http://82.180.136.230:3005/buwamasavelivestockbatchmilkproduction',{
+                token: localStorage.getItem('token'),
+                batchNumber: batchNumber,
+                date: date,
+                totalEggsCollected: totalEggsCollected,
+                totalGoodEggsCollected: totalGoodEggsCollected,
+                totalDamagedEggsCollected: totalEggsCollected-totalGoodEggsCollected,
+                notes: moreInfo
+            })
+            .then(() => setStatus({ type: 'success' }))
+            .catch((err) => setStatus({ type: 'error', err }))
+        }
     }
 
 
@@ -109,12 +92,12 @@ const BuwamaManageCattleMilkProduction = () => {
                 <Navbar />
             </Col>
             <div className="col align-self-center" style={{marginTop:'60px'}}>
-                <h1 style={{textAlign:'center'}}>Cattle Production Manager</h1>
+                <h1 style={{textAlign:'center'}}>Livestock Milk Production Manager</h1>
                 {status?.type === 'success' && <p style={{ margin: '20px' }} class="alert alert-success" role="alert">Success</p>}
                 {status?.type === 'error' && <p style={{ margin: '20px' }} class="alert alert-danger" role="alert">Error!</p>}
                 <div className="form-floating mb-3">
                     <input  className="form-control" id="floatingInput" min="0" placeholder="Quantity" style={{ color: "#8CA6FE" }} onChange={batchNumberInput} required />
-                    <label for="floatingInput">Cattle Batch Number</label>
+                    <label for="floatingInput">Livestock Batch Number</label>
                 </div><br></br>
                 <div className="form-floating mb-3">
                     <input className="form-control" id="floatingInput" placeholder="Order-Id" style={{ color: "#8CA6FE" }} value={date} required readOnly/>
@@ -129,13 +112,9 @@ const BuwamaManageCattleMilkProduction = () => {
                     <label htmlFor="floatingInput">Exact Total Milk (L) Collected</label>
                 </div><br></br>
                 <div className="form-floating mb-3">
-                    <input type='number' className="form-control" id="floatingInput" placeholder="Order-Id" style={{ color: "#8CA6FE" }} required value={totalEggsCollected-totalGoodEggsCollected} readOnly/>
+                    <input type='number' className="form-control" id="floatingInput" placeholder="Order-Id" style={{ color: "#8CA6FE" }} required value={(totalEggsCollected - totalGoodEggsCollected).toFixed(2)} readOnly/>
                     <label htmlFor="floatingInput">Total Number of Lost (L) Milk</label>
                 </div><br></br>
-                {/* <div className="form-floating mb-3">
-                    <input type='number' className="form-control" id="floatingInput" placeholder="Order-Id" style={{ color: "#8CA6FE" }} required readOnly value={(totalGoodEggsCollected/30).toFixed(1)}/>
-                    <label htmlFor="floatingInput">Total Number of Egg Trays</label>
-                </div><br></br> */}
 
                 <div className="mb-3">
                     <textarea type="text" className="form-control" rows="6" id="floatingInput" placeholder="Notes" style={{ color: "#8CA6FE", height: '130px', width: '300px' , marginTop:'10px'}} onChange={externalSourceInfoInput} />
@@ -150,11 +129,11 @@ const BuwamaManageCattleMilkProduction = () => {
                                 <th scope="col">Collection Date</th>
                                 <th scope="col">Total Milk (L) Collected</th>
                                 <th scope="col">Exact Milk (L) Collected</th>
-                                <th scope="col">Total Lost Milk (L) </th>
+                                <th scope="col">Total Lost (L) Milk</th>
                                 <th scope="col">Notes</th>
                             </tr>
                         </thead>
-                        {/* <tbody>
+                        <tbody>
                             {areRecordsLoading ? <tr><td colSpan="7" style={{textAlign:'center'}}>Loading.....</td></tr> :
                                 records.map(item => (
                                     <tr>
@@ -166,7 +145,7 @@ const BuwamaManageCattleMilkProduction = () => {
                                         <td>{item.notes}</td>
                                     </tr>
                                 ))}
-                        </tbody> */}
+                        </tbody>
                     </table>
             </div>
             <Col sm='12' md='2' lg='2' xl='2'></Col>

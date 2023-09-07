@@ -124,7 +124,7 @@ const ViewAllChequesModal = ({chequeData, fetchAllChequeRecords}) => {
                 <th scope="col">Amount Paid (UGX)</th>
                 <th scope="col">Date Issued</th>
                 <th scope="col">Banking Date</th>
-                <th scope="col">Cheque Issued By</th>
+                <th scope="col">Cheque Recorded By</th>
                 <th scope="col">Notes</th>
                 <th scope="col">Cheque Status</th>
                 <th scope="col">Action</th>

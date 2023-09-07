@@ -3,7 +3,7 @@ import Navbar from '../../../side navbar/sidenav'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 
-const BuwamaRecordChickenMortality = () => {
+const BuwamaRecordCattleMortality = () => {
     const [batchNumber, setBatchNumber] = useState('')
     const [date, setDate] = useState()
     const [quantity, setquantity] = useState(0)
@@ -32,7 +32,7 @@ const BuwamaRecordChickenMortality = () => {
 
     const saveChickenDeathRecord = async (event) => {
         event.preventDefault()
-        let res = await axios.post('http://82.180.136.230:3005/buwamasavechickendeaths',{
+        let res = await axios.post('http://82.180.136.230:3005/buwamasavelivestockdeaths',{
             token: localStorage.getItem('token'),
             batchNumber: batchNumber,
             date: date,
@@ -50,7 +50,7 @@ const BuwamaRecordChickenMortality = () => {
                 <Navbar />
             </Col>
             <div className="col align-self-center" style={{marginTop:'60px'}}>
-                <h1 style={{textAlign:'center'}}>Record Chicken Batch Mortality</h1>
+                <h1 style={{textAlign:'center'}}>Record Livestock Batch Mortality</h1>
                 {status?.type === 'success' && <p style={{ margin: '20px' }} class="alert alert-success" role="alert">Success</p>}
                 {status?.type === 'error' && <p style={{ margin: '20px' }} class="alert alert-danger" role="alert">Error!</p>}
                 <div className="form-floating mb-3">
@@ -59,11 +59,11 @@ const BuwamaRecordChickenMortality = () => {
                 </div><br></br>
                 <div className="form-floating mb-3">
                     <input  className="form-control" id="floatingInput" min="0" placeholder="Quantity" style={{ color: "#8CA6FE" }} onChange={batchNumberInput} required />
-                    <label for="floatingInput">Chicken Batch Number</label>
+                    <label for="floatingInput">Batch Number</label>
                 </div><br></br>
                 <div className="form-floating mb-3">
                     <input type='number' className="form-control" id="floatingInput" min="0" placeholder="Quantity" style={{ color: "#8CA6FE" }} onChange={quantityInput} required />
-                    <label for="floatingInput">Number of chicken Dead</label>
+                    <label for="floatingInput">Number of animals dead</label>
                 </div>
                 <div className="mb-3">
                     <textarea type="text" className="form-control" rows="6" id="floatingInput" placeholder="Notes" style={{ color: "#8CA6FE", height: '130px', width: '300px' , marginTop:'10px'}} onChange={externalSourceInfoInput} />
@@ -77,4 +77,4 @@ const BuwamaRecordChickenMortality = () => {
     )
 }
 
-export default BuwamaRecordChickenMortality
+export default BuwamaRecordCattleMortality

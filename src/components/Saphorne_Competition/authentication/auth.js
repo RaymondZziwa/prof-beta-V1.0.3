@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import bkg from '../../../imgs/confetti.jpg'
+import bkg from '../../../imgs/bkg.jpg'
 import { useState } from "react";
 import './auth.css'
 import SaphroneLoginForm from './saphrone_login';
