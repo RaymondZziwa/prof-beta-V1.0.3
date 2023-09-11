@@ -7431,7 +7431,7 @@ app.post('/buwamasavebatchfcrvalue', (req, res) => {
             const fcrValue = req.body.fcrValue
             const notes = req.body.notes
 
-            db.query('INSERT INTO buwamachickenbatchfcrrecords (batchnumber, totalfeedsconsumed, totaleggsproduced, fcrvalue, notes) VALUES (?, ?, ?, ?, ?)', [batchNo, totalFeedsConsumed, totalEggsProduced, fcrValue, notes], (error) => {
+            db.query('INSERT INTO buwamalivestockbatchfcrrecords (batchnumber, totalfeedsconsumed, totaleggsproduced, fcrvalue, notes) VALUES (?, ?, ?, ?, ?)', [batchNo, totalFeedsConsumed, totalEggsProduced, fcrValue, notes], (error) => {
                 //if the query is faulty , throw the error
                 if (error) {
                     console.log(error);
@@ -7527,6 +7527,7 @@ app.post('/buwamasavenewlivestockbatchdata', (req, res) => {
         }
     })
 })
+
 
 app.post('/buwamasavelivestockdeaths', (req, res) => {
     jwt.verify(req.body.token, 'SECRETKEY', (err) => {
@@ -7633,8 +7634,8 @@ app.post('/buwamafetchallmilkproduction', (req, res) => {
         if (err) {
             res.status(403).send("You are not authorized to perform this action.");
         } else {
-                const batchnumber = req.body.batchNumber
-                db.query('SELECT * FROM	buwamalivestockmilkproductionrecords', [batchnumber] , (error, results) => {
+                //const batchnumber = req.body.batchNumber
+                db.query('SELECT * FROM	buwamalivestockmilkproductionrecords', (error, results) => {
                     if (error) throw (error);
 
                     if (results.length > 0) {
@@ -7733,7 +7734,7 @@ app.post('/buwamafetchalllivestockbatchdata', (req, res) => {
         if (err) {
             res.status(403).send("You are not authorized to perform this action.");
         } else {
-            db.query('SELECT * FROM	buwamachickenfarmbatches', (error, results) => {
+            db.query('SELECT * FROM	 buwamalivestockfarmbatches', (error, results) => {
                 if (error) throw (error);
 
                 if (results.length > 0) {
@@ -7752,7 +7753,6 @@ app.post('/buwamafetchalllivestockfeedingrecords', (req, res) => {
         if (err) {
             res.status(403).send("You are not authorized to perform this action.");
         } else {
-                const batchnumber = req.body.batchNumber
                 db.query('SELECT * FROM buwamalivestockbatchfeedingrecords JOIN buwamalivestockfeeds ON buwamalivestockbatchfeedingrecords.feedsid = buwamalivestockfeeds.productId', (error, results) => {
                     if (error) throw (error);
 
@@ -7765,6 +7765,168 @@ app.post('/buwamafetchalllivestockfeedingrecords', (req, res) => {
         }
     })
 })
+
+//7. Register Items
+app.post('/buwamaregisteritem', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const category = req.body.category
+            const name = req.body.name
+            const unitPrice = req.body.unitPrice
+
+            db.query('INSERT INTO buwamaitems (category, name, unitPrice) VALUES (?, ?, ?)', [category, name, unitPrice], (error, results) => {
+                if (error) throw (error);
+
+                if (results.length > 0) {
+                    res.send(results)
+                } else {
+                    res.send(`There are no records found.`)
+                }
+            })
+        }
+    })
+})
+
+//7. View all egg production records
+app.post('/buwamafetchallitems', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            db.query('SELECT * FROM	 buwamaitems', (error, results) => {
+                if (error) throw (error);
+
+                if (results.length > 0) {
+                    res.send(results)
+                } else {
+                    res.send(`There are no records found.`)
+                }
+            })
+        }
+    })
+})
+
+
+//buwama gs restock form
+app.post('/buwamasavegeneralstorerestockdata', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const itemCategory = req.body.category
+            const date = req.body.date
+            let itemid = req.body.itemid
+            let quantity = req.body.quantity
+            let units = req.body.unit
+            let source = req.body.source
+            let externalSourceDetails = req.body.externalSourceDetails
+            let notes = req.body.notes
+         let category = req.body.recordCategory
+
+            db.query('INSERT INTO buwamageneralstoreinventoryrecords (date, recordcategory, itemcategory, itemid, quantityin, munits, restocksource, externalsourcedetails, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);', [date, category, itemCategory, itemid, quantity, units, source, externalSourceDetails, notes], error => {
+                //if the query is faulty , throw the error
+                if (error) {
+                    console.log(error);
+                    res.send('Error')
+                } else {
+                    res.send('success')
+                    if(category === 'outgoing'){
+                        db.query('SELECT * FROM buwamaGeneralStoreInventory WHERE productId = ?;', [itemid], function (err, results) {
+                            // If there is an issue with the query, output the error
+                            if (err) throw err;
+                            // If the account exists
+                            if (results.length === 0) {
+                                res.send('This item is not in stock')
+                            } else if (results.length > 0) {
+                                let newStockCount = parseFloat(results[0].quantityinstock) - parseFloat(quantity);
+                                const sqlStockCount = "UPDATE  buwamaGeneralStoreInventory SET quantityinstock = ? WHERE productId = ?"
+                                db.query(sqlStockCount, [newStockCount, itemid], (err) => {
+                                    if (err) {
+                                        console.log(err)
+                                    } else {
+                                        console.log('item quantity in stock has been updated successfully')
+                                        res.send('success')
+                                    }
+                                })
+                            } else {
+                                console.log("Error while increasing the item quantity in stock.")
+                            }
+                        })
+                    }else{
+                        db.query('SELECT * FROM buwamaGeneralStoreInventory WHERE productId = ?;', [itemid], function (err, results) {
+                            // If there is an issue with the query, output the error
+                            if (err) throw err;
+                            // If the account exists
+                            if (results.length === 0) {
+                                const sqlStockCount = "Insert into buwamaGeneralStoreInventory (productId,category,quantityinstock,munits) values(?,?,?,?)"
+                                db.query(sqlStockCount, [itemid, itemCategory, quantity, units], (err) => {
+                                    if (err) {
+                                        console.log(err)
+                                    } else {
+                                        console.log('item quantity in stock has been updated successfully')
+                                    }
+                                })
+                            } else if (results.length > 0) {
+                                let newStockCount = parseFloat(results[0].quantityinstock) + parseFloat(quantity);
+                                const sqlStockCount = "UPDATE buwamaGeneralStoreInventory SET quantityinstock = ? WHERE productId = ?"
+                                db.query(sqlStockCount, [newStockCount, itemid], (err) => {
+                                    if (err) {
+                                        console.log(err)
+                                    } else {
+                                        console.log('item quantity in stock has been updated successfully')
+                                        res.send('success')
+                                    }
+                                })
+                            } else {
+                                console.log("Error while increasing the item quantity in stock.")
+                            }
+                        })
+                    }
+                }
+            })
+
+        }
+    })
+})
+
+app.post('/fetchbuwamageneralstorerecords', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            db.query('SELECT * FROM	 buwamageneralstoreinventoryrecords JOIN buwamaitems ON buwamageneralstoreinventoryrecords.itemid = buwamaitems.productId', (error, results) => {
+                if (error) throw (error);
+
+                if (results.length > 0) {
+                    res.send(results)
+                } else {
+                    res.send(`There are no records found.`)
+                }
+            })
+        }
+    })
+})
+
+app.post('/fetchbuwamastoredata', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            db.query('SELECT * FROM	 buwamaGeneralStoreInventory JOIN buwamaitems ON buwamaGeneralStoreInventory.productId = buwamaitems.productId', (error, results) => {
+                if (error) throw (error);
+
+                if (results.length > 0) {
+                    res.send(results)
+                } else {
+                    res.send(`There are no records found.`)
+                }
+            })
+        }
+    })
+})
+
 app.listen(port, () => {
     console.log(`Server is listening on port ${port}`);
 })

@@ -18,7 +18,7 @@ const BuwamaCattleFarmStatementReport = () => {
   const [healthRecords, setHealthRecords] = useState([]);
 
   const fetchHealthRecords = async () => {
-    const res = await axios.post('http://82.180.136.230:3005/buwamafetchallchickenhealthrecords', {
+    const res = await axios.post('http://82.180.136.230:3005/buwamafetchalllivestockhealthrecords', {
       token: localStorage.getItem("token")
     });
     console.log('fff', res.data);
@@ -28,7 +28,7 @@ const BuwamaCattleFarmStatementReport = () => {
   };
 
   const fetchAllMedicines = async () => {
-    let res = await axios.post('http://82.180.136.230:3005/fetchallchickenmedicines', {
+    let res = await axios.post('http://82.180.136.230:3005/fetchallbuwamalivestockmedicines', {
       token: localStorage.getItem('token')
     });
 
@@ -56,7 +56,7 @@ const BuwamaCattleFarmStatementReport = () => {
 
   useEffect(() => {
     const fetchFCRRecords = async () => {
-      const res = await axios.post('http://82.180.136.230:3005/buwamafetchallbatchfcrdata', {
+      const res = await axios.post('http://82.180.136.230:3005/buwamafetchalllivestockbatchfcrdata', {
         token: localStorage.getItem('token'),
       });
       if (Array.isArray(res.data)) {
@@ -66,7 +66,7 @@ const BuwamaCattleFarmStatementReport = () => {
     };
 
     const fetchBatchData = async () => {
-      const res = await axios.post('http://82.180.136.230:3005/buwamafetchallbatchdata', {
+      const res = await axios.post('http://82.180.136.230:3005/buwamafetchalllivestockbatchdata', {
         token: localStorage.getItem('token'),
       });
       if (Array.isArray(res.data)) {
@@ -86,7 +86,7 @@ const BuwamaCattleFarmStatementReport = () => {
     };
 
     const fetchEggProductionRecords = async () => {
-      const res = await axios.post('http://82.180.136.230:3005/buwamafetchalleggproduction', {
+      const res = await axios.post('http://82.180.136.230:3005/buwamafetchallmilkproduction', {
         token: localStorage.getItem('token'),
       });
       if (Array.isArray(res.data)) {
@@ -160,7 +160,7 @@ const BuwamaCattleFarmStatementReport = () => {
       </Row>
       <Row>
         <h1 style={{ textAlign: 'center', color: 'black', marginTop: '60px' }}>
-          Buwama Cattle Batch Statement Report{' '}
+          Buwama Livestock Batch Statement Report{' '}
           <span style={{ float: 'right', marginRight: '10px' }}>
             <ReportPrintingButton />
           </span>
@@ -196,6 +196,7 @@ const BuwamaCattleFarmStatementReport = () => {
               <tr>
               <th scope="col">Batch Registration Date</th>
                 <th scope="col">Batch Number</th>
+                <th scope="col">Animal Name</th>
                 <th scope="col">Number Of Livestock</th>
                 <th scope="col">Unit Price (UGX)</th>
                 <th scope="col">Total Spent On  Purchase (UGX)</th>
@@ -219,7 +220,7 @@ const BuwamaCattleFarmStatementReport = () => {
               ) : filteredBatches.length > 0 ? (
                 filteredBatches.map((item) => {
                   const eggRecordsForBatch = eggRecords.filter((record) => record.batchnumber === item.batchnumber);
-                  const totalEggsProduced = eggRecordsForBatch.reduce((sum, record) => sum + record.totaleggscollected, 0);
+                  const totalEggsProduced = eggRecordsForBatch.reduce((sum, record) => sum + record.totalLitrescollected, 0);
                   const totalFeedCost = calculateTotalFeedCost(item.batchnumber);
                   const totalMedicineCost = calculateTotalMedicineCost(item.batchnumber);
                   const fcrForBatch = getFCRForBatch(item.batchnumber);
@@ -228,16 +229,17 @@ const BuwamaCattleFarmStatementReport = () => {
                     <tr key={item.batchnumber}>
                       <td>{item.date}</td>
                       <td>{item.batchnumber}</td>
-                      <td>{item.numberofchicken}</td>
-                      <td>{item.chickenunitprice}</td>
+                      <td>{item.animalName}</td>
+                      <td>{item.numberofanimals}</td>
+                      <td>{item.unitprice}</td>
                       <td>{item.totalspent}</td>
                       <td>{totalFeedCost}</td>
                       <td>{totalMedicineCost}</td>
                       <td>{totalEggsProduced}</td>
                       <td>{item.notes}</td>
                       <td>{item.status}</td>
-                      <td>{item.chickenalive}</td>
-                      <td>{item.chickendead}</td>
+                      <td>{item.animalsalive}</td>
+                      <td>{item.animalsdead}</td>
                       <td>{fcrForBatch}</td>
                     </tr>
                   );

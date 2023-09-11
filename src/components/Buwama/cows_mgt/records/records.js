@@ -34,7 +34,7 @@ const BuwamaLivestockBatchRecords = () => {
     const res = await axios.post('http://82.180.136.230:3005/buwamafetchalllivestockhealthrecords', {
       token: localStorage.getItem("token")
     });
-    console.log('fff', res.data);
+    console.log('health records', res.data);
     if (Array.isArray(res.data)) {
       setHealthRecords(res.data);
     }
@@ -45,8 +45,9 @@ const BuwamaLivestockBatchRecords = () => {
       token: localStorage.getItem('token')
     });
 
+    console.log('all medicines', res.data);
     if (Array.isArray(res.data)) {
-      setIsFetchedMedicinesLoading(false);
+      setIsFetchedMedicinesLoading(false);   
       setFetchedMedicines(res.data);
     }
     console.log(res.data);
@@ -63,6 +64,7 @@ const BuwamaLivestockBatchRecords = () => {
       token: localStorage.getItem('token')
     });
 
+    console.log('all feeds', res.data);
     if (Array.isArray(res.data)) {
       setIsFetchedFeedsLoading(false);
       setFetchedFeeds(res.data);
@@ -78,6 +80,7 @@ const BuwamaLivestockBatchRecords = () => {
     const res = await axios.post('http://82.180.136.230:3005/buwamafetchalllivestockbatchdata', {
       token: localStorage.getItem('token')
     });
+    console.log('batch data', res.data);
     if (Array.isArray(res.data)) {
       setIsLoading(false);
       setChickenBatches(res.data);
@@ -88,6 +91,8 @@ const BuwamaLivestockBatchRecords = () => {
     const res = await axios.post('http://82.180.136.230:3005/buwamafetchalllivestockfeedingrecords', {
       token: localStorage.getItem('token')
     });
+
+    console.log('feeding records', res.data);
     if (Array.isArray(res.data)) {
       setRecords(res.data);
       setAreRecordsLoading(false);
@@ -98,47 +103,52 @@ const BuwamaLivestockBatchRecords = () => {
     const res = await axios.post('http://82.180.136.230:3005/buwamafetchallmilkproduction', {
       token: localStorage.getItem('token')
     })
+    
 
+    console.log('milk production', res.data)
     if (Array.isArray(res.data)) {
       setEggRecords(res.data);
       setAreEggRecordsLoading(false);
     }
   }
 
+
   useEffect(() => {
     fetchFeedingRecords();
     fetchEggProductionRecords();
     fetchBatchData();
-  }, []);
+  }, [])
+
 
   const calculateTotalFeedCost = (batchNumber) => {
-    const feedingRecordsForBatch = records.filter((record) => record.batchnumber === batchNumber);
-    let totalCost = 0;
+    const feedingRecordsForBatch = records.filter((record) => record.batchnumber === batchNumber)
+    let totalCost = 0
     feedingRecordsForBatch.forEach((record) => {
-      const feedData = fetchedFeeds.find((feed) => feed.productId === record.feedsid);
+      const feedData = fetchedFeeds.find((feed) => feed.productId === record.feedsid)
       if (feedData) {
-        const feedUnitPrice = feedData.unitPrice;
-        const feedAmount = record.feedsquantity;
-        const feedCost = feedUnitPrice * feedAmount;
-        totalCost += feedCost;
+        const feedUnitPrice = feedData.unitPrice
+        const feedAmount = record.feedsquantity
+        const feedCost = feedUnitPrice * feedAmount
+        totalCost += feedCost
       }
-    });
-    return totalCost;
-  };
+    })
+
+    return totalCost
+  }
 
   const calculateTotalMedicineCost = (batchNumber) => {
-    const healthRecordsForBatch = healthRecords.filter((record) => record.batchnumber === batchNumber);
-    let totalCost = 0;
+    const healthRecordsForBatch = healthRecords.filter((record) => record.batchnumber === batchNumber)
+    let totalCost = 0
     healthRecordsForBatch.forEach((record) => {
-      const medicineData = fetchedMedicines.find((medicine) => medicine.productId === record.medicinename);
+      const medicineData = fetchedMedicines.find((medicine) => medicine.productId === record.medicinename)
       if (medicineData) {
-        const medicineUnitPrice = medicineData.unitPrice;
-        const medicineAmount = record.medicinequantityused;
-        const medicineCost = medicineUnitPrice * medicineAmount;
-        totalCost += medicineCost;
+        const medicineUnitPrice = medicineData.unitPrice
+        const medicineAmount = record.medicinequantityused
+        const medicineCost = medicineUnitPrice * medicineAmount
+        totalCost += medicineCost
       }
-    });
-    return totalCost;
+    })
+    return totalCost
   };
 
   const getFCRForBatch = (batchNumber) => {
@@ -182,7 +192,7 @@ const BuwamaLivestockBatchRecords = () => {
             ) : (
               chickenBatches.map((item) => {
                 const eggRecordsForBatch = eggRecords.filter((record) => record.batchnumber === item.batchnumber);
-                const totalEggsProduced = eggRecordsForBatch.reduce((sum, record) => sum + record.totaleggscollected, 0);
+                const totalEggsProduced = eggRecordsForBatch.reduce((sum, record) => sum + record.totalLitrescollected, 0);
                 const totalFeedCost = calculateTotalFeedCost(item.batchnumber);
                 const totalMedicineCost = calculateTotalMedicineCost(item.batchnumber);
                 const fcrForBatch = getFCRForBatch(item.batchnumber);
@@ -191,16 +201,17 @@ const BuwamaLivestockBatchRecords = () => {
                   <tr key={item.batchnumber}>
                     <td>{item.date}</td>
                     <td>{item.batchnumber}</td>
-                    <td>{item.numberofchicken}</td>
-                    <td>{item.chickenunitprice}</td>
+                    <td>{item.animalName}</td>
+                    <td>{item.numberofanimals}</td>
+                    <td>{item.unitprice}</td>
                     <td>{item.totalspent}</td>
                     <td>{totalFeedCost}</td>
                     <td>{totalMedicineCost}</td>
                     <td>{totalEggsProduced}</td>
                     <td>{item.notes}</td>
                     <td>{item.status}</td>
-                    <td>{item.chickenalive}</td>
-                    <td>{item.chickendead}</td>
+                    <td>{item.animalsalive}</td>
+                    <td>{item.animalsdead}</td>
                     <td>{fcrForBatch}</td>
                   </tr>
                 )

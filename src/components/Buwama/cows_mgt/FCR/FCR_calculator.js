@@ -30,10 +30,9 @@ const BuwamaCattleFCRCalculator = () => {
 
 
     const fetchFeedingRecords = async () => {
-        const res = await axios.post('http://82.180.136.230:3005/buwamafetchallfeedingrecords', {
+        const res = await axios.post('http://82.180.136.230:3005/buwamafetchalllivestockfeedingrecords', {
             token: localStorage.getItem("token")
         })
-        //console.log('fff', res.data)
         if(Array.isArray(res.data)){
             setRecords(res.data)
             setAreRecordsLoading(false)
@@ -41,10 +40,10 @@ const BuwamaCattleFCRCalculator = () => {
     }
 
     const fetchEggProductionRecords = async () => {
-        const res = await axios.post('http://82.180.136.230:3005/buwamafetchalleggproduction', {
+        const res = await axios.post('http://82.180.136.230:3005/buwamafetchallmilkproduction', {
             token: localStorage.getItem("token")
         })
-        //console.log('fff', res.data)
+       // console.log('milk', res.data)
         if(Array.isArray(res.data)){
             setEggRecords(res.data)
             setAreEggRecordsLoading(false)
@@ -73,10 +72,9 @@ const BuwamaCattleFCRCalculator = () => {
     
         for (const data of eggRecords) {
           if (data.batchnumber === batchNumber) {
-            overallQuantity += data.totaleggscollected
+            overallQuantity += data.totalLitrescollected
           }
         }
-
         setTotalEggsProduced(overallQuantity);
     }
 
@@ -133,7 +131,7 @@ const BuwamaCattleFCRCalculator = () => {
                     <label htmlFor="floatingInput">Total Feeds Quantity Consumed (kg):</label>
                 </div><br></br>
                 <div className="form-floating mb-3">
-                    <input type='number' className="form-control" id="floatingInput" placeholder="Order-Id" style={{ color: "#8CA6FE" }} required value={totalEggsProduced} min='0' readOnly/>
+                    <input className="form-control" id="floatingInput" placeholder="Order-Id" style={{ color: "#8CA6FE" }} required value={totalEggsProduced} readOnly/>
                     <label htmlFor="floatingInput">Total Milk (L) Produced By Batch</label>
                 </div><br></br>
                 <div className="form-floating mb-3">

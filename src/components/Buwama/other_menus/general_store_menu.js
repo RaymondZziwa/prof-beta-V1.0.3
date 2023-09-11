@@ -2,56 +2,56 @@ import { Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Navbar from '../../side navbar/sidenav'
 
-const BuwamaCattleMgtDashboard = () => {
+const BuwamaGeneralStoreMenu = () => {
     return (
         <Row>
             <Col sm='12' md='1' lg='1' xl='1'>
                 <Navbar />
             </Col>
             <Col sm='12' md='9' lg='9' xl='9' style={{marginTop:'60px'}}>
-                <Link className="tab_nav" to="/buwamaregisternewcattlebatch">
+            <Link className="tab_nav" to="/buwamaregisteritem">
                     <div className="mb-3 mclickable_option">
-                        Register New Livestock Batch
+                        Register Items
                     </div>
                 </Link>
-                <Link className="tab_nav" to="/buwamarecordcattledeath">
+                <Link className="tab_nav" to="/buwamageneralstorerestockform">
                     <div className="mb-3 mclickable_option">
-                        Record Livestock Batch Death
+                        Restock Form
                     </div>
                 </Link>
-                <Link className="tab_nav" to="#">
+                <Link className="tab_nav" to="/buwamageneralstoreoutgoingform">
                     <div className="mb-3 mclickable_option">
-                        Manage Livestock Feeding
+                        Outgoing Form
                     </div>
                 </Link>
-                <Link className="tab_nav" to="/buwamacattlehealthmgt">
+                <Link className="tab_nav" to="/buwamageneralstoreincomingrecords">
                     <div className="mb-3 mclickable_option">
-                        Manage Livestock Health
+                        Restock Records
                     </div>
                 </Link>
-                <Link className="tab_nav" to="/buwamacattlemilkproductionmgt">
+                <Link className="tab_nav" to="/buwamalgeneralstoreoutgoingrecords">
                     <div className="mb-3 mclickable_option">
-                        Manage Milk Production
+                        Outgoing Records
                     </div>
                 </Link>
-                <Link className="tab_nav" to="/buwamacattlemanureproductionmgt">
+                <Link className="tab_nav" to="/buwamaseedlingstocktaking">
                     <div className="mb-3 mclickable_option">
-                        Manage Manure Production
+                        Seedlings Stock Taking
                     </div>
                 </Link>
-                <Link className="tab_nav" to="/buwamacattlecalculatebatchfcr">
+                <Link className="tab_nav" to="/buwamalivestockfeedsstocktaking">
                     <div className="mb-3 mclickable_option">
-                        Feed Conversion Ratio
+                        livestock Feeds Stock Taking
                     </div>
                 </Link>
-                <Link className="tab_nav" to="/buwamacattlebatchrecords">
+                <Link className="tab_nav" to="/buwamalivestockmedicinestocktaking">
                     <div className="mb-3 mclickable_option">
-                        Batch Records
+                        Livestock Medicine Stock Taking
                     </div>
                 </Link>
-                <Link className="tab_nav" to="/buwamacattlefarmstatementreport">
+                <Link className="tab_nav" to="/buwamaequipmentstocktaking">
                     <div className="mb-3 mclickable_option">
-                       Statemental Report
+                       Equipment Stock Taking
                     </div>
                 </Link>
             </Col>
@@ -61,4 +61,4 @@ const BuwamaCattleMgtDashboard = () => {
     )
 }
 
-export default BuwamaCattleMgtDashboard
+export default BuwamaGeneralStoreMenu

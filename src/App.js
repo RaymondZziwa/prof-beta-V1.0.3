@@ -229,6 +229,17 @@ import BuwamaRegisterNewCattleBatch from './components/Buwama/cows_mgt/register_
 import BuwamaCattleFeedsInventoryMenu from './components/Buwama/cows_mgt/other_menus/feeds_inventory_menu';
 import BuwamaCattleMedicineInventoryMenu from './components/Buwama/cows_mgt/other_menus/medicine_inventory_menu';
 import BuwamaLivestockBatchRecords from './components/Buwama/cows_mgt/records/records';
+import BuwamaManageCattleManureProduction from './components/Buwama/cows_mgt/manure_production/manure_production';
+import BuwamaGeneralStoreMenu from './components/Buwama/other_menus/general_store_menu';
+import BuwamaEquipmentStockTaking from './components/Buwama/general_store_mgt/equipment_stock_taking';
+import BuwamaLivestockFeedsStockTaking from './components/Buwama/general_store_mgt/livestock_feeds_stock_taking';
+import BuwamaLivestockMedicineStockTaking from './components/Buwama/general_store_mgt/livestock_medicine_stock_taking';
+import BuwamaGeneralStoreOutgoingRecords from './components/Buwama/general_store_mgt/outoging_records';
+import BuwamaGeneralStoreRestockRecords from './components/Buwama/general_store_mgt/restock_records';
+import RegisterBuwamaGeneralStoreItems from './components/Buwama/general_store_mgt/register_items';
+import BuwamaGeneralStoreRestockForm from './components/Buwama/general_store_mgt/restock_form';
+import BuwamaGeneralStoreOutgoingForm from './components/Buwama/general_store_mgt/outgoing_form';
+import BuwamaSeedlingsStockTaking from './components/Buwama/general_store_mgt/seedlings_stock_taking';
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -994,6 +1005,9 @@ function App() {
           {authCtx.isLoggedIn && (<Route path="/buwamacattlemilkproductionmgt">
             <BuwamaManageCattleMilkProduction />
           </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamacattlemanureproductionmgt">
+            <BuwamaManageCattleManureProduction />
+          </Route>)}
           {authCtx.isLoggedIn && (<Route path="/buwamacattlefarmstatementreport">
             <BuwamaCattleFarmStatementReport />
           </Route>)}
@@ -1029,6 +1043,37 @@ function App() {
           </Route>)}
           {authCtx.isLoggedIn && (<Route path="/buwamaallcattlefeedingrecords">
             <BuwamaAllFeedingRecords />
+          </Route>)}
+
+          {authCtx.isLoggedIn && (<Route path="/buwamageneralstoremenu">
+            <BuwamaGeneralStoreMenu />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamaequipmentstocktaking">
+            <BuwamaEquipmentStockTaking />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamalivestockfeedsstocktaking">
+            <BuwamaLivestockFeedsStockTaking/>
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamalivestockmedicinestocktaking">
+            <BuwamaLivestockMedicineStockTaking />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamaseedlingstocktaking">
+            <BuwamaSeedlingsStockTaking />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamageneralstoreincomingrecords">
+            <BuwamaGeneralStoreRestockRecords/>
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamalgeneralstoreoutgoingrecords">
+            <BuwamaGeneralStoreOutgoingRecords />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamaregisteritem">
+            <RegisterBuwamaGeneralStoreItems />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamageneralstorerestockform">
+            <BuwamaGeneralStoreRestockForm />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamageneralstoreoutgoingform">
+            <BuwamaGeneralStoreOutgoingForm />
           </Route>)}
 
           {/* Prof Saphrone Competition Routes */}
