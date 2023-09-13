@@ -25,6 +25,11 @@ const ChickenMgtDashboard = () => {
                         Register New Chicken Batch
                     </div>
                 </Link>
+                <Link className="tab_nav" to="/recordchickenfarmexpense">
+                    <div className="mb-3 mclickable_option">
+                        Record Expense
+                    </div>
+                </Link>
                 <Link className="tab_nav" to="/masanafurecordchickendeath">
                     <div className="mb-3 mclickable_option">
                         Record Chicken Batch Death

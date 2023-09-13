@@ -10,9 +10,7 @@ const BuwamaManageCattleManureProduction = () => {
     const [status, setStatus] = useState('')
     const [moreInfo, setMoreInfo] = useState('')
     const [totalEggsCollected, setTotalEggsCollected] = useState(0);
-    const [totalGoodEggsCollected, setTotalGoodEggsCollected] = useState(0);
-    const [totalDamagedEggsCollected, setTotalDamagedEggsCollected] = useState(0);
-    const [damages, setDamages] = useState(0)
+
 
     const [areRecordsLoading, setAreRecordsLoading] = useState(true)
     const [records, setRecords] = useState()
@@ -20,15 +18,6 @@ const BuwamaManageCattleManureProduction = () => {
     const handleTotalEggsCollectedChange = (event) => {
         setTotalEggsCollected(event.target.value);
       };
-    
-      const handleTotalGoodEggsCollectedChange = (event) => {
-        setTotalGoodEggsCollected(event.target.value)
-      };
-    
-      const handleTotalDamagedEggsCollectedChange = (event) => {
-        setTotalDamagedEggsCollected(event.target.value);
-      };
-    
 
     const externalSourceInfoInput = event => {
         event.preventDefault()
@@ -74,10 +63,8 @@ const BuwamaManageCattleManureProduction = () => {
             let res = await axios.post('http://82.180.136.230:3005/buwamasavelivestockbatchmmanureproduction',{
                 token: localStorage.getItem('token'),
                 batchNumber: batchNumber,
-                date: date,
-                totalEggsCollected: totalEggsCollected,
-                totalGoodEggsCollected: totalGoodEggsCollected,
-                totalDamagedEggsCollected: totalEggsCollected-totalGoodEggsCollected,
+                date: new Date().toLocaleDateString(),
+                totalManureCollected: totalEggsCollected,
                 notes: moreInfo
             })
             .then(() => setStatus({ type: 'success' }))
@@ -105,7 +92,7 @@ const BuwamaManageCattleManureProduction = () => {
                 </div><br></br>
                 <div className="form-floating mb-3">
                     <input type='number' className="form-control" id="floatingInput" placeholder="Order-Id" style={{ color: "#8CA6FE" }} required onChange={handleTotalEggsCollectedChange}/>
-                    <label htmlFor="floatingInput">Total Manure (KG) Collected</label>
+                    <label htmlFor="floatingInput">Total Manure (KG)/ (L) Collected</label>
                 </div><br></br>
                 <div className="mb-3">
                     <textarea type="text" className="form-control" rows="6" id="floatingInput" placeholder="Notes" style={{ color: "#8CA6FE", height: '130px', width: '300px' , marginTop:'10px'}} onChange={externalSourceInfoInput} />
@@ -118,7 +105,7 @@ const BuwamaManageCattleManureProduction = () => {
                         <thead>
                             <tr>
                                 <th scope="col">Collection Date</th>
-                                <th scope="col">Total Manure (KG) Collected</th>
+                                <th scope="col">Total Manure (KG)/ (L) Collected</th>
                                 <th scope="col">Notes</th>
                             </tr>
                         </thead>
@@ -127,10 +114,7 @@ const BuwamaManageCattleManureProduction = () => {
                                 records.map(item => (
                                     <tr>
                                         <td>{item.collectiondate}</td>
-                                        <td>{item.totaleggscollected}</td>
-                                        <td>{item.totalgoodeggscollected}</td>
-                                        <td>{item.totaldamagedeggscollected}</td>
-                                        <td>{item.totaleggtrays}</td>
+                                        <td>{item.totalManurecollected}</td>
                                         <td>{item.notes}</td>
                                     </tr>
                                 ))}

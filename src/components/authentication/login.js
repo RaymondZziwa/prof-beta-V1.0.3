@@ -55,7 +55,7 @@ const Login = () => {
             branch: branch,
             department: department,
             role: role,
-            username: username,
+            username: username.trim(),
             password: pwd
         })
         if (typeof res.data === "string") {

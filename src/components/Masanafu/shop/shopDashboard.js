@@ -14,6 +14,11 @@ return(
                 Manage Shop Inventory
             </div>
         </Link>
+        <Link className="tab_nav" to="/saphronecompetitionmenu">
+            <div className="mb-3 mclickable_option">
+                Saffron Competition
+            </div>
+        </Link>
         <Link className="tab_nav" to="/manageexternalreceipts">
             <div className="mb-3 mclickable_option">
                 Retrieve/Manage External Receipts

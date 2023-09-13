@@ -240,6 +240,7 @@ import RegisterBuwamaGeneralStoreItems from './components/Buwama/general_store_m
 import BuwamaGeneralStoreRestockForm from './components/Buwama/general_store_mgt/restock_form';
 import BuwamaGeneralStoreOutgoingForm from './components/Buwama/general_store_mgt/outgoing_form';
 import BuwamaSeedlingsStockTaking from './components/Buwama/general_store_mgt/seedlings_stock_taking';
+import RecordChickenFarmExpense from './components/Masanafu/farm/chicken_farm_mgt/record_expense/record_expense';
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -277,9 +278,9 @@ function App() {
             <Login />
           </Route>
         )}
-          {/* {!authCtx.isLoggedIn && (
+          {!authCtx.isLoggedIn && (
             <Redirect to='/Login' />
-          )}
+          )}{/* 
 
           {authCtx.isLoggedIn && (<Route path="*">
             <Redirect to={localStorage.getItem('home')} />
@@ -1074,6 +1075,9 @@ function App() {
           </Route>)}
           {authCtx.isLoggedIn && (<Route path="/buwamageneralstoreoutgoingform">
             <BuwamaGeneralStoreOutgoingForm />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/recordchickenfarmexpense">
+            <RecordChickenFarmExpense />
           </Route>)}
 
           {/* Prof Saphrone Competition Routes */}

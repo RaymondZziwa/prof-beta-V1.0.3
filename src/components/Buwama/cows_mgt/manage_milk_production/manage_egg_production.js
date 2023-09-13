@@ -138,10 +138,9 @@ const BuwamaManageCattleMilkProduction = () => {
                                 records.map(item => (
                                     <tr>
                                         <td>{item.collectiondate}</td>
-                                        <td>{item.totaleggscollected}</td>
-                                        <td>{item.totalgoodeggscollected}</td>
-                                        <td>{item.totaldamagedeggscollected}</td>
-                                        <td>{item.totaleggtrays}</td>
+                                        <td>{item.totalLitrescollected}</td>
+                                        <td>{item.exactlitrescollected}</td>
+                                        <td>{item.totalLitresLost}</td>
                                         <td>{item.notes}</td>
                                     </tr>
                                 ))}

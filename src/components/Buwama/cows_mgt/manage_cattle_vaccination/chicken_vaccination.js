@@ -111,7 +111,7 @@ const BuwamaManageCattleVaccination = () => {
                 <Navbar />
             </Col>
             <div className="col align-self-center" style={{marginTop:'60px'}}>
-                <h1 style={{textAlign:'center'}}>Cattle Batch Health Manager</h1>
+                <h1 style={{textAlign:'center'}}>Livestock Batch Health Manager</h1>
                 {status?.type === 'success' && <p style={{ margin: '20px' }} class="alert alert-success" role="alert">Success</p>}
                 {status?.type === 'error' && <p style={{ margin: '20px' }} class="alert alert-danger" role="alert">Error!</p>}
                 <div className="form-floating mb-3">
@@ -161,7 +161,7 @@ const BuwamaManageCattleVaccination = () => {
                 <button style={{ width: "86%", border: "none", color: "white", height: "45px", backgroundColor: "#3452A3", marginTop: '5px' }} onClick={saveChickenDeathRecord}>
                     Save Health Record
                 </button>
-                <h1 style={{textAlign:'center'}}>Cattle Batch Health Monitoring Records</h1>
+                <h1 style={{textAlign:'center'}}>Livestock Batch Health Monitoring Records</h1>
                 <table className="table table-light">
                         <thead>
                             <tr>

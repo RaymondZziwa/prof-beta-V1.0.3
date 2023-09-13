@@ -7122,69 +7122,90 @@ app.post('/exhibitioncheckout', (req, res) => {
 })
 
 //Saphrone Routes
-app.post('/newsaphroneparticipantregistration', async (req, res) => {
-    try {
-      const employeeId = `E-${Math.floor(Math.random() * 1000)}`;
-      const { username, fName, lName, gender, dateofregistration, password } = req.body;
-  
-      // Check if the user already exists
-      const existingUser = await db.query('SELECT * FROM saphroneparticipants WHERE username = ?;', [username]);
-  
-      if (existingUser.length > 0) {
-        return res.status(403).json({ error: 'This username is already in use.' });
-      }
-  
-      const saltRounds = 12;
-      const encryptedPwd = await bcrypt.hash(password, saltRounds);
-  
-      const sqlInsert = "INSERT INTO saphroneparticipants(employeeId, username, firstName, lastName, gender, password, registrationdate) VALUES (?, ?, ?, ?, ?, ?, ?)";
-      
-      await db.query(sqlInsert, [employeeId, username, fName, lName, gender, encryptedPwd, dateofregistration]);
-      
-      return res.status(200).json({ message: "Your registration has been successful. Please login with your credentials." });
-    } catch (error) {
-      console.error('Registration error:', error);
-      return res.status(500).json({ error: "An error occurred. Please try again later." });
-    }
-  });
+app.post('/newsaphroneparticipantregistration', (req, res) => {
+    const employeeId = `E-${Math.floor(Math.random() * 1000)}`
+    const username = req.body.username
+    const firstname = req.body.fName
+    const lastname = req.body.lName
+    const gender = req.body.gender
+    const dateofregistration = req.body.dateofregistration
+    const password = req.body.password
+
+    // console.log(Id,username,firstname,lastname,gender)
+    const saltRounds = 12;
+    const encryptedPwd = bcrypt.hashSync(password, saltRounds);
+    //missing code to check if user already exists
+    db.query('SELECT * FROM saphroneparticipants WHERE username = ?;', username, function (error, results) {
+        // If there is an issue with the query, output the error
+        if (error) throw error;
+        // If the account exists
+        if (results.length > 0) {
+            res.send({
+                status: 403,
+                msg: 'This username is already in use.'
+            })
+        } else {
+            const sqlInsert = "Insert into saphroneparticipants(employeeId,username,firstName,lastName,gender,password,registrationdate) values(?,?,?,?,?,?,?)"
+            db.query(sqlInsert, [employeeId, username, firstname, lastname, gender, encryptedPwd, dateofregistration], (err) => {
+                if (err) {
+                    console.log(err)
+                    res.send({
+                        status: 403,
+                        msg: "An error occured. Ensure all fields are filled in and try again."
+                    });
+                } else {
+                    res.send({
+                        status: 200,
+                        msg: "Your registration has been successful. Please login with your credentials."
+                    });
+                }
+            })
+        }
+    })
+}) 
   
 
 //2.login route for all saphrone competition participants
-app.post('/saphroneparticipantlogin', async (req, res) => {
-    const username = req.body.username;
-    const password = req.body.password;
-  
-    try {
-      const results = await db.query('SELECT username FROM saphroneparticipants WHERE username = ?;', [username]);
-  
-      if (results.length === 0) {
-        res.status(404).json({ error: 'User does not exist.' });
-        return;
-      }
-  
-      const passwordMatch = await bcrypt.compare(password, results[0].password);
-  
-      if (passwordMatch) {
-        const token = jwt.sign({
-          employeeId: results[0].employeeId
-        }, process.env.JWT_SECRET, {
-          expiresIn: '5h'
-        });
-  
-        res.status(200).json({
-          token,
-          employeeId: results[0].employeeId,
-          branch: results[0].branch,
-          userData: results[0]
-        });
-      } else {
-        res.status(401).json({ error: 'Incorrect credentials.' });
-      }
-    } catch (error) {
-      console.error('Database error:', error);
-      res.status(500).json({ error: 'Internal server error.' });
-    }
-  });
+app.post('/saphroneparticipantlogin', (req, res) => {
+    const username = req.body.username
+    const password = req.body.password
+
+    db.query('SELECT * FROM saphroneparticipants WHERE username= ?;', username , (error, results) => {
+        //if the query is faulty , throw the error
+        if (error) console.log(error);
+        //if account exists
+        if (results.length > 0) {
+                bcrypt.compare(password, results[0].password, (error, response) => {
+                    if (error) throw error;
+                    if (response) {
+                        const token = jwt.sign({
+                            employeeId: results[0].employeeId
+                        }, 'SECRETKEY', {
+                            expiresIn: '1d'
+                        }
+                        )
+                        res.send({
+                            status: 200,
+                            token:token,
+                            employeeId: results[0].employeeId,
+                            branch: results[0].branch,
+                            userData: results[0]
+                        })
+                    } else {
+                        res.send({
+                            status: 403,
+                            msg: 'Incorrect credentials.'
+                        });
+                    }
+                })
+        } else {
+            res.send({
+                status: 403,
+                msg: 'User doesnot exist.'
+            });
+        }
+    })
+})
   
 
 //Complete participant profile
@@ -7927,6 +7948,94 @@ app.post('/fetchbuwamastoredata', (req, res) => {
     })
 })
 
+
+
+app.post('/buwamasavelivestockbatchmmanureproduction', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const batchNo = req.body.batchNumber
+            const date = req.body.date
+            const totalManureCollected = req.body.totalManureCollected
+            const notes = req.body.notes
+
+            db.query('INSERT INTO buwamalivestockmanureproductionrecords (batchnumber, collectiondate, totalManurecollected, notes) VALUES (?, ?, ?, ?)', [batchNo, date, totalManureCollected, notes], (error) => {
+                //if the query is faulty , throw the error
+                if (error) {
+                    console.log(error);
+                }else{
+                    res.send({
+                        status: 200,
+                        msg: 'success'                               
+                    })
+                }
+                
+            })
+        }
+    })
+})
+
+//7. View all egg production records
+app.post('/buwamafetchbatchallmanureproduction', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const batchNumber = req.body.batchNumber
+            db.query('SELECT * FROM	 buwamalivestockmanureproductionrecords WHERE batchnumber = ?',batchNumber,  (error, results) => {
+                if (error) throw (error);
+
+                if (results.length > 0) {
+                    res.send(results)
+                } else {
+                    res.send(`There are no records found.`)
+                }
+            })
+        }
+    })
+})
+
+
+//route to save masanafu shop expenditures
+app.post('/savemasanafuchickenfarmexpense', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const date = req.body.expenditureDate
+            const expenditureName = req.body.expenditureName
+            const desc = req.body.expenditureDesc
+            const cost = req.body.expenditureTotalCost
+            const createdat = new Date()
+
+            db.query('INSERT INTO masanafuchickenfarmexpenditure (date, expenditurename, expendituredescription, expenditurecost, createdat) VALUES( ?, ?, ?, ?, ? )', [ date, expenditureName, desc, cost, createdat], (error) => {
+                if (error){
+                    console.log(error)
+                }else{
+                    res.send('success')
+                }
+            })
+        }
+    })
+})
+
+
+app.post('/fetchmasanafuchickenfarmexpenses', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            db.query('SELECT * FROM masanafuchickenfarmexpenditure', (error, result) => {
+                if (error){
+                    console.log(error)
+                }else{
+                    res.send(result)
+                }
+            })
+        }
+    })
+})
 app.listen(port, () => {
     console.log(`Server is listening on port ${port}`);
 })

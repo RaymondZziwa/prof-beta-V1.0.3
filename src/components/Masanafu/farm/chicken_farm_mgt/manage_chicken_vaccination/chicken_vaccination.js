@@ -26,7 +26,9 @@ const ManageChickenVaccination = () => {
 
     const drugAmountHandler = event => {
         event.preventDefault()
-        setDrugAmount(event.target.value)
+        let drugInMls = event.target.value
+
+        setDrugAmount(drugInMls/1000)
     }
 
     const nextDate = event => {
@@ -65,7 +67,6 @@ const ManageChickenVaccination = () => {
             token: localStorage.getItem("token"),
             batchNumber: batchNumber
         })
-        console.log('fff', res.data)
         if(Array.isArray(res.data)){
             setRecords(res.data)
             setAreRecordsLoading(false)
@@ -150,7 +151,7 @@ const ManageChickenVaccination = () => {
 
                 <div className="form-floating mb-3">
                     <input type='number' className="form-control" id="floatingInput" min="0" placeholder="Quantity" style={{ color: "#8CA6FE" }} onChange={drugAmountHandler} required />
-                    <label for="floatingInput">Medicine Quantity Used</label>
+                    <label for="floatingInput">Medicine Quantity Used (mls/grams)</label>
                 </div><br></br>
                 
                 <div className="form-floating mb-3">

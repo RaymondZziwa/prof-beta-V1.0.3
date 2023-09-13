@@ -18,12 +18,12 @@ return(
             <div className="mb-3 mclickable_option">
                 Retrieve/Manage External Receipts
             </div>
-        </Link>
+        </Link>*/}
         <Link className="tab_nav" to="/equatorialshopPOS">
             <div className="mb-3 mclickable_option">
                 Point Of Sale
             </div>
-        </Link>
+        </Link>{/*
         <Link className="tab_nav" to="/equatorialprojectspos">
             <div className="mb-3 mclickable_option">
                 Projects Point Of Sale
