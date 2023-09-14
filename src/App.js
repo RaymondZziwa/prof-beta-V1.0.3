@@ -245,7 +245,13 @@ import RecordChickenFarmExpense from './components/Masanafu/farm/chicken_farm_mg
 function App() {
   const authCtx = useContext(AuthContext);
   const logoutTimerIdRef = useRef(null);
- const isParticipantLoggedIn = useSelector((state) => state.tokenmgt.isParticipantLoggedIn)
+  const isParticipantLoggedIn = useSelector((state) => state.tokenmgt.isParticipantLoggedIn)
+  const isLoggedIn = localStorage.getItem("isUserLoggedIn") === 'true'
+  const home = localStorage.getItem("home")
+
+  // if(isLoggedIn){
+  //     window.location.href = home
+  // }
 
   const logoutUser = () => {
     localStorage.clear();
@@ -274,6 +280,8 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
+          {isLoggedIn && home && <Redirect to={home} />}
+          
          {!authCtx.isLoggedIn && (<Route path="/Login" >
             <Login />
           </Route>

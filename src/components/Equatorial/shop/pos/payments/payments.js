@@ -20,8 +20,7 @@ class PrintableContent extends React.Component {
           <h5 style={{textAlign:'center',borderBottom:'1px dashed black'}}>Contact: 0702061652 / 0779519652</h5>
           <p style={{marginTop:'40px'}}>Date: {formattedDateTime}</p>
           <p>Receipt Number: {receiptNumber}</p>
-          <p>Client First Name: {firstName}</p>
-          <p>Client Last Name: {lastName}</p>
+          <p>Client First Name: {firstName} {lastName}</p>
           <p>Client Contact: {clientcontact}</p>
           <p>Payment Method: {paymentMethod}</p>
           {(paymentMethod === 'MTN MoMo' || paymentMethod === 'Airtel Money') && 
@@ -232,50 +231,26 @@ const PaymentModule = ({ servicesList, items, total }) => {
                         </div>
                     </div>
                 }
+                <select class="form-select" aria-label="Default select example" style={{ height: "60px", color: "#8CA6FE" }} onChange={handlePaymentStatusChange} required>
+                    <option selected>Payment Status</option>   
+                    <option value='fullypaid'>Fully Paid</option>
+                    <option value='partiallypaid'>Partially Paid</option>
+                </select>
                 <div className="mb-3">
-                <label className="form-label">Payment Status</label>
-                <div className="form-check">
-                    <input
-                    className="form-check-input"
-                    type="radio"
-                    name="paymentMethod"
-                    id="paymentMethodCard"
-                    value="fullypaid"
-                    checked={paymentStatus === 'fullypaid'}
-                    onChange={handlePaymentStatusChange}
-                    />
-                    <label className="form-check-label" htmlFor="paymentMethodCard">
-                    Fully Paid
-                    </label>
-                </div>
-                <div className="form-check">
-                    <input
-                    className="form-check-input"
-                    type="radio"
-                    name="paymentStatus"
-                    id="paymentMethodPaypal"
-                    value="partiallypaid"
-                    checked={paymentStatus === 'partiallypaid'}
-                    onChange={handlePaymentStatusChange}
-                    />
-                    <label className="form-check-label" htmlFor="paymentMethodPaypal">
-                    Partially Paid
-                    </label>
-                </div>
-                { paymentStatus === 'partiallypaid' && 
-                    <div className="mb-3">
-                        <div className="form-floating mb-3">
-                            <input type="number" className="form-control" rows="6" id="floatingInput" placeholder="johndoe" style={{ color: "#8CA6FE" }} onChange={amountInput} min='0' />
-                            <label for="floatingInput">Amount Paid</label>
+                    { paymentStatus === 'partiallypaid' && 
+                        <div className="mb-3">
+                            <div className="form-floating mb-3">
+                                <input type="number" className="form-control" rows="6" id="floatingInput" placeholder="johndoe" style={{ color: "#8CA6FE" }} onChange={amountInput} min='0' />
+                                <label for="floatingInput">Amount Paid</label>
+                            </div>
                         </div>
-                    </div>
-                }
-                    <div className="mb-3">
-                        <div className="form-floating mb-3">
-                            <textarea type="text" className="form-control" rows="6" id="floatingInput" placeholder="johndoe" style={{ color: "#8CA6FE", height: '130px', width: '300px' }} onChange={additionalInfoInput} />
-                            <label for="floatingInput">Notes</label>
-                        </div>
-                    </div>             
+                    }
+                        <div className="mb-3">
+                            <div className="form-floating mb-3">
+                                <textarea type="text" className="form-control" rows="6" id="floatingInput" placeholder="johndoe" style={{ color: "#8CA6FE", height: '130px', width: '300px' }} onChange={additionalInfoInput} />
+                                <label for="floatingInput">Notes</label>
+                            </div>
+                        </div>             
                 </div>
                 <button
                     type="submit"

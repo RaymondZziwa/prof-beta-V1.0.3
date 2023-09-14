@@ -19,6 +19,11 @@ return(
                 Retrieve/Manage External Receipts
             </div>
         </Link>*/}
+         <Link className="tab_nav" to="/registerpersonnel">
+            <div className="mb-3 clickable_option">
+                Create User Accounts
+            </div>
+         </Link>
         <Link className="tab_nav" to="/equatorialshopPOS">
             <div className="mb-3 mclickable_option">
                 Point Of Sale
@@ -39,11 +44,11 @@ return(
                 Saffron Competition
             </div>
         </Link>
-        <Link className="tab_nav" to="/equatorialshopsalesdataretrieval">
+        {/* <Link className="tab_nav" to="/equatorialshopsalesdataretrieval">
             <div className="mb-3 mclickable_option">
                 Sale Data Retrieval
             </div>
-        </Link>
+        </Link> */}
         {/* <Link className="tab_nav" to="/recieveexhibitionincome">
             <div className="mb-3 mclickable_option">
                 Recieve Exhibition Income

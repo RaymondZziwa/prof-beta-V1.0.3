@@ -14,11 +14,6 @@ const Admindashboard = () => {
                 <Col sm='12' md='8' lg='8' xl='8'>
                     <div className="container min-vh-50 d-flex  align-items-center">
                         <div style={{ padding: "30px", borderRadius: "10px" }}>
-                            <Link className="tab_nav" to="/registerpersonnel">
-                                <div className="mb-3 clickable_option">
-                                    Register Personnel
-                                </div>
-                            </Link>
                             <Link className="tab_nav" to="/viewinventoryrecords">
                                 <div className="mb-3 clickable_option">
                                     View Inventory Records
