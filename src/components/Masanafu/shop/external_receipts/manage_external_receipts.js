@@ -57,7 +57,6 @@ const ManageExternalReceipts = () => {
 
     useEffect(()=>{
         if (receiptData) {
-            console.log('rd', receiptData)
             setAdditionalInfo(receiptData[0].additionalinfo)
 
               setClientFName(receiptData[0].clientfirstname)

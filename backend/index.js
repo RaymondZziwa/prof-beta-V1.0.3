@@ -2953,6 +2953,102 @@ app.post('/markreceiptasdelivered', (req, res) => {
     });
 });
 
+
+
+
+
+
+//mark external receipts as delivered
+app.post('/equatorialmarkreceiptasdelivered', (req, res) => {
+    function pad(num) {
+        var s = "" + num;
+        if (num < 10) {
+            s = "0" + num;
+        }
+        return s;
+    }
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const receiptNumber = req.body.receiptNumber;
+            const newStatus = 'delivered';
+            const items = req.body.items;
+
+            // Array to store items with insufficient stock
+            const insufficientStockItems = [];
+
+            // Check stock availability for each item
+            const itemsSold = JSON.parse(items);
+            const promises = itemsSold.map((item) => {
+                return new Promise((resolve, reject) => {
+                    db.query('SELECT quantityinstock FROM equatorialShopInventory WHERE productId = ?', [item.id], (error, results) => {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            const quantityInStock = results[0]?.quantityinstock || 0;
+                            if (quantityInStock >= item.quantity) {
+                                resolve();
+                            } else {
+                                insufficientStockItems.push(item.id);
+                                resolve();
+                            }
+                        }
+                    });
+                });
+            });
+
+            // Process the sale if all items have sufficient stock
+            Promise.all(promises)
+                .then(() => {
+                    if (insufficientStockItems.length > 0) {
+                        // Some items have insufficient stock
+                        res.status(400).send(`Insufficient stock for items: ${insufficientStockItems.join(', ')}`);
+                    } else {
+                        // All items have sufficient stock, proceed with the sale
+                                // Update the stock quantities
+                                const updatePromises = itemsSold.map((item) => {
+                                    return new Promise((resolve, reject) => {
+                                        db.query('UPDATE equatorialShopInventory SET quantityinstock = quantityinstock - ? WHERE productId = ?', [item.quantity, item.id], (error) => {
+                                            if (error) {
+                                                reject(error);
+                                            } else {
+                                                resolve();
+                                            }
+                                        });
+                                    });
+                                });
+
+                                // Wait for all stock updates to complete
+                                Promise.all(updatePromises)
+                                    .then(() => {
+                                        // Now update the receipt delivery status in externalreceipts table
+                                        db.query('UPDATE externalreceipts SET receiptdeliverystatus = ? WHERE receiptnumber = ? ;', [newStatus, receiptNumber], error => {
+                                            if (error) {
+                                                console.log(error);
+                                                res.status(500).send('Error occurred during receipt update');
+                                            } else {
+                                                res.send({ status: '200', msg: 'success' });
+                                            }
+                                        });
+                                    })
+                                    .catch((error) => {
+                                        console.log(error);
+                                        res.status(500).send('Error occurred during stock update');
+                                    });
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                    res.status(500).send('Error occurred during stock check');
+                });
+        }
+    });
+});
+
+
+
+
 //save shop restock data
 app.post('/saveshoprestockdata', (req, res) => {
     jwt.verify(req.body.token, 'SECRETKEY', (err) => {
@@ -7311,6 +7407,7 @@ app.post('/fetchallparticipantperformancerecords', (req, res) => {
           })
 })
 
+
 //fetch saphrone sales records
 app.post('/fetchallsaphronesalesdata', (req, res) => {
     jwt.verify(req.body.token, 'SECRETKEY', (err) => {
@@ -7319,15 +7416,15 @@ app.post('/fetchallsaphronesalesdata', (req, res) => {
       } else {
         db.query('SELECT * FROM saphroneperformancerecords JOIN saphroneparticipants WHERE saphroneperformancerecords.employeeId = saphroneparticipants.employeeId',(error, results) => {
                 if (error) {
-                   console.log(error);
                    res.send({status:500, msg: 'No sales records found.'})
                 } else if(results.length > 0){
                    res.send(results)
                 }
               });
-            }
-          })
+      }
+    })
 })
+
 
 app.post('/saveparticipantsale', (req, res) => {
     jwt.verify(req.body.token, 'SECRETKEY', (err) => {
@@ -7342,14 +7439,12 @@ app.post('/saveparticipantsale', (req, res) => {
             // Insert data into saphroneperformancerecords table
             db.query('INSERT INTO saphroneperformancerecords (employeeId, date, merchandisesold) VALUES (?, ?, ?);', [employeeId, date, merchandisesold], (error) => {
                 if (error) {
-                    console.log(error);
                     res.status(500).send('Error while saving record.');
                 } else {
                     // Check if the employee exists in saphroneparticipantperformance table
                     db.query('SELECT * FROM saphroneparticipantperformance WHERE employeeId = ?;', [employeeId], (selectError, results) => {
                         if (selectError) {
-                            console.log(selectError);
-                            res.status(500).send('Error while checking employee existence.');
+                            res.status(500).send('Error while checking employee existence.')
                         } else {
                             if (results.length > 0) {
                                 // Employee exists, update the existing record by adding points
@@ -7358,15 +7453,11 @@ app.post('/saveparticipantsale', (req, res) => {
                                 const newPoints = existingPoints + points;
                                 let newQty = 0;
                                 if (isNaN(existingQty) || isNaN(merchandisesold)) {
-                                    console.log(existingQty)
-                                    console.log(merchandisesold)
-                                    console.log("One or both values are not valid numbers.");
                                 } else {
                                      newQty = parseFloat(existingQty) + parseFloat(merchandisesold);
                                 }
                                 db.query('UPDATE saphroneparticipantperformance SET merchandisesold = ?, points = ? WHERE employeeId = ?;', [newQty, newPoints, employeeId], (updateError) => {
                                     if (updateError) {
-                                        console.log(updateError);
                                         res.status(500).send('Error while updating points.');
                                     } else {
                                         res.send({ status: '200', msg: 'success' });
@@ -7376,7 +7467,6 @@ app.post('/saveparticipantsale', (req, res) => {
                                 // Employee doesn't exist, insert a new record
                                 db.query('INSERT INTO saphroneparticipantperformance (employeeId, merchandisesold, points) VALUES (?, ?, ?);', [employeeId, merchandisesold, points], (insertError) => {
                                     if (insertError) {
-                                        console.log(insertError);
                                         res.status(500).send('Error while saving record.');
                                     } else {
                                         res.send({ status: '200', msg: 'success' });
@@ -7819,6 +7909,7 @@ app.post('/buwamafetchallitems', (req, res) => {
             db.query('SELECT * FROM	 buwamaitems', (error, results) => {
                 if (error) throw (error);
 
+                
                 if (results.length > 0) {
                     res.send(results)
                 } else {

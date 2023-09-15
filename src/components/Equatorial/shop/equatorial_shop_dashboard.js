@@ -14,21 +14,21 @@ return(
                 Manage Shop Inventory
             </div>
         </Link>
-        <Link className="tab_nav" to="/manageexternalreceipts">
+        <Link className="tab_nav" to="/equatorialmanageexternalreceipts">
             <div className="mb-3 mclickable_option">
                 Retrieve/Manage External Receipts
             </div>
         </Link>*/}
-         <Link className="tab_nav" to="/registerpersonnel">
+         {/* <Link className="tab_nav" to="/registerpersonnel">
             <div className="mb-3 clickable_option">
                 Create User Accounts
             </div>
-         </Link>
-        <Link className="tab_nav" to="/equatorialshopPOS">
+         </Link> */}
+       {/* <Link className="tab_nav" to="/equatorialshopPOS">
             <div className="mb-3 mclickable_option">
                 Point Of Sale
             </div>
-        </Link>{/*
+        </Link>
         <Link className="tab_nav" to="/equatorialprojectspos">
             <div className="mb-3 mclickable_option">
                 Projects Point Of Sale

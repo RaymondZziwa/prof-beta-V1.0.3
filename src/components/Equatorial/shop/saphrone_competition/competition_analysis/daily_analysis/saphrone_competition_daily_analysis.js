@@ -31,7 +31,7 @@ const SaphroneCompetitionDailyAnalysis = () => {
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
-        };
+        }
 
         fetchAllData()
     }, [])
@@ -43,10 +43,35 @@ const SaphroneCompetitionDailyAnalysis = () => {
             const filteredData = allRecords.filter((data) => {
                 const saleDate = moment(data.date, 'DD/MM/YYYY').format('DD/MM/YYYY');
                 return saleDate === formattedDate;
+            })
+
+            const totalMerchandiseSoldByEmployee = [];
+
+            filteredData.forEach((data) => {
+              const date = data.date;
+              const employeeName = `${data.firstName} ${data.lastName}`;
+              const employeeId = data.employeeId;
+              const merchandiseSold = data.merchandisesold;
+            
+              // Find if an entry with the same employeeId already exists in the array
+              const existingEntry = totalMerchandiseSoldByEmployee.find((entry) => entry.employeeId === employeeId);
+            
+              if (existingEntry) {
+                // If an entry already exists, update its merchandiseSold property
+                existingEntry.merchandisesold += merchandiseSold;
+              } else {
+                // If no entry exists for the employeeId, create a new entry
+                totalMerchandiseSoldByEmployee.push({
+                  date: date, // Use the date value from your data object
+                  employeeName: employeeName, // Combining first and last name as employeeName
+                  employeeId: employeeId,
+                  merchandisesold: merchandiseSold,
+                });
+              }
             });
-
-            setFilteredData(filteredData)
-
+            
+            setFilteredData(totalMerchandiseSoldByEmployee)
+            
             let totalQuantitySold = 0;
             if (filteredData && filteredData.length > 0) {
                 totalQuantitySold = filteredData.reduce((acc, data) => {
@@ -90,7 +115,7 @@ const SaphroneCompetitionDailyAnalysis = () => {
                                 <tr>
                                     <td>{data.date}</td>
                                     <td>{data.employeeId}</td>
-                                    <td>{data.firstName} {data.lastName}</td>
+                                    <td>{data.employeeName}</td>
                                     <td>{data.merchandisesold}</td>
                                     <td>{data.merchandisesold*0.5}</td>
                                 </tr>

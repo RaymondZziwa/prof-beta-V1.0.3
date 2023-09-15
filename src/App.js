@@ -241,6 +241,7 @@ import BuwamaGeneralStoreRestockForm from './components/Buwama/general_store_mgt
 import BuwamaGeneralStoreOutgoingForm from './components/Buwama/general_store_mgt/outgoing_form';
 import BuwamaSeedlingsStockTaking from './components/Buwama/general_store_mgt/seedlings_stock_taking';
 import RecordChickenFarmExpense from './components/Masanafu/farm/chicken_farm_mgt/record_expense/record_expense';
+import EquatorialManageExternalReceipts from './components/Equatorial/shop/manage_external_receipts/manage_external_receipts';
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -834,6 +835,9 @@ function App() {
           </Route>)}
           {authCtx.isLoggedIn && (<Route path="/equatorialgeneralstorestocktaking">
             <EquatorialGeneralStoreStockTaking />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/equatorialmanageexternalreceipts">
+            <EquatorialManageExternalReceipts />
           </Route>)}
           {authCtx.isLoggedIn && (<Route path="/equatorialgeneralstorerestockingrecords">
             <EquatorialGeneralStoreRestockingRecords />
