@@ -63,10 +63,6 @@ const DisplayTable = ({records, filteredRecords, fetchAllSubmissionRecords}) => 
                 <input type="text" className="form-control" id="floatingInput" min="0" placeholder="Quantity" style={{ color: "#8CA6FE", width:'200px' }} onChange={(event)=> setFName(event.target.value)}/>
                 <label for="floatingInput">First Name</label>
             </div>
-            <div className="form-floating mb-3">
-                <input type="text" className="form-control" id="floatingInput" min="0" placeholder="Quantity" style={{ color: "#8CA6FE", width:'200px' }} onChange={(event)=> setMName(event.target.value)}/>
-                <label for="floatingInput">Middle Name</label>
-            </div>
             <div className="form-floating mb-3" >
                 <input type="text" className="form-control" id="floatingInput" min="0" placeholder="Quantity" style={{ color: "#8CA6FE", width:'200px' }} onChange={(event)=> setLName(event.target.value)}/>
                 <label for="floatingInput">Last Name</label>
@@ -101,7 +97,7 @@ const DisplayTable = ({records, filteredRecords, fetchAllSubmissionRecords}) => 
                                             <td>{item.supplydate}</td>
                                             <td>{item.suppliernames}</td>
                                             <td>{item.branchsupplied}</td>
-                                            <td>{item.itemsupplied}</td>
+                                            <td>{item.itemssupplied}</td>
                                             <td>{item.quantitysupplied} {item.units}</td>
                                             <td>{item.totalsupplycost}</td>
                                             <td>{item.balance}</td>
@@ -124,7 +120,7 @@ const DisplayTable = ({records, filteredRecords, fetchAllSubmissionRecords}) => 
                                             <td>{item.supplydate}</td>
                                             <td>{item.suppliernames}</td>
                                             <td>{item.branchsupplied}</td>
-                                            <td>{item.itemsupplied}</td>
+                                            <td>{item.itemssupplied}</td>
                                             <td>{item.quantitysupplied} {item.units}</td>
                                             <td>{item.totalsupplycost}</td>
                                             <td>{item.balance}</td>

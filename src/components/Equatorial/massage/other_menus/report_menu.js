@@ -9,7 +9,8 @@ const EquatorialMassageReportMenu = () => {
             <Col sm='12' md='2' lg='2' xl='2'>
                 <Navbar />
             </Col>
-            <div className="col align-self-center" style={{marginTop:'20px'}}>
+            <div className="col align-self-center" style={{marginTop:'30px'}}>
+                <h1 style={{textAlign:'center'}}>Massage Department Report Menu</h1>
                 <Link className="tab_nav" to="/equatorialmassagedepartmentdailyreport">
                     <div className="mb-3 mclickable_option">
                         Products Daily Report

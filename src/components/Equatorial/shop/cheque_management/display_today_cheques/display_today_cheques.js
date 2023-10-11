@@ -1,8 +1,17 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faCircleXmark } from '@fortawesome/free-solid-svg-icons'
+import { useState } from 'react';
 import axios from 'axios'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleChevronLeft, faCircleChevronRight } from "@fortawesome/free-solid-svg-icons";
 
 const DisplayTodayCheques = ({chequeData, openModal, fetchAllChequeRecords}) => {
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 4
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+
+    const totalPages = Math.ceil(chequeData.length / itemsPerPage)
 
     const confirmChequePayment = (event) => {
         event.preventDefault()
@@ -66,6 +75,13 @@ const DisplayTodayCheques = ({chequeData, openModal, fetchAllChequeRecords}) => 
                 )}
             </tbody>
         </table>
+        {totalPages > 1 && (
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
+                    <FontAwesomeIcon icon={faCircleChevronLeft} style={{color: 'black',padding: '10px 20px',border: 'none',borderRadius: '5px',marginLeft: '10px',cursor: 'pointer', fontSize:'40px'}} disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}/>
+                <span style={{ margin: '0 10px', color:'black' }}>Page {currentPage} of {totalPages}</span>
+                    <FontAwesomeIcon icon={faCircleChevronRight} style={{color: 'black',padding: '10px 20px',border: 'none',borderRadius: '5px',marginLeft: '10px',cursor: 'pointer', fontSize:'40px'}} disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}/>
+                </div>
+        )}
         </>
     )
 }

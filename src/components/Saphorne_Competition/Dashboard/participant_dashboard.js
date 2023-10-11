@@ -10,13 +10,11 @@ import axios from 'axios'
 
 const ParticipantDashboard = () => {
     const [isOpen, setIsOpen] = useState(false)
-    const [participantData, setParticipantData] = useState([]);
-
+    const [participantData, setParticipantData] = useState([])
+    
     const toggleNavbar = () => {
       setIsOpen(!isOpen);
     }
-
-    
 
     useEffect(() => {
         const fetchAllParticipantData = async () => {

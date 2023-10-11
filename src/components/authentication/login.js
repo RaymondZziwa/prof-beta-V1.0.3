@@ -84,7 +84,7 @@ const Login = () => {
                      <div className="mb-3">
                          <select className="form-select" aria-label="Default select example" style={{ height: "60px", color: "#8CA6FE" }} onChange={handleBranchData}>
                              <option defaultValue>Branch</option>
-                         <option value="admin">Administrator</option>
+                         <option value="admin">Company Administrator</option>
                             <option value="namungoona">Namungoona</option>
                              <option value="masanafu">Masanafu</option>
                              <option value="equatorial">Equatorial</option>

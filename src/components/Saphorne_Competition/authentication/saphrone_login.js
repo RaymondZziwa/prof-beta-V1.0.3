@@ -68,7 +68,7 @@ const SaphroneLoginForm = ({handleTabClick}) => {
                             </div>
                         </>
                     <div className="mb-3">
-                        <button style={{ width: "100%", border: "none", color: "white", height: "45px", background: '-webkit-linear-gradient(right, #003366, #004080, #0059b3, #0073e6)' }} onClick={loginHandler}>LOGIN</button>
+                        <button id='auth-btn' style={{ width: "100%", border: "none", color: "white", height: "45px", background: '-webkit-linear-gradient(right, #003366, #004080, #0059b3, #0073e6)' }} onClick={loginHandler}>LOGIN</button>
                     </div>
                     <p style={{ textAlign: "center", fontSize: "18px", marginTop: "10px", color: "#003366", cursor:'pointer' }}>Create an account <span style={{color:'#3E5AA7'}} onClick={() => handleTabClick('signup')}>Signup now</span></p>
                 </div>

@@ -34,7 +34,7 @@ const DebtManagerPOS = () => {
             <Navbar />
         </Col>
         <div className="col align-self-center" style={{marginTop:'40px'}}>
-            <h1 style={{textAlign:'center'}}>Debit Manager Point Of Sale</h1>
+            <h1 style={{textAlign:'center'}}>Debt Manager Point Of Sale</h1>
             <Row>
                 <Col sm='12' md='10' lg='10' xl='10'>
                     <SearchAndAddToCart onAddToCart={handleAddToCart} cartItems={cartItems}/>

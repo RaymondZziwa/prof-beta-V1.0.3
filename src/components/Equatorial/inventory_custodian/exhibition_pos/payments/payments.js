@@ -208,38 +208,33 @@ const PaymentModule = ({ servicesList, items, setItems, total }) => {
             </select>
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
-                    <label htmlFor="firstName" className="form-label">
-                        First Name
-                    </label>
                 <input
                     type="text"
                     className="form-control"
                     id="firstName"
                     value={firstName}
+                    placeholder="First Name"
                     onChange={handleFirstNameChange}
+                    style={{marginTop:'2px'}}
                 />
                 </div>
                 <div className="mb-3">
-                <label htmlFor="lastName" className="form-label">
-                    Last Name
-                </label>
                 <input
                     type="text"
                     className="form-control"
                     id="lastName"
                     value={lastName}
                     onChange={handleLastNameChange}
+                    placeholder="Last Name"
                 />
                 </div>
                 <div className="mb-3">
-                <label htmlFor="phoneNumber" className="form-label">
-                    Phone Number
-                </label>
                 <input
                     type="tel"
                     className="form-control"
                     id="phoneNumber"
                     value={phoneNumber}
+                    placeholder="Phone Number"
                     onChange={handlePhoneNumberChange}
                 />
                 </div>
@@ -260,49 +255,11 @@ const PaymentModule = ({ servicesList, items, setItems, total }) => {
                     </div>
                 }
                 <div className="mb-3">
-                <label className="form-label">Payment Status</label>
-                <div className="form-check">
-                    <input
-                    className="form-check-input"
-                    type="radio"
-                    name="paymentMethod"
-                    id="paymentMethodCard"
-                    value="fullypaid"
-                    checked={paymentStatus === 'fullypaid'}
-                    onChange={handlePaymentStatusChange}
-                    />
-                    <label className="form-check-label" htmlFor="paymentMethodCard">
-                    Fully Paid
-                    </label>
-                </div>
-                <div className="form-check">
-                    <input
-                    className="form-check-input"
-                    type="radio"
-                    name="paymentStatus"
-                    id="paymentMethodPaypal"
-                    value="partiallypaid"
-                    checked={paymentStatus === 'partiallypaid'}
-                    onChange={handlePaymentStatusChange}
-                    />
-                    <label className="form-check-label" htmlFor="paymentMethodPaypal">
-                    Partially Paid
-                    </label>
-                </div>
-                <div className="form-check">
-                    <input
-                    className="form-check-input"
-                    type="radio"
-                    name="paymentMethod"
-                    id="paymentMethodPaypal"
-                    value="unpaid"
-                    checked={paymentStatus === 'unpaid'}
-                    onChange={handlePaymentStatusChange}
-                    />
-                    <label className="form-check-label" htmlFor="paymentMethodPaypal">
-                    Unpaid
-                    </label>
-                </div>
+                <select class="form-select" aria-label="Default select example" style={{ height: "60px", color: "#8CA6FE" }} onChange={handlePaymentStatusChange} required>
+                    <option selected>Payment Status</option>   
+                    <option value='fullypaid'>Fully Paid</option>
+                    <option value='partiallypaid'>Partially Paid</option>
+                </select>
                 { paymentStatus === 'partiallypaid' && 
                     <div className="mb-3">
                         <div className="form-floating mb-3">

@@ -47,6 +47,7 @@ const RegisterBuwamaGeneralStoreItems = () => {
                     <select class="form-select" aria-label="Default select example" style={{ height: "60px", color: "#8CA6FE;" }} onChange={(e)=>setCategory(e.target.value)} required>
                         <option selected>Select Category</option>
                         <option value='EQUIPMENT'>Equipment</option>
+                        <option value='MANURE'>Manure</option>
                         <option value='FEEDS'>Feeds</option>
                         <option value='MEDICINE'>Medicines</option>
                         <option value='SEEDLINGS'>Seedlings</option>

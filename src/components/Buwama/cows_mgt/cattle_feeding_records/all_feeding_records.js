@@ -8,7 +8,7 @@ const BuwamaAllFeedingRecords = () => {
     const [records, setRecords] = useState()
 
     const fetchFeedingRecords = async () => {
-        const res = await axios.post('http://82.180.136.230:3005/buwamafetchallfeedingrecords', {
+        const res = await axios.post('http://82.180.136.230:3005/buwamafetchlivestockbatchfeedingrecords', {
             token: localStorage.getItem("token")
         })
         if(Array.isArray(res.data)){

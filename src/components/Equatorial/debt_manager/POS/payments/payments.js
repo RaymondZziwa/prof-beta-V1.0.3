@@ -20,15 +20,9 @@ class PrintableContent extends React.Component {
           <h5 style={{textAlign:'center',borderBottom:'1px dashed black'}}>Contact: 0702061652 / 0779519652</h5>
           <p style={{marginTop:'40px'}}>Date: {formattedDateTime}</p>
           <p>Receipt Number: {receiptNumber}</p>
-          <p>Client First Name: {firstName}</p>
-          <p>Client Last Name: {lastName}</p>
+          <p>Client Name: {firstName} {lastName}</p>
           <p>Client Contact: {clientcontact}</p>
-          <p>Payment Method: {paymentMethod}</p>
-          {(paymentMethod === 'MTN MoMo' || paymentMethod === 'Airtel Money') && 
-            <p>Transaction Id: {transactionId}</p>
-          }
           <p>Total Amount: UGX: {total}</p>
-          <p>Amount Paid: UGX: {amountPaid}</p>
           <p>Balance: UGX: {balance}</p>
           <table className="table table-light">
                 <thead>
@@ -75,7 +69,7 @@ const PaymentModule = ({ servicesList, items, total }) => {
     const [lastName, setLastName] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('')
-    const [paymentStatus, setPaymentStatus] = useState('')
+    const [paymentStatus, setPaymentStatus] = useState('unpaid')
     const [additionalInfo, setAdditionalInfo] = useState('')
     const [amount, setAmountPaid] = useState(0)
     const  [balance, setBalance] = useState(0)
@@ -154,7 +148,7 @@ const PaymentModule = ({ servicesList, items, total }) => {
         transactionId: transactionId,
         additionalInfo: additionalInfo,
         paymentMethod: paymentMethod,
-        paymentStatus: paymentStatus,
+        paymentStatus: 'unpaid',
         balance: balance,
         customerNames: `${firstName.toUpperCase().trim()} ${lastName.toUpperCase().trim()}`,
         customerContact: phoneNumber,
@@ -216,55 +210,13 @@ const PaymentModule = ({ servicesList, items, total }) => {
                     required
                 />
                 </div>
-                <select class="form-select" aria-label="Default select example" style={{ height: "60px", color: "#8CA6FE" }} onChange={paymentMethodHandler} required>
-                    <option selected>Payment Method</option>
-                    <option value='Cash'>Cash</option>    
-                    <option value='Airtel Money'>Airtel Money</option>
-                    <option value='MTN MoMo'>MTN MoMo</option>
-                    <option value='Prof MM'>Prof Mobile Money</option>  
-                    <option value='Visa'>Visa</option>     
-                </select>
-
-                { (paymentMethod === 'MTN MoMo' || paymentMethod === 'Airtel Money') && 
-                    <div className="mb-3">
-                        <div className="form-floating mb-3">
-                            <input className="form-control" rows="6" id="floatingInput" placeholder="johndoe" style={{ color: "#8CA6FE" }} onChange={(e)=>setTransactionId(e.target.value)} min='0' />
-                            <label for="floatingInput">Transaction Id</label>
-                        </div>
-                    </div>
-                }
 
                 <div className="mb-3">
-                <label className="form-label">Payment Status</label>
-                <div className="form-check">
-                    <input
-                    className="form-check-input"
-                    type="radio"
-                    name="paymentMethod"
-                    id="paymentMethodPaypal"
-                    value="unpaid"
-                    checked={paymentStatus === 'unpaid'}
-                    onChange={handlePaymentStatusChange}
-                    />
-                    <label className="form-check-label" htmlFor="paymentMethodPaypal">
-                    Unpaid
-                    </label>
-                </div>
-                { paymentStatus === 'partiallypaid' && 
-                    <div className="mb-3">
-                        <div className="form-floating mb-3">
-                            <input type="number" className="form-control" rows="6" id="floatingInput" placeholder="johndoe" style={{ color: "#8CA6FE" }} onChange={amountInput} min='0' />
-                            <label for="floatingInput">Amount Paid (UGX)</label>
-                        </div>
+                    <div className="form-floating mb-3">
+                        <textarea type="text" className="form-control" rows="6" id="floatingInput" placeholder="johndoe" style={{ color: "#8CA6FE", height: '130px', width: '300px' }} onChange={additionalInfoInput} />
+                        <label for="floatingInput">Notes</label>
                     </div>
-                }
-                    <div className="mb-3">
-                        <div className="form-floating mb-3">
-                            <textarea type="text" className="form-control" rows="6" id="floatingInput" placeholder="johndoe" style={{ color: "#8CA6FE", height: '130px', width: '300px' }} onChange={additionalInfoInput} />
-                            <label for="floatingInput">Notes</label>
-                        </div>
-                    </div>             
-                </div>
+                </div>             
                 <button
                     type="submit"
                     style={{

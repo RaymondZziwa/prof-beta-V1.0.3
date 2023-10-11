@@ -15,7 +15,6 @@ const FindActiveClientSubscriptions = ({ setClientSubscriptionData }) => {
             })
 
             if(Array.isArray(res.data)){
-                console.log(res.data)
                 setSubscriptionData(res.data)
             }
         }
@@ -46,10 +45,10 @@ const FindActiveClientSubscriptions = ({ setClientSubscriptionData }) => {
                 <input type="text" className="form-control" id="floatingInput" min="0" placeholder="Quantity" style={{ color: "#8CA6FE", width:'200px' }} onChange={(event)=> setFName(event.target.value)}/>
                 <label for="floatingInput">First Name</label>
             </div>
-            <div className="form-floating mb-3">
+            {/* <div className="form-floating mb-3">
                 <input type="text" className="form-control" id="floatingInput" min="0" placeholder="Quantity" style={{ color: "#8CA6FE", width:'200px' }} onChange={(event)=> setMName(event.target.value)}/>
                 <label for="floatingInput">Middle Name</label>
-            </div>
+            </div> */}
             <div className="form-floating mb-3" >
                 <input type="text" className="form-control" id="floatingInput" min="0" placeholder="Quantity" style={{ color: "#8CA6FE", width:'200px' }} onChange={(event)=> setLName(event.target.value)}/>
                 <label for="floatingInput">Last Name</label>

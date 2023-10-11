@@ -60,7 +60,7 @@ const EquatorialCustodianDashboard = () => {
                 </div>
             </Link>
         </div>
-        <Col sm='12' md='2' lg='2' xl='2'>
+        <Col sm='12' md='1' lg='1' xl='1'>
         </Col>
     </Row>
     )

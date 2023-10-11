@@ -47,7 +47,7 @@ const ChequeManagement = () => {
             const formattedDate = `${year}-${month}-${day}`
 
             const todayCheques = res.data.filter((data)=>
-                 data.status === 'Pending'
+                 data.status === 'Pending' && data.BankingDate === formattedDate
             )
             setTodayCheques(todayCheques)
         }

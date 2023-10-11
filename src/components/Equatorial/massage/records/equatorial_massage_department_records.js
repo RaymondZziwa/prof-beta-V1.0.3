@@ -27,8 +27,8 @@ const EquatorialMassageDepartmentRecords = () => {
         <>
             <div className='container-fluid'>
                 <Row>
-                    <Col sm='12' md='2' lg='2' xl='2'></Col>
-                    <Col sm='12' md='8' lg='8' xl='8'>
+                    <Col sm='12' md='1' lg='1' xl='1'></Col>
+                    <Col sm='12' md='9' lg='9' xl='9'>
                     <h2 style={{textAlign:'center', marginTop:'60px'}}>Equatorial Massage Department Records</h2>
                         <table className="table table-light" style={{ marginTop: '20px',textAlign:'center' }}>
                             <thead style={{ textAlign: 'center' }}>

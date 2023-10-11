@@ -19,7 +19,7 @@ const BuwamaCattleMgtDashboard = () => {
                         Record Livestock Batch Death
                     </div>
                 </Link>
-                <Link className="tab_nav" to="#">
+                <Link className="tab_nav" to="/buwamasavelivestockfeedingrecords">
                     <div className="mb-3 mclickable_option">
                         Manage Livestock Feeding
                     </div>

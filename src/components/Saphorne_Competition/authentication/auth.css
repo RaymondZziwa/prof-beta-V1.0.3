@@ -195,7 +195,7 @@ form .field input:focus::placeholder{
 .form-inner form .signup-link a:hover{
   text-decoration: underline;
 }
-form .btn{
+form .btn #auth-btn{
   height: 50px;
   width: 100%;
   border-radius: 15px;

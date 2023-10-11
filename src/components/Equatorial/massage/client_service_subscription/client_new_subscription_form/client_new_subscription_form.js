@@ -60,10 +60,10 @@ const ClientNewSubscriptionForm = () => {
                         <input type="text" className="form-control" id="floatingInput" min="0" placeholder="Quantity" style={{ color: "#8CA6FE", width:'250px' }} value={state.firstName} name="firstName" onChange={handleChange}/>
                         <label for="floatingInput">First Name</label>
                     </div>
-                    <div className="form-floating mb-3">
+                    {/* <div className="form-floating mb-3">
                         <input type="text" className="form-control" id="floatingInput" min="0" placeholder="Quantity" style={{ color: "#8CA6FE", width:'250px' }} value={state.middleName} name="middleName" onChange={handleChange}/>
                         <label for="floatingInput">Middle Name</label>
-                    </div>
+                    </div> */}
                     <div className="form-floating mb-3">
                         <input type="text" className="form-control" id="floatingInput" min="0" placeholder="Quantity" style={{ color: "#8CA6FE", width:'250px' }} value={state.lastName} name="lastName" onChange={handleChange}/>
                         <label for="floatingInput">Last Name</label>

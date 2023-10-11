@@ -242,6 +242,11 @@ import BuwamaGeneralStoreOutgoingForm from './components/Buwama/general_store_mg
 import BuwamaSeedlingsStockTaking from './components/Buwama/general_store_mgt/seedlings_stock_taking';
 import RecordChickenFarmExpense from './components/Masanafu/farm/chicken_farm_mgt/record_expense/record_expense';
 import EquatorialManageExternalReceipts from './components/Equatorial/shop/manage_external_receipts/manage_external_receipts';
+import BuwamaSaveLivestockFeedingRecords from './components/Buwama/cows_mgt/cattle_feeding_records/save_chicken_feeding_records';
+import SaffronLeaderboard from './components/Admin/saffron_administration/saffron_leaderboard';
+import SaffronFilteredLeaderboard from './components/Admin/saffron_administration/saffron_filtered_leaderboard';
+import SaffronMgtMenu from './components/Admin/other_menus/saffron_menu';
+import EquatorialShopCreateExternalReceipts from './components/Equatorial/shop/external_receipts/point_of_sale/pos';
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -289,12 +294,12 @@ function App() {
         )}
           {!authCtx.isLoggedIn && (
             <Redirect to='/Login' />
-          )}{/* 
+          )}
 
           {authCtx.isLoggedIn && (<Route path="*">
             <Redirect to={localStorage.getItem('home')} />
           </Route> )
-          } */}
+          }
 
           {authCtx.isLoggedIn && (
             <Route path="/namungoonadashboard">
@@ -326,6 +331,23 @@ function App() {
             <Admindashboard />
           </Route>
           )}
+
+          {authCtx.isLoggedIn && (
+              <Route path="/saffroncompeititonmanagementmenu">
+                <SaffronMgtMenu />
+              </Route>
+          )}
+          {authCtx.isLoggedIn && (
+              <Route path="/saffronleaderboard">
+                <SaffronLeaderboard />
+              </Route>
+          )}
+          {authCtx.isLoggedIn && (
+              <Route path="/saffronfilteredleaderboard">
+                <SaffronFilteredLeaderboard />
+              </Route>
+          )}
+
 
             {authCtx.isLoggedIn && (
               <Route path="/managerdashboard">
@@ -846,6 +868,10 @@ function App() {
             <EquatorialGeneralStoreRestockForm />
           </Route>)}
 
+          {authCtx.isLoggedIn && (<Route path="/buwamasavelivestockfeedingrecords">
+            <BuwamaSaveLivestockFeedingRecords />
+          </Route>)}
+
           {authCtx.isLoggedIn && (<Route path="/equatoriallabellingmanagerdashboard">
             <EquatorialLabellingManagerDashboard />
           </Route>)}
@@ -860,6 +886,9 @@ function App() {
           </Route>)}
           {authCtx.isLoggedIn && (<Route path="/equatoriallabellingdailyoutputmgt">
             <LabellingDepartmentDailyOutputMgt />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/equatorialissueexternalreceipts">
+            <EquatorialShopCreateExternalReceipts />
           </Route>)}
 
 

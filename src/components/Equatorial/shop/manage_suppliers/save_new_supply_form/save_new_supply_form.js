@@ -53,7 +53,7 @@ const SaveNewSupplyForm = () => {
         let res = await axios.post('http://82.180.136.230:3005/savesupplydata',{
             token: localStorage.getItem('token'),
             date: new Date().toLocaleString(),
-            supplierNames: `${fName.toUpperCase().trim()} ${mName.toUpperCase().trim()} ${lName.toUpperCase().trim()}`,
+            supplierNames: `${fName.toUpperCase().trim()} ${lName.toUpperCase().trim()}`,
             branchSupplied: branchSupplied,
             itemsSupplied: itemSupplied,
             quantitySupplied: quantitySupplied,
@@ -79,10 +79,6 @@ const SaveNewSupplyForm = () => {
                         <div className="form-floating mb-3">
                             <input type="text" className="form-control" rows="6" id="floatingInput" placeholder="johndoe" style={{ color: "#8CA6FE" }}  onChange={(e)=> setFName(e.target.value)}/>
                             <label for="floatingInput">Supplier First Name</label>
-                        </div>
-                        <div className="form-floating mb-3">
-                            <input type="text" className="form-control" rows="6" id="floatingInput" placeholder="johndoe" style={{ color: "#8CA6FE" }}  onChange={(e)=> setMName(e.target.value)}/>
-                            <label for="floatingInput">Supplier Middle Name</label>
                         </div>
                         <div className="form-floating mb-3">
                             <input type="text" className="form-control" rows="6" id="floatingInput" placeholder="johndoe" style={{ color: "#8CA6FE" }}  onChange={(e)=> setLName(e.target.value)}/>

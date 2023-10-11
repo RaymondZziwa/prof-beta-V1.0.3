@@ -61,9 +61,9 @@ const BuwamaManageCattleVaccination = () => {
     },[])
 
     const fetchRecords = async () => {
-        const res = await axios.post('http://82.180.136.230:3005/buwamafetchchickenhealthrecords', {
+        const res = await axios.post('http://82.180.136.230:3005/buwamafetchlivestockbatchhealthrecords', {
             token: localStorage.getItem("token"),
-            batchNumber: batchNumber
+            batchNo: batchNumber
         })
         if(Array.isArray(res.data)){
             setRecords(res.data)
@@ -75,10 +75,12 @@ const BuwamaManageCattleVaccination = () => {
         fetchRecords()
     },[batchNumber])
 
+
+
     const fetchItems = async () => {
-        const res = await axios.post('http://82.180.136.230:3005/fetchallchickenmedicines', {
+        const res = await axios.post('http://82.180.136.230:3005/fetchallbuwamalivestockmedicines', {
             token: localStorage.getItem("token")
-        })
+        }) 
         setitemList(res.data)
         setIsItemLoading(false)
     }
@@ -87,9 +89,11 @@ const BuwamaManageCattleVaccination = () => {
         fetchItems()
     },[])
 
+
+
     const saveChickenDeathRecord = async (event) => {
         event.preventDefault()
-        let res = await axios.post('http://82.180.136.230:3005/buwamasavechickenhealthrecord',{
+        let res = await axios.post('http://82.180.136.230:3005/buwamasavelivestockhealthrecord',{
             token: localStorage.getItem('token'),
             batchNumber: batchNumber,
             reason: reason,
@@ -140,7 +144,7 @@ const BuwamaManageCattleVaccination = () => {
                         { isItemListLoading ? <option>Loading Items From Database</option> :
                             itemList.map(item => (
                                 <option key={item.productId} value={item.productId}>
-                                    {item.productName}
+                                    {item.name}
                                 </option>
                             ))
                         }
@@ -180,7 +184,7 @@ const BuwamaManageCattleVaccination = () => {
                                         <td>{item.reason}</td>
                                         <td>{item.treatmentdate}</td>
                                         <td>{item.nextdateofadministration}</td>
-                                        <td>{item.productName}</td>
+                                        <td>{item.name}</td>
                                         <td>{item.diseasename}</td>
                                         <td>{item.notes}</td>
                                     </tr>

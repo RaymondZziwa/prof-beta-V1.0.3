@@ -3,7 +3,7 @@ import Navbar from '../../../side navbar/sidenav'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 
-const BuwamaSaveChickenFeedingRecords = () => {
+const BuwamaSaveLivestockFeedingRecords = () => {
     const [date, setDate] = useState()
     const [batchNumber, setBatchNumber] = useState('')
     const [itemName, setitemName] = useState('')
@@ -48,9 +48,10 @@ const BuwamaSaveChickenFeedingRecords = () => {
     },[])
 
     const fetchItems = async () => {
-        const res = await axios.post('http://82.180.136.230:3005/fetchallchickenfeeds', {
+        const res = await axios.post('http://82.180.136.230:3005/fetchallbuwamalivestockfeeds', {
             token: localStorage.getItem("token")
         })
+
         setitemList(res.data)
         setIsItemLoading(false)
     }
@@ -61,11 +62,10 @@ const BuwamaSaveChickenFeedingRecords = () => {
 
 
     const fetchFeedingRecords = async () => {
-        const res = await axios.post('http://82.180.136.230:3005/buwamafetchbatchfeedingrecords', {
+        const res = await axios.post('http://82.180.136.230:3005/buwamafetchlivestockbatchfeedingrecords', {
             token: localStorage.getItem("token"),
             batchNumber: batchNumber
         })
-        console.log('fff', res.data)
         if(Array.isArray(res.data)){
             setRecords(res.data)
             setAreRecordsLoading(false)
@@ -78,8 +78,7 @@ const BuwamaSaveChickenFeedingRecords = () => {
 
     const saveBatchFeedingRecord = async (event) => {
         event.preventDefault()
-       // console.log('dta', drugAmount)
-        let res = await axios.post('http://82.180.136.230:3005/buwamasavebatchfeedingrecord',{
+        let res = await axios.post('http://82.180.136.230:3005/buwamasavelivestockbatchfeedingrecord',{
             token: localStorage.getItem('token'),
             batchNumber: batchNumber,
             date: date, 
@@ -99,7 +98,7 @@ const BuwamaSaveChickenFeedingRecords = () => {
                 <Navbar />
             </Col>
             <div className="col align-self-center" style={{marginTop:'60px'}}>
-                <h1 style={{textAlign:'center'}}>Chicken Batch Feeding Manager</h1>
+                <h1 style={{textAlign:'center'}}>Livestock Batch Feeding Manager</h1>
                 {status?.type === 'success' && <p style={{ margin: '20px' }} class="alert alert-success" role="alert">Success</p>}
                 {status?.type === 'error' && <p style={{ margin: '20px' }} class="alert alert-danger" role="alert">Error!</p>}
 
@@ -118,7 +117,7 @@ const BuwamaSaveChickenFeedingRecords = () => {
                         { isItemListLoading ? <option>Loading Items From Database</option> :
                             itemList.map(item => (
                                 <option key={item.productId} value={item.productId}>
-                                    {item.productName}
+                                    {item.name}
                                 </option>
                             ))
                         }
@@ -131,6 +130,7 @@ const BuwamaSaveChickenFeedingRecords = () => {
                 <select class="form-select" aria-label="Default select example" style={{ height: "60px", color: "#8CA6FE;" }} onChange={mUnitsHandler} required>
                     <option selected>Select Unit Of Measurement</option> 
                     <option value='Kgs'>Kilograms</option>    
+                    <option value='g'>Grams</option> 
                     {/* <option value='Grams'>Grams</option>  */}
                 </select>
                 
@@ -142,7 +142,7 @@ const BuwamaSaveChickenFeedingRecords = () => {
                     Save Feeding Record
                 </button>
 
-                <h1 style={{textAlign:'center'}}>Chicken Batch Feeding Records</h1>
+                <h1 style={{textAlign:'center'}}>Livestck Batch Feeding Records</h1>
                 <table className="table table-light">
                         <thead>
                             <tr>
@@ -158,7 +158,7 @@ const BuwamaSaveChickenFeedingRecords = () => {
                                 records.map(item => (
                                     <tr>
                                         <td>{item.date}</td>
-                                        <td>{item.productName}</td>
+                                        <td>{item.name}</td>
                                         <td>{item.feedsquantity}</td>
                                         <td>{item.munits}</td>
                                         <td>{item.notes}</td>
@@ -172,4 +172,4 @@ const BuwamaSaveChickenFeedingRecords = () => {
     )
 }
 
-export default BuwamaSaveChickenFeedingRecords
+export default BuwamaSaveLivestockFeedingRecords

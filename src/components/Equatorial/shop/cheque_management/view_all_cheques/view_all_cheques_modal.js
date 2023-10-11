@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { faFilter } from "@fortawesome/free-solid-svg-icons";
+import { faFilter, faCircleChevronLeft, faCircleChevronRight  } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import axios from 'axios'
 import Modal from 'react-modal'
@@ -12,6 +12,14 @@ const ViewAllChequesModal = ({chequeData, fetchAllChequeRecords}) => {
     const [drawerNames, setDrawerNames] = useState('')
     const [editableChequeData, setEditableChequeData] = useState({})
     const [isModalOpen, setIsModalOpen] = useState(false)
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 8
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+
+    const totalPages = Math.ceil(chequeData.length / itemsPerPage)
 
     const closeModal = () => {
         setIsModalOpen(false)
@@ -69,9 +77,7 @@ const ViewAllChequesModal = ({chequeData, fetchAllChequeRecords}) => {
         }
     }
 
-
-
-
+    
     return (
         <>
         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -145,7 +151,7 @@ const ViewAllChequesModal = ({chequeData, fetchAllChequeRecords}) => {
                     <td>{data.Notes}</td>
                     <td>{data.status}</td>
                     <td>
-                        {/* <button id={data.chequeId} onClick={editChequeData}>Edit</button> */}
+                        <button id={data.chequeId} onClick={editChequeData}>Edit</button>
                         <button id={data.chequeId} onClick={deleteChequeData}>Delete</button>
                     </td>
                 </tr>
@@ -164,13 +170,20 @@ const ViewAllChequesModal = ({chequeData, fetchAllChequeRecords}) => {
                         <td>{data.Notes}</td>
                         <td>{data.status}</td>
                         <td>
-                            {/* <button id={data.chequeId} onClick={editChequeData}>Edit</button> */}
+                            <button id={data.chequeId} onClick={editChequeData}>Edit</button>
                             <button id={data.chequeId} onClick={deleteChequeData}>Delete</button>
                         </td>
                     </tr>
             ))}
         </tbody>
         </table>
+        {totalPages > 1 && (
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
+                    <FontAwesomeIcon icon={faCircleChevronLeft} style={{color: 'black',padding: '10px 20px',border: 'none',borderRadius: '5px',marginLeft: '10px',cursor: 'pointer', fontSize:'40px'}} disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}/>
+                <span style={{ margin: '0 10px', color:'black' }}>Page {currentPage} of {totalPages}</span>
+                    <FontAwesomeIcon icon={faCircleChevronRight} style={{color: 'black',padding: '10px 20px',border: 'none',borderRadius: '5px',marginLeft: '10px',cursor: 'pointer', fontSize:'40px'}} disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}/>
+                </div>
+        )}
         {/* Modal */}
         <Modal
             isOpen={isModalOpen}
