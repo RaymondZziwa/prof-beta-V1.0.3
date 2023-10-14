@@ -20,8 +20,7 @@ class PrintableContent extends React.Component {
           <h5 style={{textAlign:'center',borderBottom:'1px dashed black'}}>Contact: 0702061652 / 0779519652</h5>
           <p style={{marginTop:'40px'}}>Date: {formattedDateTime}</p>
           <p>Receipt Number: {receiptNumber}</p>
-          <p>Client First Name: {firstName}</p>
-          <p>Client Last Name: {lastName}</p>
+          <p>Client First Name: {firstName} {lastName}</p>
           <p>Client Contact: {clientcontact}</p>
           <p>Payment Method: {paymentMethod}</p>
           {(paymentMethod === 'MTN MoMo' || paymentMethod === 'Airtel Money') && 
@@ -82,6 +81,7 @@ const PaymentModule = ({ servicesList, items, total }) => {
     const [status, setStatus] = useState('')
     const [receiptNo, setReceiptNo] = useState(0)
     const [services, setServices] = useState([])
+    const options = { day: '2-digit', month: '2-digit', year: 'numeric' }
 
     const [transactionId, setTransactionId] = useState()
 
@@ -129,11 +129,6 @@ const PaymentModule = ({ servicesList, items, total }) => {
       }, [status]);
 
     useEffect(()=>{
-        const timestamp = new Date().getTime().toString(); // Example timestamp: "1647824898645"
-        const reducedTimestamp = timestamp.substring(9, 14); // Extract 5 digits from index 9 to 13
-        const random = Math.floor(Math.random() * 100000); // Example random number: 74530
-        const receiptNumber = `${reducedTimestamp}-${random}`
-        setReceiptNo(receiptNumber)
         if(paymentStatus === 'fullypaid'){
             setBalance(0)
         }else if(paymentStatus === 'partiallypaid'){
@@ -142,7 +137,7 @@ const PaymentModule = ({ servicesList, items, total }) => {
             setBalance(total)
         }
     }, [paymentStatus, amount])
-
+    
 
     const handleSubmit = async (event) => {
         event.preventDefault()
@@ -160,7 +155,7 @@ const PaymentModule = ({ servicesList, items, total }) => {
         balance: balance,
         customerNames: `${firstName.toUpperCase().trim()} ${lastName.toUpperCase().trim()}`,
         customerContact: phoneNumber,
-        date: new Date().toLocaleDateString()
+        date: new Date().toLocaleDateString('en-GB', options)
       })
       console.log('resp', res.data)
       if(res.data.status === '200'){
@@ -189,7 +184,6 @@ const PaymentModule = ({ servicesList, items, total }) => {
                     id="firstName"
                     value={firstName}
                     onChange={handleFirstNameChange}
-                    required
                 />
                 </div>
                 <div className="mb-3">
@@ -202,7 +196,6 @@ const PaymentModule = ({ servicesList, items, total }) => {
                     id="lastName"
                     value={lastName}
                     onChange={handleLastNameChange}
-                    required
                 />
                 </div>
                 <div className="mb-3">
@@ -215,10 +208,9 @@ const PaymentModule = ({ servicesList, items, total }) => {
                     id="phoneNumber"
                     value={phoneNumber}
                     onChange={handlePhoneNumberChange}
-                    required
                 />
                 </div>
-                <select class="form-select" aria-label="Default select example" style={{ height: "60px", color: "#8CA6FE" }} onChange={paymentMethodHandler} required>
+                <select class="form-select" aria-label="Default select example" style={{ height: "60px", color: "#8CA6FE" }} onChange={paymentMethodHandler} >
                     <option selected>Payment Method</option>
                     <option value='Cash'>Cash</option>    
                     <option value='Airtel Money'>Airtel Money</option>

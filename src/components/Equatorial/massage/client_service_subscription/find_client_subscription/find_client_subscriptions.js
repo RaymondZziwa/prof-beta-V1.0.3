@@ -23,7 +23,7 @@ const FindActiveClientSubscriptions = ({ setClientSubscriptionData }) => {
     },[])
 
     useEffect(()=>{
-        setClientName(`${fName.toUpperCase().trim()} ${mName.toUpperCase().trim()} ${lName.toUpperCase().trim()}`)   
+        setClientName(`${fName.toUpperCase().trim()} ${lName.toUpperCase().trim()}`)   
     },[fName, mName, lName])
 
     const dataFilterHandler = event => {
@@ -45,10 +45,6 @@ const FindActiveClientSubscriptions = ({ setClientSubscriptionData }) => {
                 <input type="text" className="form-control" id="floatingInput" min="0" placeholder="Quantity" style={{ color: "#8CA6FE", width:'200px' }} onChange={(event)=> setFName(event.target.value)}/>
                 <label for="floatingInput">First Name</label>
             </div>
-            {/* <div className="form-floating mb-3">
-                <input type="text" className="form-control" id="floatingInput" min="0" placeholder="Quantity" style={{ color: "#8CA6FE", width:'200px' }} onChange={(event)=> setMName(event.target.value)}/>
-                <label for="floatingInput">Middle Name</label>
-            </div> */}
             <div className="form-floating mb-3" >
                 <input type="text" className="form-control" id="floatingInput" min="0" placeholder="Quantity" style={{ color: "#8CA6FE", width:'200px' }} onChange={(event)=> setLName(event.target.value)}/>
                 <label for="floatingInput">Last Name</label>

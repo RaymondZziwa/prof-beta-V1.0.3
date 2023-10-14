@@ -18,6 +18,34 @@ const RegisterShopInventory = () => {
         event.preventDefault()
         setUnitPrice(event.target.value)
     }
+    
+    const deleteItem = async event => {
+        event.preventDefault()
+        const productId = event.target.id;
+        try {
+            let res = await axios.post('http://82.180.136.230:3005/deleteshopproductdata', {
+                token: localStorage.getItem('token'),
+                productId: productId
+            });
+            await fetchAllMaterials();
+        } catch (error) {
+            console.error('Error deleting item:', error);
+        }
+    }
+
+    const editItem = async event => {
+        event.preventDefault()
+        const productId = event.target.id;
+        try {
+            let res = await axios.post('http://82.180.136.230:3005/updateshopproductdata', {
+                token: localStorage.getItem('token'),
+                productId: productId
+            });
+            await fetchAllMaterials();
+        } catch (error) {
+            console.error('Error updating item:', error);
+        }
+    }
 
 
     const fetchAllMaterials = async () => {
@@ -46,6 +74,7 @@ const RegisterShopInventory = () => {
 
         fetchAllMaterials()
     }
+    
     return(
         <div className='container-fluid'>
         <Row>
@@ -76,6 +105,7 @@ const RegisterShopInventory = () => {
                                 <th scope="col">Product Id</th>
                                 <th scope="col">Product Name</th>
                                 <th scope="col">Unit Price (UGX)</th>
+                                <th scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -85,6 +115,10 @@ const RegisterShopInventory = () => {
                                         <td>{item.productId}</td>
                                         <td>{item.productName}</td>
                                         <td>{item.unitPrice}</td>
+                                        <td>
+                                            <button id={item.productId} onClick={editItem}>Edit</button>
+                                            <button id={item.productId} onClick={deleteItem}>Delete</button>
+                                        </td>
                                     </tr>
                             ))}
                         </tbody>

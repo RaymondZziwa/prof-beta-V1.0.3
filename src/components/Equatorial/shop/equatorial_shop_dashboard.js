@@ -24,11 +24,6 @@ return(
                 Retrieve/Manage External Receipts
             </div>
         </Link>
-         {/* <Link className="tab_nav" to="/registerpersonnel">
-            <div className="mb-3 mclickable_option">
-                Create User Accounts
-            </div>
-         </Link> */}
         <Link className="tab_nav" to="/equatorialshopPOS">
             <div className="mb-3 mclickable_option">
                 Point Of Sale
@@ -62,6 +57,11 @@ return(
         <Link className="tab_nav" to="/recievemassagedepartmentincome">
             <div className="mb-3 mclickable_option">
                 Recieve Massage Dept Income
+            </div>
+        </Link>
+        <Link className="tab_nav" to="#">
+            <div className="mb-3 mclickable_option">
+                View Massage Sales
             </div>
         </Link>
         <Link className="tab_nav" to="/fetchclientassociatedreceipts">

@@ -2,22 +2,18 @@ import { Row, Col } from 'react-bootstrap'
 import Navbar from '../../../side navbar/sidenav'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
+import Select from 'react-select';
 
 const EquatorialMassageDepartmentInventoryRestockingForm = () => {
     const [expenditureDate, setExpenditureDate] = useState()
-    const [isItemListLoading, setIsItemLoading] = useState(true)
-    const [itemList, setitemList] = useState('')
     const [itemName, setitemName] = useState('')
     const [quantity, setquantity] = useState('')
     const [restockSource,  setRestockSource] = useState('')
     const [moreInfo, setMoreInfo] = useState('')
     const [status, setStatus] = useState('')
     const [notes, setNotes] = useState('')
-
-    const itemNameInput = event => {
-        event.preventDefault()
-        setitemName(event.target.value)
-    }
+    const [options, setOptions] = useState([])
+    
 
     const quantityInput = event => {
         event.preventDefault()
@@ -48,32 +44,51 @@ const EquatorialMassageDepartmentInventoryRestockingForm = () => {
         const res = await axios.post('http://82.180.136.230:3005/shopitemlist', {
             token: localStorage.getItem("token")
         })
-        setitemList(res.data)
-        setIsItemLoading(false)
+        const transformedOptions = res.data.map((item) => ({
+            value: item.productId.toString(),
+            label: item.productName
+        }));
+        setOptions(transformedOptions)
+    }
+
+    const handleSelectChange = (selectedOption) => {
+        setitemName(selectedOption);
     }
 
     useEffect(()=>{
         fetchItems()
     },[])
 
-    const saveRestockData = async event => {
-        event.preventDefault()
-         let res = await axios.post('http://82.180.136.230:3005/saveequatorialmassagerestockdata',{
-            token:localStorage.getItem('token'),
-             date: expenditureDate,
-             itemid: itemName,
-             quantity: quantity,
-             category:'incoming',
-             unit: 'Pcs',
-             source: restockSource,
-             externalSourceDetails: moreInfo,
-             notes: notes
-         })
-         .then(() => setStatus({ type: 'success' }))
-         .catch((err) => setStatus({ type: 'error', err }))
-
-        console.log(expenditureDate, itemName, quantity, restockSource, moreInfo, notes)
-    }
+    const saveRestockData = async (event) => {
+        event.preventDefault();
+      
+        try {
+          let res = await axios.post('http://82.180.136.230:3005/saveequatorialmassagerestockdata', {
+            token: localStorage.getItem('token'),
+            date: expenditureDate,
+            itemid: itemName,
+            quantity: quantity,
+            category: 'incoming',
+            unit: 'Pcs',
+            source: restockSource,
+            externalSourceDetails: moreInfo,
+            notes: notes,
+          });
+      
+          // Reset the form fields and status
+          setitemName('');
+          setquantity('');
+          setRestockSource('');
+          setMoreInfo('');
+          setNotes('');
+          setStatus({ type: 'success' });
+      
+          console.log(expenditureDate);
+        } catch (err) {
+          setStatus({ type: 'error', err });
+        }
+      };
+      
 
     return(
         <Row>
@@ -88,16 +103,16 @@ const EquatorialMassageDepartmentInventoryRestockingForm = () => {
                     <input className="form-control" id="floatingInput" placeholder="Order-Id" style={{ color: "#8CA6FE" }} value={expenditureDate} required readOnly/>
                     <label htmlFor="floatingInput">Date</label>
                 </div>
-                <select class="form-select" aria-label="Default select example" style={{ height: "60px", color: "#8CA6FE;" }} onChange={itemNameInput} required>
-                    <option selected>Item Name</option>
-                        { isItemListLoading ? <option>Loading Items From Database</option> :
-                            itemList.map(item => (
-                                <option key={item.productId} value={item.productId}>
-                                    {item.productName}
-                                </option>
-                            ))
-                        }
-                </select>
+                <div className="form-floating mb-3">
+                    <Select
+                        value={itemName}
+                        onChange={handleSelectChange}
+                        options={options}
+                        isSearchable
+                        placeholder="Select an Item"
+                        id="floatingInput"
+                    /> 
+                </div>
                 <div className="form-floating mb-3">
                     <input type='number' className="form-control" id="floatingInput" min="0" placeholder="Quantity" style={{ color: "#8CA6FE" }} onChange={quantityInput} required />
                     <label for="floatingInput">Quantity In</label>

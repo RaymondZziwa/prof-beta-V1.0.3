@@ -20,8 +20,7 @@ class PrintableContent extends React.Component {
           <h5 style={{textAlign:'center',borderBottom:'1px dashed black'}}>Contact: 0702061652 / 0779519652</h5>
           <p style={{marginTop:'40px'}}>Date: {formattedDateTime}</p>
           <p>Receipt Number: {receiptNumber}</p>
-          <p>Client First Name: {firstName}</p>
-          <p>Client Last Name: {lastName}</p>
+          <p>Client First Name: {firstName} {lastName}</p>
           <p>Client Contact: {clientcontact}</p>
           <p>Payment Method: {paymentMethod}</p>
           {(paymentMethod === 'MTN MoMo' || paymentMethod === 'Airtel Money') && 
@@ -82,6 +81,7 @@ const PaymentModule = ({ servicesList, items, total }) => {
     const [status, setStatus] = useState('')
     const [receiptNo, setReceiptNo] = useState(0)
     const [services, setServices] = useState([])
+    const options = { day: '2-digit', month: '2-digit', year: 'numeric' }
 
     const [transactionId, setTransactionId] = useState()
 
@@ -178,9 +178,8 @@ const PaymentModule = ({ servicesList, items, total }) => {
         balance: balance,
         customerNames: `${firstName.toUpperCase().trim()} ${lastName.toUpperCase().trim()}`,
         customerContact: phoneNumber,
-        date: new Date().toLocaleDateString()
+        date: new Date().toLocaleDateString('en-GB', options)
       })
-      console.log('resp', res.data)
       if(res.data.status === '200'){
         setStatus({ type: 'success' })
        const timestamp = new Date().getTime().toString(); // Example timestamp: "1647824898645"
@@ -252,50 +251,13 @@ const PaymentModule = ({ servicesList, items, total }) => {
                         </div>
                     </div>
                 }
+                <select class="form-select" aria-label="Default select example" style={{ height: "60px", color: "#8CA6FE" }} onChange={handlePaymentStatusChange} required>
+                    <option selected>Payment Status</option>   
+                    <option value='fullypaid'>Fully Paid</option>
+                    <option value='partiallypaid'>Partially Paid</option>
+                    <option value='unpaid'>Unpaid</option>
+                </select>
                 <div className="mb-3">
-                <label className="form-label">Payment Status</label>
-                <div className="form-check">
-                    <input
-                    className="form-check-input"
-                    type="radio"
-                    name="paymentMethod"
-                    id="paymentMethodCard"
-                    value="fullypaid"
-                    checked={paymentStatus === 'fullypaid'}
-                    onChange={handlePaymentStatusChange}
-                    />
-                    <label className="form-check-label" htmlFor="paymentMethodCard">
-                    Fully Paid
-                    </label>
-                </div>
-                <div className="form-check">
-                    <input
-                    className="form-check-input"
-                    type="radio"
-                    name="paymentStatus"
-                    id="paymentMethodPaypal"
-                    value="partiallypaid"
-                    checked={paymentStatus === 'partiallypaid'}
-                    onChange={handlePaymentStatusChange}
-                    />
-                    <label className="form-check-label" htmlFor="paymentMethodPaypal">
-                    Partially Paid
-                    </label>
-                </div>
-                {/* <div className="form-check">
-                    <input
-                    className="form-check-input"
-                    type="radio"
-                    name="paymentMethod"
-                    id="paymentMethodPaypal"
-                    value="unpaid"
-                    checked={paymentStatus === 'unpaid'}
-                    onChange={handlePaymentStatusChange}
-                    />
-                    <label className="form-check-label" htmlFor="paymentMethodPaypal">
-                    Unpaid
-                    </label>
-                </div> */}
                 { paymentStatus === 'partiallypaid' && 
                     <div className="mb-3">
                         <div className="form-floating mb-3">

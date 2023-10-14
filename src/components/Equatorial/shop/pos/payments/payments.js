@@ -81,6 +81,7 @@ const PaymentModule = ({ servicesList, items, total }) => {
     const [status, setStatus] = useState('')
     const [receiptNo, setReceiptNo] = useState(0)
     const [transactionId, setTransactionId] = useState()
+    const options = { day: '2-digit', month: '2-digit', year: 'numeric' }
 
     const componentRef = useRef();
 
@@ -157,7 +158,7 @@ const PaymentModule = ({ servicesList, items, total }) => {
         balance: balance,
         customerNames: `${firstName.toUpperCase().trim()} ${lastName.toUpperCase().trim()}`,
         customerContact: phoneNumber,
-        date: new Date().toLocaleDateString()
+        date: new Date().toLocaleDateString('en-GB', options)
       })
       console.log('resp', res.data)
       if(res.data.status === '200'){
