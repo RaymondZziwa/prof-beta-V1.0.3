@@ -10,7 +10,7 @@ const Admindashboard = () => {
             <AdminNavbar />
         </Col>
         <div className="col align-self-center" style={{marginTop:'20px'}}>
-                    <Link className="tab_nav" to="#">
+                    <Link className="tab_nav" to="/equatorialmanagementmenu">
                         <div className="mb-3 mclickable_option">
                             Equatorial Branch
                         </div>

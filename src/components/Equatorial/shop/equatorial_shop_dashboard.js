@@ -79,11 +79,6 @@ return(
                 Save Shop Expenditure Receipts
             </div>
         </Link>
-        <Link className="tab_nav" to="/managesuppliers">
-            <div className="mb-3 mclickable_option">
-                Manage Suppliers
-            </div>
-        </Link>
         <Link className="tab_nav" to="/managecheques">
             <div className="mb-3 mclickable_option">
                 Cheque Management

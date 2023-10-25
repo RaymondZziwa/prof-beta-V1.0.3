@@ -29,9 +29,9 @@ const EquatorialCustodianDashboard = () => {
                     View Labelling Dept Inventory
                 </div>
             </Link>
-            <Link className="tab_nav" to="/custodianequatorialshopinventorymanagement">
+            <Link className="tab_nav" to="/equatorialshopinventorymenu">
                 <div className="mb-3 mclickable_option">
-                    View Main Shop Inventory
+                    Manage Main Shop Inventory
                 </div>
             </Link>
             <Link className="tab_nav" to="/custodianequatorialprojectsinventorymanagement">

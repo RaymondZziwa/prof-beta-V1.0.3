@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import Select from 'react-select';
 
 const EquatorialMassageDepartmentInventoryRestockingForm = () => {
+    
     const [expenditureDate, setExpenditureDate] = useState()
     const [itemName, setitemName] = useState('')
     const [quantity, setquantity] = useState('')
@@ -61,12 +62,11 @@ const EquatorialMassageDepartmentInventoryRestockingForm = () => {
 
     const saveRestockData = async (event) => {
         event.preventDefault();
-      
         try {
           let res = await axios.post('http://82.180.136.230:3005/saveequatorialmassagerestockdata', {
             token: localStorage.getItem('token'),
             date: expenditureDate,
-            itemid: itemName,
+            itemid: itemName.value,
             quantity: quantity,
             category: 'incoming',
             unit: 'Pcs',

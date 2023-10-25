@@ -34,6 +34,11 @@ const EquatorialProjectsManagerDashboard = () => {
                         Create Projects External Receipt
                     </div>
                 </Link>
+                <Link className="tab_nav" to="/managesuppliers">
+                    <div className="mb-3 mclickable_option">
+                        Manage Suppliers
+                    </div>
+                </Link>
                 <Link className="tab_nav" to="/equatorialissuedexternalreceiptsrecords">
                     <div className="mb-3 mclickable_option">
                         View Issued External Receipts

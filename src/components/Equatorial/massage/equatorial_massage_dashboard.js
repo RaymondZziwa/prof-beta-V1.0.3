@@ -37,7 +37,12 @@ const EquatorialMassageManagerDashboard = () => {
                 </Link>
                 <Link className="tab_nav" to="/equatorialmassagedepartmentrecords">
                     <div className="mb-3 mclickable_option">
-                        Massage Department Records
+                        Massage Products Sales Records
+                    </div>
+                </Link>
+                <Link className="tab_nav" to="/equatorialmassagedepartmentservicesrecords">
+                    <div className="mb-3 mclickable_option">
+                        Massage Services Records
                     </div>
                 </Link>
                 <Link className="tab_nav" to="/equatorialmassageclientsubscriptionrecords">

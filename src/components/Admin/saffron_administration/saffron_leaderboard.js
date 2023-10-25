@@ -3,8 +3,10 @@ import SaphroneLeaderboard from '../../Saphorne_Competition/Leaderboard/leaderbo
 import '../../Saphorne_Competition/Dashboard/leaderboard.css'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import AdminNavbar from '../../side navbar/adminnavbar'
+import bkg from '../../../imgs/bkg.jpg'
 
-const SaffronLeaderboard = () => {
+const SaffronLeaderboardAdmin = () => {
     const [isOpen, setIsOpen] = useState(false)
     const [participantData, setParticipantData] = useState([])
     
@@ -12,7 +14,7 @@ const SaffronLeaderboard = () => {
         const fetchAllParticipantData = async () => {
             try {
                 const res = await axios.post('http://82.180.136.230:3005/fetchallparticipantperformancerecords', {
-                    token: localStorage.getItem('saphroneAuthToken')
+                    token: localStorage.getItem('token')
                 });
 
                 if (Array.isArray(res.data)) {
@@ -29,10 +31,13 @@ const SaffronLeaderboard = () => {
     }, []);
 
     return(
-       <div>
+       <div style={{ backgroundImage: `url(${bkg})`, height:'100vh' }}>
         <Row>
             <Col sm='12' md='12' lg='12' xl='12' className='ld-col d-flex flex-column align-items-center justify-content-center'>
-                <h3 style={{textAlign:'center', color:'white'}}>Competition Leaderboard</h3>
+            <Col sm='12' md='2' lg='2' xl='2'>
+                <AdminNavbar />
+            </Col>
+                <h3 style={{textAlign:'center', color:'white', marginTop:'80px'}}>Competition Leaderboard</h3>
                 <div className="d-flex flex-column align-items-center" style={{textAlign:'center'}}>
                     <SaphroneLeaderboard participantData={participantData}/> 
                 </div>
@@ -42,4 +47,4 @@ const SaffronLeaderboard = () => {
        </div>
     )
 }
-export default SaffronLeaderboard
+export default SaffronLeaderboardAdmin

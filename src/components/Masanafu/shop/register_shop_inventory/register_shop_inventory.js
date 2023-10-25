@@ -23,7 +23,7 @@ const RegisterShopInventory = () => {
         event.preventDefault()
         const productId = event.target.id;
         try {
-            let res = await axios.post('http://82.180.136.230:3005/deleteshopproductdata', {
+            let res = await axios.post('http://82.180.136.230:3005/deleteshopitemdata', {
                 token: localStorage.getItem('token'),
                 productId: productId
             });
@@ -116,7 +116,7 @@ const RegisterShopInventory = () => {
                                         <td>{item.productName}</td>
                                         <td>{item.unitPrice}</td>
                                         <td>
-                                            <button id={item.productId} onClick={editItem}>Edit</button>
+                                            {/* <button id={item.productId} onClick={editItem}>Edit</button> */}
                                             <button id={item.productId} onClick={deleteItem}>Delete</button>
                                         </td>
                                     </tr>

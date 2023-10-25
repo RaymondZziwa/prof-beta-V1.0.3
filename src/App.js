@@ -247,6 +247,16 @@ import SaffronLeaderboard from './components/Admin/saffron_administration/saffro
 import SaffronFilteredLeaderboard from './components/Admin/saffron_administration/saffron_filtered_leaderboard';
 import SaffronMgtMenu from './components/Admin/other_menus/saffron_menu';
 import EquatorialShopCreateExternalReceipts from './components/Equatorial/shop/external_receipts/point_of_sale/pos';
+import EquatorialMassageDepartmentServicesRecords from './components/Equatorial/massage/records/equatorial_massage_department_services_records';
+import SaffronFilteredLeaderboardAdmin from './components/Admin/saffron_administration/saffron_filtered_leaderboard';
+import SaffronLeaderboardAdmin from './components/Admin/saffron_administration/saffron_leaderboard';
+import EquatorialMgtMenu from './components/Admin/other_menus/equatorial_menu';
+import EquatorialMainShopMgtMenu from './components/Admin/equatorial_administration/main_shop';
+import EquatorialMassageMgtMenu from './components/Admin/equatorial_administration/massage';
+import EquatorialDebtMgtMenu from './components/Admin/equatorial_administration/debt_manager';
+import EquatorialLabellingMgtMenu from './components/Admin/equatorial_administration/labelling_dept';
+import EquatorialProjectsMgtMenu from './components/Admin/equatorial_administration/projects';
+import EquatorialGeneralStoreMgtMenu from './components/Admin/equatorial_administration/inventory_custodian';
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -339,12 +349,47 @@ function App() {
           )}
           {authCtx.isLoggedIn && (
               <Route path="/saffronleaderboard">
-                <SaffronLeaderboard />
+                <SaffronLeaderboardAdmin />
               </Route>
           )}
           {authCtx.isLoggedIn && (
               <Route path="/saffronfilteredleaderboard">
-                <SaffronFilteredLeaderboard />
+                <SaffronFilteredLeaderboardAdmin />
+              </Route>
+          )}
+          {authCtx.isLoggedIn && (
+              <Route path="/equatorialmanagementmenu">
+                <EquatorialMgtMenu />
+              </Route>
+          )}
+          {authCtx.isLoggedIn && (
+              <Route path="/equatorialshopmanagementmenu">
+                <EquatorialMainShopMgtMenu />
+              </Route>
+          )}
+          {authCtx.isLoggedIn && (
+              <Route path="/equatorialmassagemanagementmenu">
+                <EquatorialMassageMgtMenu />
+              </Route>
+          )}
+          {authCtx.isLoggedIn && (
+              <Route path="/equatorialdebtmanagementmenu">
+                <EquatorialDebtMgtMenu />
+              </Route>
+          )}
+          {authCtx.isLoggedIn && (
+              <Route path="/equatoriallabellingmanagementmenu">
+                <EquatorialLabellingMgtMenu />
+              </Route>
+          )}
+          {authCtx.isLoggedIn && (
+              <Route path="/equatorialprojectsmanagementmenu">
+                <EquatorialProjectsMgtMenu />
+              </Route>
+          )}
+          {authCtx.isLoggedIn && (
+              <Route path="/equatorialgeneralstoremanagementmenu">
+                <EquatorialGeneralStoreMgtMenu />
               </Route>
           )}
 
@@ -829,6 +874,9 @@ function App() {
           </Route>)}
           {authCtx.isLoggedIn && (<Route path="/equatorialmassagemonthlyservicesreport">
             <EquatorialMassageMonthlyServicesReport />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/equatorialmassagedepartmentservicesrecords">
+            <EquatorialMassageDepartmentServicesRecords />
           </Route>)}
           {authCtx.isLoggedIn && (<Route path="/managesuppliers">
             <ManageSuppliers />

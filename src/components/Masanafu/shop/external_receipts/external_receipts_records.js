@@ -50,7 +50,7 @@ const ExternalReceiptsRecords = () => {
             </div>
           </div>
 
-          <h1 style={{ textAlign: 'center', color: 'black', marginTop: '40px' }}>Masanafu External Receipts Records</h1>
+          <h1 style={{ textAlign: 'center', color: 'black', marginTop: '40px' }}>External Receipts Records</h1>
           <table className="table table-light" style={{ marginTop: '20px', textAlign: 'center' }}>
             <thead style={{ textAlign: 'center' }}>
               <tr>

@@ -60,7 +60,7 @@ class PrintableContent extends React.Component {
                 </tbody>
                 </table>
           <p>Served By: {localStorage.getItem('username')}</p>
-          <p style={{ position: 'absolute', bottom: '10px', fontSize: '12px', borderTop:'1px solid black', textAlign:'center' }}>
+          <p style={{ marginTop: '5px', marginBottom:'5px', fontSize: '13px', borderTop:'1px solid black', textAlign:'center' }}>
             Receipt Printed By {localStorage.getItem('branch')} Prof-Bioresearch POS System.
           </p>
         </div>
@@ -81,11 +81,16 @@ const PaymentModule = ({ servicesList, items, total }) => {
     const [status, setStatus] = useState('')
     const [receiptNo, setReceiptNo] = useState(0)
     const [services, setServices] = useState([])
+    const [serverMsg, setServerMsg] = useState('')
+    const [currentReceiptNumber, setCurrentReceiptNumber] = useState(0)
+
+
     const options = { day: '2-digit', month: '2-digit', year: 'numeric' }
 
     const [transactionId, setTransactionId] = useState()
 
     const componentRef = useRef();
+    const printBtnRef = useRef()
 
     const handleFirstNameChange = (event) => {
       setFirstName(event.target.value)
@@ -119,21 +124,20 @@ const PaymentModule = ({ servicesList, items, total }) => {
     }
 
     useEffect(() => {
+        generateReceiptNumber();
+    }, [])
+
+    useEffect(() => {
         if (status) {
           const timer = setTimeout(() => {
             setStatus(null);
-          }, 2000);
+          }, 3000);
     
           return () => clearTimeout(timer);
         }
       }, [status]);
 
     useEffect(()=>{
-        const timestamp = new Date().getTime().toString(); // Example timestamp: "1647824898645"
-        const reducedTimestamp = timestamp.substring(9, 14); // Extract 5 digits from index 9 to 13
-        const random = Math.floor(Math.random() * 100000); // Example random number: 74530
-        const receiptNumber = `${reducedTimestamp}-${random}`
-        setReceiptNo(receiptNumber)
         if(paymentStatus === 'fullypaid'){
             setBalance(0)
         }else if(paymentStatus === 'partiallypaid'){
@@ -143,26 +147,33 @@ const PaymentModule = ({ servicesList, items, total }) => {
         }
     }, [paymentStatus, amount])
 
+    function generateReceiptNumber() {
+        // Generate a new receipt number
+        const timestamp = new Date().getTime().toString();
+        const reducedTimestamp = timestamp.substring(9, 14);
+        const random = Math.floor(Math.random() * 100000);
+        const receiptNumber = `${reducedTimestamp}-${random}`;
+      
+        // Check if receiptNumber is 0 and generate a new one if needed
+        if (receiptNumber === '0') {
+          return generateReceiptNumber(); // Recursively generate a new number
+        }else{
+            setReceiptNo(receiptNumber)
+            
+        }
+
+        
+        console.log('fs', receiptNumber)
+      
+        // Set the receipt number in the state
+        setReceiptNo(receiptNumber);
+      
+        return receiptNumber;
+    }
+    
 
     const handleSubmit = async (event) => {
         event.preventDefault()
-        console.log('slsl', servicesList)
-        console.log('items', items)
-        setServices([])
-
-        items.map((item) => {
-            if (servicesList.find((service) => service.label === item.name)) {
-              services.push({
-                Id: item.id,
-                productName: item.name,
-                quantity: item.quantity,
-                totalCost: item.totalCost,
-                unitCost: item.unitCost
-              });
-            }
-        })
-       console.log('serv', services)
-       console.log('items22', items)
 
        let res = await axios.post('http://82.180.136.230:3005/equatorialmassageservicescheckout',{
         token: localStorage.getItem('token'),
@@ -180,21 +191,23 @@ const PaymentModule = ({ servicesList, items, total }) => {
         customerContact: phoneNumber,
         date: new Date().toLocaleDateString('en-GB', options)
       })
-      if(res.data.status === '200'){
+
+      if(res.data.status === '200') {
         setStatus({ type: 'success' })
-       const timestamp = new Date().getTime().toString(); // Example timestamp: "1647824898645"
-       const reducedTimestamp = timestamp.substring(9, 14); // Extract 5 digits from index 9 to 13
-       const random = Math.floor(Math.random() * 100000); // Example random number: 74530
-       const receiptNumber = `${reducedTimestamp}-${random}`
-       setReceiptNo(receiptNumber)
+        setServerMsg(res.data.msg)
+        printBtnRef.current.click();
+        generateReceiptNumber()
+      } else {
+        setStatus({ type: 'error' })
+        setServerMsg(res.data.msg)
       }
     }
 
     return(
         <>  
             <h3 style={{textAlign:'center'}}>Customer Details</h3>
-            {status?.type === 'success' && <p style={{ margin: '20px' }} class="alert alert-success" role="alert">Success</p>}
-            {status?.type === 'error' && <p style={{ margin: '20px' }} class="alert alert-danger" role="alert">Error!</p>}
+            {status?.type === 'success' && <p style={{ margin: '20px' }} class="alert alert-success" role="alert">{serverMsg}</p>}
+            {status?.type === 'error' && <p style={{ margin: '20px' }} class="alert alert-danger" role="alert">{serverMsg}</p>}
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                 <label htmlFor="firstName" className="form-label">
@@ -206,7 +219,6 @@ const PaymentModule = ({ servicesList, items, total }) => {
                     id="firstName"
                     value={firstName}
                     onChange={handleFirstNameChange}
-                    required
                 />
                 </div>
                 <div className="mb-3">
@@ -219,7 +231,6 @@ const PaymentModule = ({ servicesList, items, total }) => {
                     id="lastName"
                     value={lastName}
                     onChange={handleLastNameChange}
-                    required
                 />
                 </div>
                 <div className="mb-3">
@@ -232,10 +243,9 @@ const PaymentModule = ({ servicesList, items, total }) => {
                     id="phoneNumber"
                     value={phoneNumber}
                     onChange={handlePhoneNumberChange}
-                    required
                 />
                 </div>
-                <select class="form-select" aria-label="Default select example" style={{ height: "60px", color: "#8CA6FE" }} onChange={paymentMethodHandler} required>
+                <select class="form-select" aria-label="Default select example" style={{ height: "60px", color: "#8CA6FE" }} onChange={paymentMethodHandler} >
                     <option selected>Payment Method</option>
                     <option value='Cash'>Cash</option>    
                     <option value='Airtel Money'>Airtel Money</option>
@@ -288,7 +298,7 @@ const PaymentModule = ({ servicesList, items, total }) => {
             </form>
             <ReactToPrint
                     trigger={() => (
-                        <button style={{ width: "100%",border: "none",color: "white", height: "45px", backgroundColor: "#3452A3", marginTop:'5px'}}>Print Receipt</button>
+                        <button style={{ width: "100%",border: "none",color: "white", height: "45px", backgroundColor: "#3452A3", marginTop:'5px', display:'none'}} ref={printBtnRef}>Print Receipt</button>
                     )}
                     content={() => componentRef.current}
                     pdfPrint={true}

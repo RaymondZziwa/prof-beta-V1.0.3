@@ -3,8 +3,10 @@ import SaphroneLeaderboard from '../../Saphorne_Competition/Leaderboard/leaderbo
 import '../../Saphorne_Competition/Dashboard/leaderboard.css'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import AdminNavbar from '../../side navbar/adminnavbar'
+import bkg from '../../../imgs/bkg.jpg'
 
-const SaffronFilteredLeaderboard = () => {
+const SaffronFilteredLeaderboardAdmin = () => {
     const [selectedGender, setSelectedGender] = useState('')
 
     const [allRecords, setAllRecords] = useState([])
@@ -13,8 +15,6 @@ const SaffronFilteredLeaderboard = () => {
     const [toDate, setToDate] = useState('')
     const [isOpen, setIsOpen] = useState(false)
     const [participantData, setParticipantData] = useState([]);
-
-    const [periodData, setPeriodData] = useState({})
 
     const filterDataByDateRange = (data, fromDate, toDate) => {
         function formatDate(inputDate) {
@@ -43,7 +43,6 @@ const SaffronFilteredLeaderboard = () => {
 
     useEffect(() => {
        const filteredData = filterDataByDateRange (allRecords, fromDate, toDate)
-        console.log('man', filteredData)
 
        const employeeTotals = {}; // Create an object to store totals for each employeeId
 
@@ -67,8 +66,6 @@ const SaffronFilteredLeaderboard = () => {
                 employeeTotals[employeeId].totalPoints += points;
             }
             });
-    
-            console.log('zaq', employeeTotals)
             const totalsArray = Object.values(employeeTotals);
             setParticipantData(totalsArray)
        }
@@ -90,7 +87,7 @@ const SaffronFilteredLeaderboard = () => {
                 const res = await axios.post(
                     'http://82.180.136.230:3005/fetchallsaphronesalesdata',
                     {
-                        token: localStorage.getItem('saphroneAuthToken'),
+                        token: localStorage.getItem('token'),
                     }
                 );
     
@@ -107,7 +104,7 @@ const SaffronFilteredLeaderboard = () => {
                 const res = await axios.post(
                     'http://82.180.136.230:3005/fetchallparticipantperformancerecords',
                     {
-                        token: localStorage.getItem('saphroneAuthToken'),
+                        token: localStorage.getItem('token'),
                     }
                 );
     
@@ -127,10 +124,13 @@ const SaffronFilteredLeaderboard = () => {
     }, [selectedGender]); 
 
     return(
-       <div>
+       <div style={{ backgroundImage: `url(${bkg})`, height:'100vh' }}>
         <Row>
             <Col sm='12' md='12' lg='12' xl='12' className='ld-col d-flex flex-column align-items-center justify-content-center'>
-                <h3 style={{textAlign:'center', color:'white'}}>Filter Competition Leaderboard</h3>
+            <Col sm='12' md='2' lg='2' xl='2'>
+                <AdminNavbar />
+            </Col>
+                <h3 style={{textAlign:'center', color:'white',marginTop:'80px'}}>Filter Competition Leaderboard</h3>
                 <div className="d-flex flex-column align-items-center" style={{textAlign:'center'}}>
                     <div className="mb-3">
                             <select className="form-select" id='select' aria-label="Default select example" style={{ height: "60px", color: 'rgb(1, 1, 87)' }} onChange={genderHandler} required>
@@ -179,4 +179,4 @@ const SaffronFilteredLeaderboard = () => {
        </div>
     )
 }
-export default SaffronFilteredLeaderboard
+export default SaffronFilteredLeaderboardAdmin

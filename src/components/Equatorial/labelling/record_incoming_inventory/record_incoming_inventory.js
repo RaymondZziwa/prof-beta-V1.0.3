@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import axios from "axios"
+import Select from 'react-select';
 
 const RecordIncomingInventoryForm = ({fetchShopInventoryRecords}) => {
     const [status, setStatus] = useState('')
@@ -15,6 +16,28 @@ const RecordIncomingInventoryForm = ({fetchShopInventoryRecords}) => {
     const [dnn, setDNN] = useState('')
     const [selectedFile, setSelectedFile] = useState(null)
     const [externalSource, setExternalSource] = useState('')
+    const [selectedItems, setSelectedItems] = useState([])
+    const [itemsDelivered, setItemsDelivered] = useState([{ itemId: '', itemQuantity: '', mUnits: '' },])
+    const [options, setOptions] = useState([])
+
+    const removeInput = (index) => {
+        const values = [...itemsDelivered];
+        values.splice(index, 1);
+        setItemsDelivered(values)
+    }
+    const addNewInput = () => {
+        setItemsDelivered([...itemsDelivered, { itemId: 0, itemQuantity: '', mUnits: '' }])
+    }
+
+    const handleSelectChange = (selectedOption) => {
+        setitemName(selectedOption);
+    }
+
+    const handleChangeInput = (index, event) => {
+        let values = [...itemsDelivered];
+        values[index][event.target.name] = event.target.value;
+        setItemsDelivered(values)
+    }
 
     useEffect(() => {
         if (status) {
@@ -24,20 +47,49 @@ const RecordIncomingInventoryForm = ({fetchShopInventoryRecords}) => {
     
           return () => clearTimeout(timer);
         }
-      }, [status]);
+      }, [status])
+      
+
+    const handleItemChange = (e) => {
+        const selectedOptions = Array.from(e.target.selectedOptions, (option) =>
+            option.value
+        );
+        setSelectedItems(selectedOptions);
+    }
 
 
     const fetchItems = async () => {
         const res = await axios.post('http://82.180.136.230:3005/shopitemlist', {
             token: localStorage.getItem("token")
         })
-        setitemList(res.data)
         setIsItemLoading(false)
+        setitemList(res.data)
+
+        const transformedOptions = res.data.map((item) => ({
+            value: item.productId,
+            label: item.productName
+        }));
+        setOptions(transformedOptions)
+        
     }
 
     useEffect(()=>{
         fetchItems()
     },[])
+
+    const getSelectedItemForIndex = (index) => selectedItems[index]
+
+    const handleItemChangeForIndex = (index, selectedOption) => {
+        const updatedSelectedItemsArray = [...selectedItems];
+        updatedSelectedItemsArray[index] = selectedOption;
+        setSelectedItems(updatedSelectedItemsArray);
+        const updatedItemsDelivered = [...itemsDelivered];
+        updatedItemsDelivered[index] = {
+            ...updatedItemsDelivered[index],
+            itemId: selectedOption.value, // Update with the selected item's value
+        };
+        setItemsDelivered(updatedItemsDelivered);
+    }
 
     const saveData = async (event) => {
         event.preventDefault()
@@ -46,7 +98,7 @@ const RecordIncomingInventoryForm = ({fetchShopInventoryRecords}) => {
         formData.append('token', localStorage.getItem('token'));
         formData.append('file', selectedFile);
         formData.append('date', new Date().toLocaleString())
-        formData.append('itemid', itemName)
+        formData.append('items', JSON.stringify(itemsDelivered))
         formData.append('quantity', quantity)
         formData.append('unit', units)
         formData.append('restockSource', restockSource)
@@ -82,24 +134,50 @@ const RecordIncomingInventoryForm = ({fetchShopInventoryRecords}) => {
                     <input className="form-control" id="floatingInput" placeholder="Order-Id" style={{ color: "#8CA6FE" }} value={new Date().toLocaleString()} required readOnly/>
                     <label htmlFor="floatingInput">Date</label>
                 </div>
-                <select class="form-select" aria-label="Default select example" style={{ height: "60px", color: "#8CA6FE;" }} onChange={(e)=> setitemName(e.target.value)} required>
-                    <option selected>Item Name</option>
-                        { isItemListLoading ? <option>Loading Items From Database</option> :
-                            itemList.map(item => (
-                                <option key={item.productId} value={item.productId}>
-                                    {item.productName}
-                                </option>
-                            ))
-                        }
-                </select>
-                <div className="form-floating mb-3">
-                    <input type='number' className="form-control" id="floatingInput" min="0" placeholder="Quantity" style={{ color: "#8CA6FE" }} onChange={(e)=> setQuantity(e.target.value)} required />
-                    <label for="floatingInput">Quantity In</label>
-                </div>
-                <select class="form-select" aria-label="Default select example" style={{ height: "60px", color: "#8CA6FE;" }} onChange={(e)=> setUnits(e.target.value)} required>
-                    <option selected>Select Unit Of Measurement</option> 
-                    <option value='Pcs'>Pcs</option>    
-                </select>
+               {itemsDelivered.map((itemsDelivered, index) => (
+                                        <div  key={index}>
+                                            <div className="form-floating mb-3">
+                                            <Select
+                                                value={getSelectedItemForIndex(index)} // Use the function to get the selected option
+                                                onChange={(selectedOption) => handleItemChangeForIndex(index, selectedOption)} // Use the function to handle the change
+                                                options={options}
+                                                isSearchable
+                                                placeholder="Select an Item"
+                                                id="floatingInput"
+                                            />
+                                            </div>
+                                            <div className="form-floating mb-3">
+                                                        <input type="text"
+                                                            className="form-control"
+                                                            id="floatingInput"
+                                                            name="itemQuantity"
+                                                            placeholder="Item Quantity"
+                                                            style={{ color: "#8CA6FE" }}
+                                                            value={itemsDelivered.itemQuantity}
+                                                            onChange={event => handleChangeInput(index, event)}
+                                                            required />
+                                                        <label for="floatingInput">Item Quantity</label>
+                                            </div>
+                                            <div className="form-floating mb-3">
+                                                        <select
+                                                            className="form-select"
+                                                            aria-label="Default select example"
+                                                            style={{ height: "60px", color: "#8CA6FE" }}
+                                                            placeholder="mUnits"
+                                                            name="mUnits"
+                                                            value={itemsDelivered.mUnits}
+                                                            onChange={event => handleChangeInput(index, event)}
+                                                            required>
+
+                                                            <option selected>Measurement</option>
+                                                            <option value="Pcs">Pcs</option>
+                                                        </select>
+                                            </div>
+                                            <button onClick={addNewInput}  style={{ cursor: 'pointer' }} > Add </button>
+                                            <button onClick={() => removeInput(index)} style={{ marginLeft: '2px', cursor: 'pointer' }} > Remove </button >
+                                        </div>
+                                    ))
+                                }
                 <select class="form-select" aria-label="Default select example" style={{ height: "60px", color: "#8CA6FE;" }} onChange={(e)=> setRestockSource(e.target.value)}  required>
                     <option selected>Select Restock Source</option>
                     <option value='companybranches'>From Other Company Branches</option>    
