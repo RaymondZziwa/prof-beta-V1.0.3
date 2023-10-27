@@ -15,17 +15,17 @@ const Admindashboard = () => {
                             Equatorial Branch
                         </div>
                     </Link>
-                    <Link className="tab_nav" to="#">
+                    <Link className="tab_nav" to="/masanafumanagementmenu">
                         <div className="mb-3 mclickable_option">
                             Masanafu Branch
                         </div>
                     </Link>
-                    <Link className="tab_nav" to="#">
+                    <Link className="tab_nav" to="/buwamamanagementmenu">
                         <div className="mb-3 mclickable_option">
                             Buwama Branch
                         </div>
                     </Link>
-                    <Link className="tab_nav" to="#">
+                    <Link className="tab_nav" to="/namungoonamanagementmenu">
                         <div className="mb-3 mclickable_option">
                             Namungoona Branch
                         </div>

@@ -257,6 +257,19 @@ import EquatorialDebtMgtMenu from './components/Admin/equatorial_administration/
 import EquatorialLabellingMgtMenu from './components/Admin/equatorial_administration/labelling_dept';
 import EquatorialProjectsMgtMenu from './components/Admin/equatorial_administration/projects';
 import EquatorialGeneralStoreMgtMenu from './components/Admin/equatorial_administration/inventory_custodian';
+import BuwamaGeneralStoreMgtMenu from './components/Admin/buwama_administration/general_store_mgt';
+import BuwamaMgtMenu from './components/Admin/other_menus/buwama_menu';
+import BuwamaChickenMgtMenu from './components/Admin/buwama_administration/chicken_mgt';
+import BuwamaFarmMgtMenu from './components/Admin/buwama_administration/farm_mgt';
+import BuwamaLivestockMgtMenu from './components/Admin/buwama_administration/livestock_mgt';
+import NamungoonaMgtMenu from './components/Admin/other_menus/namungoona';
+import MasanafuMgtMenu from './components/Admin/other_menus/masanafu_menu';
+import MasanafuChickenMgtMenu from './components/Admin/masanafu_administration/chicken_mgt';
+import MasanafuFarmMgtMenu from './components/Admin/masanafu_administration/farm_mgt';
+import MasanafuMainShopMgtMenu from './components/Admin/masanafu_administration/shop_mgt';
+import MasanafuProjectsMgtMenu from './components/Admin/masanafu_administration/projects_mgt';
+import MasanafuProductionMgtMenu from './components/Admin/masanafu_administration/production_mgt';
+import MasanafuGeneralStoreMgtMenu from './components/Admin/masanafu_administration/general_store';
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -392,7 +405,47 @@ function App() {
                 <EquatorialGeneralStoreMgtMenu />
               </Route>
           )}
+          
+          {authCtx.isLoggedIn && (<Route path="/buwamageneralstoremanagementmenu">
+            <BuwamaGeneralStoreMgtMenu />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamachickenmanagementmenu">
+            <BuwamaChickenMgtMenu />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamafarmmanagementmenu">
+            <BuwamaFarmMgtMenu />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/buwamalivestockmanagementmenu">
+            <BuwamaLivestockMgtMenu />
+          </Route>)}
 
+          {authCtx.isLoggedIn && (<Route path="/buwamamanagementmenu">
+            <BuwamaMgtMenu />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/namungoonamanagementmenu">
+            <NamungoonaMgtMenu />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/masanafumanagementmenu">
+            <MasanafuMgtMenu />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/masanafuchickenmanagementmenu">
+            <MasanafuChickenMgtMenu />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/masanafufarmmanagementmenu">
+            <MasanafuFarmMgtMenu />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/masanafushopmanagementmenu">
+            <MasanafuMainShopMgtMenu />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/masanafuprojectsmanagementmenu">
+            <MasanafuProjectsMgtMenu />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/masanafuproductionmanagementmenu">
+            <MasanafuProductionMgtMenu />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/masanafugeneralstoremanagementmenu">
+            <MasanafuGeneralStoreMgtMenu />
+          </Route>)}
 
             {authCtx.isLoggedIn && (
               <Route path="/managerdashboard">
