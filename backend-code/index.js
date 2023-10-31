@@ -5523,76 +5523,86 @@ app.post('/saveequatorialshoprestockdata', (req, res) => {
             res.status(403).send("You are not authorized to perform this action.");
         } else {
             const date = req.body.date
-            let itemid = req.body.itemid
-            let quantity = req.body.quantity
-            let units = req.body.unit
+            const itemsDelivered = JSON.parse(req.body.items)
             let source = req.body.source
             let externalSourceDetails = req.body.externalSourceDetails
             let notes = req.body.notes
             let category = req.body.category
 
-            db.query('INSERT INTO equatorialshopinventoryrecords (date, recordcategory, itemid, quantityin, munits, restocksource, externalsourcedetails, notes) VALUES (?, ?, ?, ?, ?, ?, ?,?);', [date, category, itemid, quantity, units, source, externalSourceDetails, notes], error => {
-                //if the query is faulty , throw the error
-                if (error) {
-                    console.log(error);
-                    res.send('Error')
-                } else {
-                    if(category === 'outgoing'){
-                        db.query('SELECT * FROM equatorialShopInventory WHERE productid = ?;', [itemid], function (err, results) {
-                            // If there is an issue with the query, output the error
-                            if (err) throw err;
-                            // If the account exists
-                            if (results.length === 0) {
-                                res.send('This item is not in stock')
-                            } else if (results.length > 0) {
-                                let newStockCount = parseFloat(results[0].quantityinstock) - parseFloat(quantity);
-                                const sqlStockCount = "UPDATE equatorialShopInventory SET quantityinstock = ? WHERE productid = ?"
-                                db.query(sqlStockCount, [newStockCount, itemid], (err) => {
-                                    if (err) {
-                                        console.log(err)
-                                        res.status(500).send('Error updating item quantity in stock');
-                                    } else {
-                                        res.send('Success')
-                                        console.log('item quantity in stock has been updated successfully')
-                                    }
-                                })
-                            } else {
-                                console.log("Error while increasing the item quantity in stock.")
-                                res.status(500).send('Error while increasing the item quantity in stock');
-                            }
-                        })
-                    }else{
-                        db.query('SELECT * FROM equatorialShopInventory WHERE productid = ?;', [itemid], function (err, results) {
-                            // If there is an issue with the query, output the error
-                            if (err) throw err;
-                            // If the account exists
-                            if (results.length === 0) {
-                                const sqlStockCount = "Insert into equatorialShopInventory(productid,quantityinstock,munits) values(?,?,?)"
-                                db.query(sqlStockCount, [itemid, quantity, units], (err) => {
-                                    if (err) {
-                                        console.log(err)
-                                    } else {
-                                        console.log('item quantity in stock has been updated successfully')
-                                    }
-                                })
-                            } else if (results.length > 0) {
-                                let newStockCount = parseFloat(results[0].quantityinstock) + parseFloat(quantity);
-                                const sqlStockCount = "UPDATE equatorialShopInventory SET quantityinstock = ? WHERE productid = ?"
-                                db.query(sqlStockCount, [newStockCount, itemid], (err) => {
-                                    if (err) {
-                                        console.log(err)
-                                    } else {
-                                        console.log('item quantity in stock has been updated successfully')
-                                    }
-                                })
-                            } else {
-                                console.log("Error while increasing the item quantity in stock.")
-                            }
-                        })
-                    }
-                }
-            })
 
+
+            const insertRecord = (date, category, itemId, quantity, units, source, externalSourceDetails, notes) => {
+                console.log(date)
+                db.query('INSERT INTO equatorialshopinventoryrecords (date, recordcategory, itemid, quantityin, munits, restocksource, externalsourcedetails, notes) VALUES (?, ?, ?, ?, ?, ?, ?,?);', [date, category, itemId, quantity, units, source, externalSourceDetails, notes], (error) => {
+                    if (error) {
+                        console.log(error);
+                    } else {
+                        if(category === 'outgoing'){
+                            db.query('SELECT * FROM equatorialShopInventory WHERE productid = ?;', [itemId], function (err, results) {
+                                // If there is an issue with the query, output the error
+                                if (err) throw err;
+                                // If the account exists
+                                if (results.length === 0) {
+                                    res.send('This item is not in stock')
+                                } else if (results.length > 0) {
+                                    let newStockCount = parseFloat(results[0].quantityinstock) - parseFloat(quantity);
+                                    const sqlStockCount = "UPDATE equatorialShopInventory SET quantityinstock = ? WHERE productid = ?"
+                                    db.query(sqlStockCount, [newStockCount, itemId], (err) => {
+                                        if (err) {
+                                            console.log(err)
+                                            res.status(500).send('Error updating item quantity in stock');
+                                        } else {
+                                            console.log('item quantity in stock has been updated successfully')
+                                        }
+                                    })
+                                } else {
+                                    console.log("Error while increasing the item quantity in stock.")
+                                    res.status(500).send('Error while increasing the item quantity in stock');
+                                }
+                            })
+                        }else{
+                            db.query('SELECT * FROM equatorialShopInventory WHERE productid = ?;', [itemId], function (err, results) {
+                                // If there is an issue with the query, output the error
+                                if (err) throw err;
+                                // If the account exists
+                                if (results.length === 0) {
+                                    const sqlStockCount = "Insert into equatorialShopInventory(productid,quantityinstock,munits) values(?,?,?)"
+                                    db.query(sqlStockCount, [itemId, quantity, units], (err) => {
+                                        if (err) {
+                                            console.log(err)
+                                        } else {
+                                            console.log('item quantity in stock has been updated successfully')
+                                        }
+                                    })
+                                } else if (results.length > 0) {
+                                    let newStockCount = parseFloat(results[0].quantityinstock) + parseFloat(quantity);
+                                    const sqlStockCount = "UPDATE equatorialShopInventory SET quantityinstock = ? WHERE productid = ?"
+                                    db.query(sqlStockCount, [newStockCount, itemId], (err) => {
+                                        if (err) {
+                                            console.log(err)
+                                        } else {
+                                            console.log('item quantity in stock has been updated successfully')
+                                        }
+                                    })
+                                } else {
+                                    console.log("Error while increasing the item quantity in stock.")
+                                }
+                            })
+                        }
+                    }
+                });
+            }
+
+            // Iterate through each item in itemDelivered
+         itemsDelivered.forEach((item) => {
+            let id = `SR-${Math.floor(Math.random() * 10000)}`; // Declare `id` here
+
+            // Insert the record into equatoriallabellinginventoryrecords
+            insertRecord(date, category, item.itemId, item.itemQuantity, item.mUnits, source, externalSourceDetails, notes);
+        });
+
+        // Send a success response
+        res.send({ status: '200', msg: 'success' });
         }
     })
 })
@@ -5645,7 +5655,7 @@ app.post('/equatorialshopcartcheckout', (req, res) => {
           .then(() => {
             if (insufficientStockItems.length > 0) {
               // Some items have insufficient stock
-              res.status(400).send(`Insufficient stock for items: ${insufficientStockItems.join(', ')}`);
+              res.send({ status: '400', msg: `Insufficient stock for items: ${insufficientStockItems.join(', ')}` })
             } else {
               // All items have sufficient stock, proceed with the sale
               db.query('INSERT INTO equatorialShopSales (receiptNumber, saleDate, customerNames, customerContact, itemsSold, totalAmount, balance, paymentStatus, paymentMethod, additionalinfo, transactionID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);', [receiptNumber, date, customerNames, customerContact, items, total, balance, paymentStatus, paymentMethod, additionalInfo, transactionId], (error) => {
@@ -6674,43 +6684,10 @@ app.post('/transferlabelledinventorytocustodian', (req, res) => {
         const otherDestInfo = req.body.otherDestInfo
         const dnn = req.body.deliveryNoteNumber
         const notes = req.body.notes
-        
-        db.query('SELECT * FROM equatoriallabellinginventory WHERE itemid = ?;', [itemId], function (err, results) {
-            // If there is an issue with the query, output the error
-            if (err) throw err;
-            // If the account exists
-            if (results.length === 0) {
-                res.send('This item is not in stock')
-            } else if (results.length > 0) {
-                let newStockCount = parseFloat(results[0].quantityinstock) - parseFloat(quantity);
-                const sqlStockCount = "UPDATE equatoriallabellinginventory SET quantityinstock = ? WHERE itemid = ?"
-                db.query(sqlStockCount, [newStockCount, itemId], (err) => {
-                    if (err) {
-                        console.log(err)
-                        res.status(500).send('Error updating item quantity in stock');
-                    } else {
-                        db.query('INSERT INTO labelledinventorydeliveryrecords (date, itemId, deliverynotenumber, quantitydelivered, units, deliveredto, otherdestinationinfo, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [date, itemId, dnn, quantity, units, deliveredTo, otherDestInfo, notes], (error) => {
-                            if (error) {
-                                console.log(error);
-                                res.status(500).send('Error occurred during saving.');
-                              } else {
-                              res.send({ status: '200', msg: 'success' })
-                              }
-                        })
-                    }
-                })
-            } else {
-                console.log("Error while increasing the item quantity in stock.")
-                res.status(500).send('Error while increasing the item quantity in stock');
-            }
-        })
 
-               
-        }
-         })
          // Helper function to insert records into the equatoriallabellinginventoryrecords table
-            const insertRecord = (id, date, itemId, quantity, units, restocksource, externalsourcedetails, companybranch, deliveredby, notes, deliverynotenumber, deliverynoteimage) => {
-                db.query('INSERT INTO labelledinventorydeliveryrecords (date, itemId, deliverynotenumber, quantitydelivered, units, deliveredto, otherdestinationinfo, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [id, date, itemId, quantity, units, restocksource, externalsourcedetails, companybranch, deliveredby, notes, deliverynotenumber, deliverynoteimage], (error) => {
+            const insertRecord = (id, date, itemId, deliverynotenumber, quantity, units, restocksource, externalsourcedetails, companybranch, deliveredby, notes) => {
+                db.query('INSERT INTO labelledinventorydeliveryrecords (deliveryId, date, itemId, deliverynotenumber, quantitydelivered, units, deliveredto, otherdestinationinfo, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [id, date, itemId, deliverynotenumber, quantity, units, restocksource, externalsourcedetails, companybranch, deliveredby, notes], (error) => {
                     if (error) {
                         console.log(error);
                     } else {
@@ -6728,6 +6705,7 @@ app.post('/transferlabelledinventorytocustodian', (req, res) => {
                                     }
                                 });
                             } else if (results.length > 0) {
+                                console.log('nums', parseFloat(results[0].quantityinstock), parseFloat(quantity))
                                 const newStockCount = parseFloat(results[0].quantityinstock) - parseFloat(quantity);
                                 const sqlStockCount = "UPDATE equatoriallabellinginventory SET quantityinstock = ? WHERE itemid = ?";
                                 db.query(sqlStockCount, [newStockCount, itemId], (err) => {
@@ -6747,15 +6725,17 @@ app.post('/transferlabelledinventorytocustodian', (req, res) => {
 
          // Iterate through each item in itemDelivered
          itemsDelivered.forEach((item) => {
-            let id = `LR-${Math.floor(Math.random() * 10000)}`; // Declare `id` here
+            let id = `DI-${Math.floor(Math.random() * 10000)}`; // Declare `id` here
 
             // Insert the record into equatoriallabellinginventoryrecords
-            insertRecord(id, date, item.itemId, item.itemQuantity, item.mUnits, restockSource, externalSourceDetails, companyBranch, deliveredBy, notes, deliveryNoteNumber, imagePath);
+            insertRecord(id, date, item.itemId, dnn, item.itemQuantity, item.mUnits, deliveredTo, otherDestInfo, notes);
         });
 
         // Send a success response
         res.send({ status: '200', msg: 'success' });
 
+    }
+    })
 })
 
 
@@ -6786,21 +6766,31 @@ app.post('/savelabellingdailyoutput', (req, res) => {
         res.status(403).send("You are not authorized to perform this action.");
       } else {
         const date = req.body.date
-        const itemId = req.body.itemName
-        const quantity = req.body.quantity
-        const units = req.body.units
+        const itemsLabelled = JSON.parse(req.body.itemsDelivered)
         const recordedBy = req.body.recordedBy
         const dnn = req.body.dnn
         const notes = req.body.notes
-        
-        db.query('INSERT INTO equatoriallabellingdailyoutput (date, itemid, quantity, units, recordedby, notes, deliverynotenumber) VALUES (?, ?, ?, ?, ?, ?, ?)', [date, itemId, quantity, units, recordedBy,  notes, dnn], (error) => {
-            if (error) {
-                console.log(error);
-                res.status(500).send('Error occurred during saving.');
-              } else {
-              res.send({ status: '200', msg: 'success' })
-              }
-        })   
+
+        // Helper function to insert records into the equatoriallabellinginventoryrecords table
+        const insertRecord = (id, date, itemId, quantity, units, recordedby, notes, dnn) => {
+            db.query('INSERT INTO equatoriallabellingdailyoutput (id, date, itemid, quantity, units, recordedby, notes, deliverynotenumber) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [id, date, itemId, quantity, units, recordedby, notes, dnn], (error) => {
+                if (error) {
+                    console.log(error);
+                } else {
+                    res.send({ status: '200', msg: 'success' })
+                }
+            });
+        };
+
+     // Iterate through each item in itemDelivered
+     itemsLabelled.forEach((item) => {
+        let id = `DO-${Math.floor(Math.random() * 10000)}`; // Declare `id` here
+
+        // Insert the record into equatoriallabellinginventoryrecords
+        insertRecord(id, date, item.itemId, item.itemQuantity, item.mUnits, recordedBy, notes, dnn);
+    });
+
+
       }
     })
 })

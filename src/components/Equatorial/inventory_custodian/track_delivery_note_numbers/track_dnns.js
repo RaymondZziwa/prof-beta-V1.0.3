@@ -16,7 +16,6 @@ const TrackDnns = () => {
           token: localStorage.getItem('token'),
           branch: localStorage.getItem('branch')
       })
-      console.log(res.data)
       if(Array.isArray(res.data)){
           setAreInventoryRecordsLoading(false);
           setInventoryRecords(res.data);

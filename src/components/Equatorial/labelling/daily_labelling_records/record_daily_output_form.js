@@ -1,15 +1,46 @@
 import { useState, useEffect } from "react"
 import axios from "axios"
+import Select from 'react-select';
 
 const RecordDailyOutputForm = ({fetchInventoryRecords}) => {
     const [status, setStatus] = useState('')
     const [isItemListLoading, setIsItemLoading] = useState(true)
     const [itemList, setitemList] = useState('')
-    const [itemName, setitemName] = useState('')
-    const [quantity, setQuantity] = useState(0)
-    const [units, setUnits] = useState('')
     const [notes, setNotes] = useState('')
     const [dnn, setDNN] = useState('')
+    const [selectedItems, setSelectedItems] = useState([])
+    const [itemsDelivered, setItemsDelivered] = useState([{ itemId: '', itemQuantity: '', mUnits: '' },])
+    const [options, setOptions] = useState([])
+
+    const removeInput = (index) => {
+        const values = [...itemsDelivered];
+        values.splice(index, 1);
+        setItemsDelivered(values)
+    }
+
+    const addNewInput = () => {
+        setItemsDelivered([...itemsDelivered, { itemId: 0, itemQuantity: '', mUnits: '' }])
+    }
+
+    const handleChangeInput = (index, event) => {
+        let values = [...itemsDelivered];
+        values[index][event.target.name] = event.target.value;
+        setItemsDelivered(values)
+    }
+
+    const getSelectedItemForIndex = (index) => selectedItems[index]
+
+    const handleItemChangeForIndex = (index, selectedOption) => {
+        const updatedSelectedItemsArray = [...selectedItems];
+        updatedSelectedItemsArray[index] = selectedOption;
+        setSelectedItems(updatedSelectedItemsArray);
+        const updatedItemsDelivered = [...itemsDelivered];
+        updatedItemsDelivered[index] = {
+            ...updatedItemsDelivered[index],
+            itemId: selectedOption.value, // Update with the selected item's value
+        };
+        setItemsDelivered(updatedItemsDelivered);
+    }
  
     useEffect(() => {
         if (status) {
@@ -28,6 +59,12 @@ const RecordDailyOutputForm = ({fetchInventoryRecords}) => {
         })
         setitemList(res.data)
         setIsItemLoading(false)
+
+        const transformedOptions = res.data.map((item) => ({
+            value: item.productId,
+            label: item.productName
+        }));
+        setOptions(transformedOptions)
     }
 
     useEffect(()=>{
@@ -40,9 +77,7 @@ const RecordDailyOutputForm = ({fetchInventoryRecords}) => {
             const res = await axios.post('http://82.180.136.230:3005/savelabellingdailyoutput',  {
                 token:localStorage.getItem('token'),
                 date: new Date().toLocaleDateString(),
-                itemName: itemName,
-                quantity: quantity,
-                units: units,
+                itemsDelivered: JSON.stringify(itemsDelivered),
                 recordedBy: localStorage.getItem('username'),
                 notes: notes,
                 dnn: dnn
@@ -66,24 +101,50 @@ const RecordDailyOutputForm = ({fetchInventoryRecords}) => {
                     <input className="form-control" id="floatingInput" placeholder="Order-Id" style={{ color: "#8CA6FE" }} value={new Date().toLocaleString()} required readOnly/>
                     <label htmlFor="floatingInput">Date</label>
                 </div>
-                <select class="form-select" aria-label="Default select example" style={{ height: "60px", color: "#8CA6FE;" }} onChange={(e)=> setitemName(e.target.value)} required>
-                    <option selected>Item Name</option>
-                        { isItemListLoading ? <option>Loading Items From Database</option> :
-                            itemList.map(item => (
-                                <option key={item.productId} value={item.productId}>
-                                    {item.productName}
-                                </option>
-                            ))
+                {itemsDelivered.map((itemsDelivered, index) => (
+                                        <div  key={index}>
+                                            <div className="form-floating mb-3">
+                                            <Select
+                                                value={getSelectedItemForIndex(index)} // Use the function to get the selected option
+                                                onChange={(selectedOption) => handleItemChangeForIndex(index, selectedOption)} // Use the function to handle the change
+                                                options={options}
+                                                isSearchable
+                                                placeholder="Select an Item"
+                                                id="floatingInput"
+                                            />
+                                            </div>
+                                            <div className="form-floating mb-3">
+                                                        <input type="text"
+                                                            className="form-control"
+                                                            id="floatingInput"
+                                                            name="itemQuantity"
+                                                            placeholder="Item Quantity"
+                                                            style={{ color: "#8CA6FE" }}
+                                                            value={itemsDelivered.itemQuantity}
+                                                            onChange={event => handleChangeInput(index, event)}
+                                                            required />
+                                                        <label for="floatingInput">Item Quantity</label>
+                                            </div>
+                                            <div className="form-floating mb-3">
+                                                        <select
+                                                            className="form-select"
+                                                            aria-label="Default select example"
+                                                            style={{ height: "60px", color: "#8CA6FE" }}
+                                                            placeholder="mUnits"
+                                                            name="mUnits"
+                                                            value={itemsDelivered.mUnits}
+                                                            onChange={event => handleChangeInput(index, event)}
+                                                            required>
+
+                                                            <option selected>Measurement</option>
+                                                            <option value="Pcs">Pcs</option>
+                                                        </select>
+                                            </div>
+                                            <button onClick={addNewInput}  style={{ cursor: 'pointer' }} > Add </button>
+                                            <button onClick={() => removeInput(index)} style={{ marginLeft: '2px', cursor: 'pointer' }} > Remove </button >
+                                        </div>
+                                    ))
                         }
-                </select>
-                <div className="form-floating mb-3">
-                    <input type='number' className="form-control" id="floatingInput" min="0" placeholder="Quantity" style={{ color: "#8CA6FE" }} onChange={(e)=> setQuantity(e.target.value)} required />
-                    <label for="floatingInput">Quantity Labelled</label>
-                </div>
-                <select class="form-select" aria-label="Default select example" style={{ height: "60px", color: "#8CA6FE;" }} onChange={(e)=> setUnits(e.target.value)} required>
-                    <option selected>Select Unit Of Measurement</option> 
-                    <option value='Pcs'>Pcs</option>    
-                </select>
                 <div className="form-floating mb-3">
                     <input className="form-control" id="floatingInput" min="0" placeholder="Quantity" style={{ color: "#8CA6FE" }} value={localStorage.getItem('username')} readOnly required />
                     <label for="floatingInput">Recorded By</label>

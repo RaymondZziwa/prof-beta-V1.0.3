@@ -5,9 +5,6 @@ import Select from 'react-select';
 const LabellingOutgoingForm = ({fetchInventoryRecords}) => {
     const [expenditureDate, setExpenditureDate] = useState()
     const [isItemListLoading, setIsItemLoading] = useState(true)
-    const [itemList, setitemList] = useState('')
-    const [itemName, setitemName] = useState('')
-    const [quantity, setquantity] = useState('')
     const [restockSource,  setRestockSource] = useState('')
     const [moreInfo, setMoreInfo] = useState('')
     const [status, setStatus] = useState('')
@@ -24,16 +21,6 @@ const LabellingOutgoingForm = ({fetchInventoryRecords}) => {
     }
     const addNewInput = () => {
         setItemsDelivered([...itemsDelivered, { itemId: 0, itemQuantity: '', mUnits: '' }])
-    }
-
-    const itemNameInput = event => {
-        event.preventDefault()
-        setitemName(event.target.value)
-    }
-
-    const quantityInput = event => {
-        event.preventDefault()
-        setquantity(event.target.value)
     }
 
     const  sourceInput = event => {
@@ -84,7 +71,6 @@ const LabellingOutgoingForm = ({fetchInventoryRecords}) => {
         const res = await axios.post('http://82.180.136.230:3005/shopitemlist', {
             token: localStorage.getItem("token")
         })
-        setitemList(res.data)
         setIsItemLoading(false)
 
         const transformedOptions = res.data.map((item) => ({
