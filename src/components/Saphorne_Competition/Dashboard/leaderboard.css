@@ -1,0 +1,45 @@
+
+.ld-col{
+    /* background-color: white; */
+    border-radius: 20px;
+    text-align: center;
+}
+
+.leaderboard-table {
+    width: 100%;
+    color:white;
+    text-align: center
+  }
+  
+  .leaderboard-table th, .leaderboard-table td {
+    padding: 8px;
+    text-align: left;
+    
+  }
+  
+
+  .leaderboard-table th {
+    /* background-color: #f2f2f2; */
+    /* background-color: rgb(0, 0, 59); */
+    color:white;
+  }
+
+  /* Define the blinking animation */
+@keyframes blink {
+    0% {
+      visibility: hidden;
+    }
+    50% {
+      visibility: visible;
+    }
+    100% {
+      visibility: hidden;
+    }
+  }
+  
+
+  .leaderboard-table tbody tr:first-child {
+    background-color: rgb(155, 111, 0); 
+    animation: blink 5s infinite;
+  }
+  

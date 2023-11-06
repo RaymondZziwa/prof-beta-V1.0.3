@@ -1,0 +1,58 @@
+/* .item must be first */
+.item {
+    align-items: center;
+    color: #FFF;
+    cursor: pointer;
+    display: flex;
+    font-size: 14px;
+    height: 40px;
+    justify-content: center;
+    width: 40px;
+  }
+  
+  .disabled-page {
+    color: #808e9b;
+  }
+  
+  .active {
+    border-radius: 50px;
+    color: black;
+  }
+  
+  .break-me {
+  }
+  
+  .next {
+    font-size: 30px;
+    height: 60px;
+    position: absolute;
+    right: 0;
+    width: 150px;
+  }
+  
+  .pagination {
+    align-items: center;
+    font-size: 30px;
+    display: flex;
+    text-decoration: none;
+    flex-direction: row;
+    height: 60px;
+    justify-content: center;
+    list-style-type: none;
+    position: relative;
+    width: 1000px;
+  }
+  
+  .pagination-page {
+    font-weight: 700;
+  }
+  
+  .previous {
+    color: #005af5;
+    text-decoration: none;
+    font-size: 30px;
+    height: 60px;
+    left: 0;
+    position: absolute;
+    width: 150px;
+  }

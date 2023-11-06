@@ -1,0 +1,14 @@
+.bordered-table {
+    border: 1px solid #000; /* Add a 1px solid black border to the table */
+    border-collapse: collapse; /* Collapse border spacing */
+  }
+  
+  .bordered-table tr {
+    border: 1px solid #000; /* Add a border to each table row */
+  }
+  
+  .bordered-table td {
+    border: 1px solid #000; /* Add a border to each table cell (td) */
+    padding: 8px; /* Add padding for better spacing */
+  }
+  
