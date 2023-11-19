@@ -10,7 +10,7 @@ import './report.css'
 
 class PrintableContent extends React.Component {
   render() {
-    const { tsm ,tsmr ,tsmnr ,tea ,teap ,teanp, fmd, tni, tvisa, tprofmm, tmtn, tairtel ,tmi } = this.props;
+    const { month, year, tsm ,tsmr ,tsmnr ,tea ,teap ,teanp, tni, tvisa, tprofmm, tmtn, tairtel ,tmi } = this.props;
     const today = new Date();
       const options = { dateStyle: 'short', timeStyle: 'short' };
       const formattedDateTime = new Intl.DateTimeFormat(undefined, options).format(today)
@@ -22,7 +22,7 @@ class PrintableContent extends React.Component {
         <h5 style={{textAlign:'center'}}>Email: profbioresearch@gmail.com</h5>
         <h5 style={{textAlign:'center',borderBottom:'1px dashed black'}}>Contact: 0702061652 / 0779519652</h5>
         <p style={{marginTop:'40px'}}>Printed On Date: {formattedDateTime}</p>
-        <p>Report For Month, Year: {fmd}</p>
+        <p>Report For Month, Year: {month} / {year}</p>
         <p style={{textAlign:'center', fontSize:'20px'}}>MONTHLY PROFIT/LOSS ANALYSIS REPORT</p>
         <table className="table table-light bordered-table">
               <tr>
@@ -307,8 +307,9 @@ const EquatorialShopMonthlySalesReport = () => {
           });
       
           if (Array.isArray(res.data)) {
+            const receivedMassageData = res.data.filter((item) => item.submissionstatus === "recieved");
             setIsLoading(false);
-            setMassageData(res.data);
+            setMassageData(receivedMassageData);
           }
         }
       
@@ -368,7 +369,7 @@ const EquatorialShopMonthlySalesReport = () => {
                           pdfPrint={true}
                         />
                         <div className="print-content">
-                            <PrintableContent ref={componentRef} tsm={totalAmount} tsmr={totalAmountPaid} tsmnr={balance} tea={totalExpenditureAmount} teap={totalExpenditureAmountPaid} teanp={expenditureBalance}  tni={paymentMethodTotals.Cash-expensePaymentMethodTotals.Cash} tmtn={paymentMethodTotals.MTNMoMo-expensePaymentMethodTotals.MTNMoMo} tairtel={paymentMethodTotals.AirtelMoney-expensePaymentMethodTotals.AirtelMoney} tprofmm={paymentMethodTotals.ProfMM-expensePaymentMethodTotals.ProfMM} tvisa={paymentMethodTotals.Visa-expensePaymentMethodTotals.Visa} tmi={totalMassageAmount}/>
+                            <PrintableContent ref={componentRef} month={selectedMonth} year={selectedYear} tsm={totalAmount} tsmr={totalAmountPaid} tsmnr={balance} tea={totalExpenditureAmount} teap={totalExpenditureAmountPaid} teanp={expenditureBalance}  tni={paymentMethodTotals.Cash-expensePaymentMethodTotals.Cash} tmtn={paymentMethodTotals.MTNMoMo-expensePaymentMethodTotals.MTNMoMo} tairtel={paymentMethodTotals.AirtelMoney-expensePaymentMethodTotals.AirtelMoney} tprofmm={paymentMethodTotals.ProfMM-expensePaymentMethodTotals.ProfMM} tvisa={paymentMethodTotals.Visa-expensePaymentMethodTotals.Visa} tmi={totalMassageAmount}/>
                         </div>
                         <style>
                             {`

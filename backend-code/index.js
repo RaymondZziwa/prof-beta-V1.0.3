@@ -4,7 +4,7 @@ const cors = require("cors")
 const bodyParser = require('body-parser')
 const mysql = require('mysql2')
 const bcrypt = require('bcryptjs')
-const dotenv = require('dotenv');
+const dotenv = require('dotenv')
 const jwt = require('jsonwebtoken')
 const multer = require('multer')
 const path = require('path')
@@ -1659,6 +1659,27 @@ app.post('/registershopinventory', (req, res) => {
                     })
                 }
                 
+            })
+        }
+    })
+})
+
+
+//route to fetch product data from db
+app.post('/fetchallmasanafushopinventory', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            db.query('SELECT * FROM shopProducts JOIN masanafuShopInventory ON shopProducts.productId = masanafuShopInventory.productId', (error, results) => {
+                //if the query is faulty , throw the error
+                if (error) console.log(error);
+                //if account exists
+                if (results.length > 0) {
+                    res.send(results)
+                } else {
+                    res.send('No data found.')
+                }
             })
         }
     })
@@ -6672,72 +6693,103 @@ app.post('/fetchlabellingdepartmentinventoryrestockingrecords', (req, res) => {
 })
 
 
-
 app.post('/transferlabelledinventorytocustodian', (req, res) => {
     jwt.verify(req.body.token, 'SECRETKEY', (err) => {
       if (err) {
         res.status(403).send("You are not authorized to perform this action.");
       } else {
-        const date = req.body.date
-        const itemsDelivered = JSON.parse(req.body.itemsDelivered)
-        const deliveredTo = req.body.deliveredto
-        const otherDestInfo = req.body.otherDestInfo
-        const dnn = req.body.deliveryNoteNumber
-        const notes = req.body.notes
-
-         // Helper function to insert records into the equatoriallabellinginventoryrecords table
-            const insertRecord = (id, date, itemId, deliverynotenumber, quantity, units, restocksource, externalsourcedetails, companybranch, deliveredby, notes) => {
-                db.query('INSERT INTO labelledinventorydeliveryrecords (deliveryId, date, itemId, deliverynotenumber, quantitydelivered, units, deliveredto, otherdestinationinfo, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [id, date, itemId, deliverynotenumber, quantity, units, restocksource, externalsourcedetails, companybranch, deliveredby, notes], (error) => {
-                    if (error) {
-                        console.log(error);
-                    } else {
-                        db.query('SELECT * FROM equatoriallabellinginventory WHERE itemid = ?;', [itemId], (err, results) => {
-                            if (err) {
-                                throw err;
-                            }
-                            if (results.length === 0) {
-                                const sqlStockCount = "Insert into equatoriallabellinginventory(itemid,quantityinstock,munits) values(?,?,?)";
-                                db.query(sqlStockCount, [itemId, quantity, units], (err) => {
-                                    if (err) {
-                                        console.log(err);
-                                    } else {
-                                        console.log('item quantity in stock has been updated successfully');
-                                    }
-                                });
-                            } else if (results.length > 0) {
-                                console.log('nums', parseFloat(results[0].quantityinstock), parseFloat(quantity))
-                                const newStockCount = parseFloat(results[0].quantityinstock) - parseFloat(quantity);
-                                const sqlStockCount = "UPDATE equatoriallabellinginventory SET quantityinstock = ? WHERE itemid = ?";
-                                db.query(sqlStockCount, [newStockCount, itemId], (err) => {
-                                    if (err) {
-                                        console.log(err);
-                                    } else {
-                                        console.log('item quantity in stock has been updated successfully');
-                                    }
-                                });
-                            } else {
-                                console.log("Error while increasing the item quantity in stock.");
-                            }
-                        });
-                    }
-                });
-            };
-
-         // Iterate through each item in itemDelivered
-         itemsDelivered.forEach((item) => {
-            let id = `DI-${Math.floor(Math.random() * 10000)}`; // Declare `id` here
-
-            // Insert the record into equatoriallabellinginventoryrecords
-            insertRecord(id, date, item.itemId, dnn, item.itemQuantity, item.mUnits, deliveredTo, otherDestInfo, notes);
+        const date = req.body.date;
+        const itemsDelivered = JSON.parse(req.body.itemsDelivered);
+        const deliveredTo = req.body.deliveredto;
+        const otherDestInfo = req.body.otherDestInfo;
+        const dnn = req.body.deliveryNoteNumber;
+        const notes = req.body.notes;
+  
+        // Array to store items with insufficient stock
+        const insufficientStockItems = [];
+  
+        const stockCheckPromises = itemsDelivered.map((item) => {
+          return new Promise((resolve, reject) => {
+            db.query('SELECT equatoriallabellinginventory.quantityinstock, shopProducts.productName FROM equatoriallabellinginventory JOIN shopProducts ON equatoriallabellinginventory.itemid = shopProducts.productId WHERE itemid = ?', [item.itemId], (error, results) => {
+              if (error) {
+                reject(error);
+              } else {
+                const quantityInStock = results[0]?.quantityinstock || 0;
+                if (quantityInStock >= item.itemQuantity) {
+                  resolve();
+                } else {
+                  insufficientStockItems.push(results[0].productName);
+                  resolve();
+                }
+              }
+            });
+          });
         });
-
-        // Send a success response
-        res.send({ status: '200', msg: 'success' });
-
-    }
-    })
-})
-
+  
+        // Process the transfer if all items have sufficient stock
+        Promise.all(stockCheckPromises)
+          .then(() => {
+            if (insufficientStockItems.length > 0) {
+              // Some items have insufficient stock
+              res.send({ status: 400 , msg: `Insufficient stock for items: ${insufficientStockItems.join(', ')}` });
+            } else {
+              const insertPromises = itemsDelivered.map((item) => {
+                return new Promise((resolve, reject) => {
+                  let id = `DI-${Math.floor(Math.random() * 10000)}`;
+                  // Insert the record into labelledinventorydeliveryrecords
+                  db.query('INSERT INTO labelledinventorydeliveryrecords (deliveryId, date, itemId, deliverynotenumber, quantitydelivered, units, deliveredto, otherdestinationinfo, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                    [id, date, item.itemId, dnn, item.itemQuantity, item.mUnits, deliveredTo, otherDestInfo, notes], (error) => {
+                      if (error) {
+                        console.log(error);
+                        reject(error);
+                      } else {
+                        resolve();
+                      }
+                    });
+                });
+              });
+  
+              // Process updates after all inserts are done
+              const updatePromises = itemsDelivered.map((item) => {
+                return new Promise((resolve, reject) => {
+                  db.query('UPDATE equatoriallabellinginventory SET quantityinstock = quantityinstock - ? WHERE itemid = ?', [item.itemQuantity, item.itemId], (error) => {
+                    if (error) {
+                      console.log(error);
+                      reject(error);
+                    } else {
+                      resolve();
+                    }
+                  });
+                });
+              });
+  
+              // Wait for all inserts to complete before updating quantities
+              Promise.all(insertPromises)
+                .then(() => {
+                  // Process updates and respond after all inserts are done
+                  Promise.all(updatePromises)
+                    .then(() => {
+                      res.send({ status: 200, msg: 'Inventory transfer successful.' });
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                      res.status(500).send('Error occurred during stock update.');
+                    });
+                })
+                .catch((error) => {
+                  console.log(error);
+                  res.status(500).send('Error occurred during record insert.');
+                });
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+            res.status(500).send('Error occurred during stock check.');
+          });
+      }
+    });
+  });
+  
 
 app.post('/fetchlabelledinventorytransferrecords', (req, res) => {
     jwt.verify(req.body.token, 'SECRETKEY', (err) => {
@@ -7523,6 +7575,7 @@ app.post('/completeparticipantprofile', upload.single('file'), (req, res) => {
           })
 })
 
+
 //fetch participant data
 app.post('/fetchallparticipants', (req, res) => {
     jwt.verify(req.body.token, 'SECRETKEY', (err) => {
@@ -7540,6 +7593,7 @@ app.post('/fetchallparticipants', (req, res) => {
             }
           })
 })
+
 
 //fetch paritcipant performance records
 app.post('/fetchallparticipantperformancerecords', (req, res) => {

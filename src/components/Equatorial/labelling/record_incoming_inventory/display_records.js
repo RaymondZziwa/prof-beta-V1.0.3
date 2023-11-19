@@ -11,7 +11,7 @@ const EquatorialLabellingInventoryRecords = ({inventoryRecords, fetchShopInvento
     const [deliveryNotePath, setDeliveryNotePath] = useState('')
     const [isViewModalOpen, setIsViewModalOpen] = useState(false)
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 5
+    const itemsPerPage = 4
 
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;

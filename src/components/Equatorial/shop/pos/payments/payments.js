@@ -3,6 +3,7 @@ import axios from "axios";
 import './receipt.css';
 import Logo from '../../../../../imgs/logo.png'
 import ReactToPrint from "react-to-print";
+import Modal from 'react-modal'
 
 class PrintableContent extends React.Component {
     render() {
@@ -82,6 +83,11 @@ const PaymentModule = ({ servicesList, items, total, fetchData }) => {
     const [services, setServices] = useState([])
     const [serverMsg, setServerMsg] = useState('')
     const [currentReceiptNumber, setCurrentReceiptNumber] = useState(0)
+    const [isModalOpen, setIsModalOpen] = useState(false)
+
+    const closeModal = () => {
+        setIsModalOpen(false)
+    }
 
 
     const options = { day: '2-digit', month: '2-digit', year: 'numeric' }
@@ -194,6 +200,7 @@ const PaymentModule = ({ servicesList, items, total, fetchData }) => {
         printBtnRef.current.click();
         generateReceiptNumber()
         fetchData()
+        setIsModalOpen(true)
       } else {
         setStatus({ type: 'error' })
         setServerMsg(res.data.msg)
@@ -310,6 +317,56 @@ const PaymentModule = ({ servicesList, items, total, fetchData }) => {
                     }
                     `}
                 </style>
+                {/* Modal */}
+                <Modal
+                    isOpen={isModalOpen}
+                    onRequestClose={closeModal}
+                >
+                    <h2 style={{textAlign:'center'}}>View Sale</h2>
+                    <button className='btn btn-danger' style={{float:'right', marginBottom:'20px'}} onClick={closeModal}>Close</button>
+                    <p style={{marginTop:'40px'}}>Date: {new Date().toLocaleDateString('en-GB', options)}</p>
+                    <p>Receipt Number: {receiptNo}</p>
+                    <p>Client Names: {firstName} {lastName}</p>
+                    <p>Client Contact: {phoneNumber}</p>
+                    <p>Payment Method: {paymentMethod}</p>
+                    {(paymentMethod === 'MTN MoMo' || paymentMethod === 'Airtel Money') && 
+                        <p>Transaction Id: {transactionId}</p>
+                    }
+                    <p>Total Amount: UGX: {total}</p>
+                    <p>Amount Paid: UGX: {total-balance}</p>
+                    <p>Balance: UGX: {balance}</p>
+                    <table className="table table-light">
+                        <thead>
+                            <tr>
+                            <th>Item Name</th>
+                            <th>Unit Cost (UGX)</th>
+                            <th>Discount (%)</th>
+                            <th>Total Quantity</th>
+                            <th>Total Cost (UGX)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {items.length === 0 ? (
+                            <tr>
+                                <td colSpan="8" style={{ textAlign: "center" }}>
+                                There are no items in the cart.
+                                </td>
+                            </tr>
+                            ) : (
+                                items.map((item) => (
+                                <tr key={item.id}>
+                                <td>{item.name}</td>
+                                <td>{item.unitCost}</td>
+                                <td>{item.discount}</td>
+                                <td>{item.quantity}</td>
+                                <td>{item.totalCost}</td>
+                                </tr>
+                            ))
+                            )}
+                        </tbody>
+                </table>
+                <p>Served By: {localStorage.getItem('username')}</p>
+                </Modal>
        </> 
     )
 }

@@ -33,7 +33,6 @@ const FetchClientAssociatedReceipts = () => {
               setIsLoading(false)
               setData([...res.data])
             }
-            console.log(res.data)
         }
 
         fetchData()

@@ -24,10 +24,13 @@ const ShopSalesRecords = () => {
 
     return(
         <>
-            <div className='container-fluid'>
                 <Row>
-                    <Col sm='12' md='2' lg='2' xl='2'></Col>
-                    <Col sm='12' md='8' lg='8' xl='8'>
+                    <Col sm='12' md='12' lg='12' xl='12'>
+                        <Navbar />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col sm='12' md='12' lg='12' xl='12'>
                     <h2 style={{textAlign:'center', marginTop:'60px'}}>Masanafu Shop Sales Records</h2>
                         <table className="table table-light" style={{ marginTop: '20px',textAlign:'center' }}>
                             <thead style={{ textAlign: 'center' }}>
@@ -83,12 +86,8 @@ const ShopSalesRecords = () => {
                                 : <tr><td colSpan='9'>Loading...</td></tr>}
                             </tbody>
                         </table>
-                    </Col>
-                    <Col sm='12' md='2' lg='2' xl='2'>
-                        <Navbar />
-                    </Col>
+                    </Col>                
                 </Row>
-            </div>
         </>
     )
 }

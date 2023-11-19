@@ -13,15 +13,16 @@ const SearchAndAddToCart = () => {
   const [total, setTotal] = useState(0);
 
   const fetchAllMaterials = async () => {
-    let res = await axios.post('http://82.180.136.230:3005/fetchallshopinventory', {
+    let res = await axios.post('http://82.180.136.230:3005/fetchallmasanafushopinventory', {
       token: localStorage.getItem('token')
     });
 
     if (Array.isArray(res.data)) {
       const transformedOptions = res.data.map((item) => ({
         value: item.productId.toString(),
-        label: item.productName,
-        productData: item // Include the whole item object as productData
+        label: `${item.productName}     ------        Quantity In Stock: ${item.quantityinstock} Pcs`,
+        productData: item ,// Include the whole item object as productData
+        cartLabel: item.productName
       }));
       setOptions(transformedOptions);
     }
@@ -31,14 +32,6 @@ const SearchAndAddToCart = () => {
     fetchAllMaterials();
   }, []);
 
-  useEffect(() => {
-    console.log('ops', options)
-  }, [options]);
-
-
-  useEffect(()=>{
-    console.log('so', selectedOption)
-  },[selectedOption])
 
   const handleSelectChange = (selectedOption) => {
     setSelectedOption(selectedOption);
@@ -49,7 +42,7 @@ const SearchAndAddToCart = () => {
     if (selectedOption) {
       const newItem = {
         id: selectedOption.productData.productId,
-        name: selectedOption.label,
+        name: selectedOption.cartLabel,
         unitCost: selectedOption.productData.unitPrice,
         discount: selectedOption.productData.discount,
         quantity: 1,
@@ -79,9 +72,6 @@ const SearchAndAddToCart = () => {
     }
   }
 
-  useEffect(()=>{
-    console.log('cart', cartItems)
-  },[cartItems])
 
   const handleCheckout = () => {
     // Perform the checkout logic here, using the cartItems and total

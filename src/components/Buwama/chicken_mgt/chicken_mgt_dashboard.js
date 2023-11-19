@@ -49,19 +49,13 @@ const BuwamaChickenMgtDashboard = () => {
                         Batch Records
                     </div>
                 </Link>
-                <Link className="tab_nav" to="/buwamachickenfarmreport">
-                    <div className="mb-3 mclickable_option">
-                       Graphical Report Analysis
-                    </div>
-                </Link>
                 <Link className="tab_nav" to="/buwamachickenfarmstatementreport">
                     <div className="mb-3 mclickable_option">
                        Statemental Report
                     </div>
                 </Link>
             </Col>
-            <Col sm='12' md='1' lg='1' xl='1'>
-            </Col>
+            
         </Row>
     )
 }

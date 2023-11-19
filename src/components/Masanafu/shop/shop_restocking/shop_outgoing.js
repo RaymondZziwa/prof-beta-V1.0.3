@@ -44,6 +44,16 @@ const MasanafuShopOutgoingRecord = () => {
         setExpenditureDate(date)
     },[])
 
+    useEffect(() => {
+        if (status) {
+          const timer = setTimeout(() => {
+            setStatus(null);
+          }, 3000);
+    
+          return () => clearTimeout(timer);
+        }
+    }, [status]);
+
     const fetchItems = async () => {
         const res = await axios.post('http://82.180.136.230:3005/shopitemlist', {
             token: localStorage.getItem("token")
@@ -72,7 +82,6 @@ const MasanafuShopOutgoingRecord = () => {
          .then(() => setStatus({ type: 'success' }))
          .catch((err) => setStatus({ type: 'error', err }))
 
-        console.log(expenditureDate, itemName, quantity, restockSource, moreInfo, notes)
     }
 
     return(
