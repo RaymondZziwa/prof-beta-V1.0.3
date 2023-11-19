@@ -97,7 +97,6 @@ const LabellingOutgoingForm = ({fetchInventoryRecords}) => {
 
     const saveData = async event => {
         event.preventDefault()
-        console.log('sds', itemsDelivered)
         let res = await axios.post('http://82.180.136.230:3005/transferlabelledinventorytocustodian', {
             token: localStorage.getItem('token'),
             date: expenditureDate,
