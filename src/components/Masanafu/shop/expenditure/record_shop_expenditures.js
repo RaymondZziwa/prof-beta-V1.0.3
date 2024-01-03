@@ -152,6 +152,10 @@ const RecordShopExpenditure = () => {
                             <select class="form-select" aria-label="Default select example" style={{ height: "60px", color: "#8CA6FE;" }} onChange={expenditureCategoryHandler}>
                                 <option defaultValue>Select Expenditure Category</option>
                                 <option value="utilities">Utilities</option>
+                                <option value="internal projects department">Internal Projects Department</option>
+                                <option value="internal farm department">Internal Farm Department</option>
+                                <option value="internal production department">Internal Production Department</option>
+                                <option value="utilities">Utilities</option>
                                 <option value="miscellaneous expenses">Miscellaneous Expenses</option>
                                 <option value="transaction fees">Transaction Fees</option>
                                 <option value="professional services">Professional Services</option>

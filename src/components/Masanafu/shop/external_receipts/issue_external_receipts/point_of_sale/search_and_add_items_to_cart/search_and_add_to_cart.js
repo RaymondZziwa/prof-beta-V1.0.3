@@ -10,27 +10,27 @@ const SearchAndAddToCart = () => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [options, setOptions] = useState([]);
   const [cartItems, setCartItems] = useState([])
-  const [total, setTotal] = useState(0)
+  const [total, setTotal] = useState(0);
 
+  const fetchAllMaterials = async () => {
+    let res = await axios.post('http://82.180.136.230:3005/fetchallmasanafushopinventory', {
+      token: localStorage.getItem('token')
+    });
+
+    if (Array.isArray(res.data)) {
+      const transformedOptions = res.data.map((item) => ({
+        value: item.productId.toString(),
+        label: `${item.productName}     ------        Quantity In Stock: ${item.quantityinstock} Pcs`,
+        productData: item ,// Include the whole item object as productData
+        cartLabel: item.productName
+      }));
+      setOptions(transformedOptions);
+    }
+  };
 
   useEffect(() => {
-    const fetchAllMaterials = async () => {
-      let res = await axios.post('http://82.180.136.230:3005/fetchallmassageshopinventory', {
-        token: localStorage.getItem('token')
-      });
-  
-      if (Array.isArray(res.data)) {
-        const transformedOptions = res.data.map((item) => ({
-          value: item.productId.toString(),
-          label: item.productName,
-          productData: item // Include the whole item object as productData
-        }))
-        setOptions(transformedOptions)
-      }
-    }
-
-    fetchAllMaterials()
-  },[])
+    fetchAllMaterials();
+  }, []);
 
 
   const handleSelectChange = (selectedOption) => {
@@ -42,7 +42,7 @@ const SearchAndAddToCart = () => {
     if (selectedOption) {
       const newItem = {
         id: selectedOption.productData.productId,
-        name: selectedOption.label,
+        name: selectedOption.cartLabel,
         unitCost: selectedOption.productData.unitPrice,
         discount: selectedOption.productData.discount,
         quantity: 1,
@@ -71,6 +71,7 @@ const SearchAndAddToCart = () => {
       setSelectedOption(null);
     }
   }
+
 
   const handleCheckout = () => {
     // Perform the checkout logic here, using the cartItems and total

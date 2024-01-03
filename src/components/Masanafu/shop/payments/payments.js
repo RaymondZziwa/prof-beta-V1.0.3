@@ -203,7 +203,7 @@ const PaymentModule = ({ servicesList, items, total, fetchData }) => {
         setIsModalOpen(true)
       } else {
         setStatus({ type: 'error' })
-        setServerMsg(res.data.msg)
+        setServerMsg(res.data.msg) 
       }
     }
 

@@ -13,6 +13,7 @@ const upload = multer({dest: 'receipt_uploads/'})
 const corsOptions = {
     origin: '*'
 }
+
 dotenv.config({ path: './.env' });
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -1706,6 +1707,26 @@ app.post('/fetchallshopinventory', (req, res) => {
     })
 })
 
+//route to fetch product data from db
+app.post('/fetchallmassageshopinventory', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            db.query('SELECT * FROM shopProducts JOIN equatorialMassageInventory ON shopProducts.productId = equatorialMassageInventory.productId', (error, results) => {
+                //if the query is faulty , throw the error
+                if (error) console.log(error);
+                //if account exists
+                if (results.length > 0) {
+                    res.send(results)
+                } else {
+                    res.send('No data found.')
+                }
+            })
+        }
+    })
+})
+
 
 
 
@@ -3257,13 +3278,13 @@ app.post('/cartcheckout', (req, res) => {
           .then(() => {
             if (insufficientStockItems.length > 0) {
               // Some items have insufficient stock
-              res.status(400).send(`Insufficient stock for items: ${insufficientStockItems.join(', ')}`);
+              res.send({ status: '400', msg: `Insufficient stock for items Id: ${insufficientStockItems.join(', ')}` })
             } else {
               // All items have sufficient stock, proceed with the sale
               db.query('INSERT INTO masanafuShopSales (receiptNumber, saleDate, customerNames, customerContact, itemsSold, totalAmount, balance, paymentStatus, paymentMethod, additionalinfo, transactionID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?);', [receiptNumber, date, customerNames, customerContact, items, total, balance, paymentStatus, paymentMethod, additionalInfo, transactionId], (error) => {
                 if (error) {
                   console.log(error);
-                  res.status(500).send('Error occurred during sale');
+                  res.send({ status: '500', msg: 'Error occurred during sale.' });
                 } else {
                   // Update the stock quantities
                   const updatePromises = itemsSold.map((item) => {
@@ -3281,7 +3302,7 @@ app.post('/cartcheckout', (req, res) => {
                   // Wait for all stock updates to complete
                   Promise.all(updatePromises)
                     .then(() => {
-                      res.send({status: '200', msg:'success'});
+                      res.send({ status: '200', msg: 'Sale Record Saved.' });
                     })
                     .catch((error) => {
                       console.log(error);
@@ -6362,7 +6383,7 @@ app.post('/equatorialmassageservicescheckout', (req, res) => {
                   console.log(error);
                   res.status(500).send('Error occurred during sale.');
                 } else {
-                res.send({ status: '200', msg: 'success' })
+                  res.send({ status: '200', msg: 'success' })
                 }
               });
             }

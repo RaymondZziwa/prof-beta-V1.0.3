@@ -20,7 +20,7 @@ class PrintableContent extends React.Component {
           <h5 style={{textAlign:'center',borderBottom:'1px dashed black'}}>Contact: 0702061652 / 0779519652</h5>
           <p style={{marginTop:'40px'}}>Date: {formattedDateTime}</p>
           <p>Receipt Number: {receiptNumber}</p>
-          <p>Client First Name: {firstName} {lastName}</p>
+          <p>Client Names: {firstName} {lastName}</p>
           <p>Client Contact: {clientcontact}</p>
           <p>Payment Method: {paymentMethod}</p>
           {(paymentMethod === 'MTN MoMo' || paymentMethod === 'Airtel Money') && 
@@ -175,11 +175,10 @@ const PaymentModule = ({ servicesList, items, total }) => {
     const handleSubmit = async (event) => {
         event.preventDefault()
 
-       let res = await axios.post('http://82.180.136.230:3005/equatorialmassageservicescheckout',{
+       let res  = await axios.post('http://82.180.136.230:3005/equatorialmassageservicescheckout',{
         token: localStorage.getItem('token'),
         branch: localStorage.getItem('branch'),
-        services: JSON.stringify(services),
-        items: JSON.stringify(items),
+        services: JSON.stringify(items),
         receiptNo: receiptNo,
         total: total,
         transactionId: transactionId,

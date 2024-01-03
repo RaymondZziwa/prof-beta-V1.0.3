@@ -14,7 +14,6 @@ const ShopInventoryRecords = () => {
             token: localStorage.getItem('token'),
             branch: localStorage.getItem('branch')
         })
-        console.log(res.data)
         if(Array.isArray(res.data)){
             setAreInventoryRecordsLoading(false)
             const incoming = res.data.filter(record => record.recordcategory === 'incoming');
@@ -38,7 +37,7 @@ const ShopInventoryRecords = () => {
             </Col>
             <div className="col align-self-center" style={{marginTop:'60px'}}>
                 <h1 style={{textAlign:'center'}}>Masanafu Shop Inventory Restocking Records</h1>
-                <table className="table table-dark">
+                <table className="table table-light">
                         <thead>
                             <tr>
                                 <th scope="col">Date</th>
@@ -66,7 +65,7 @@ const ShopInventoryRecords = () => {
                         </tbody>
                     </table>
                 <h1 style={{textAlign:'center'}}>Masanafu Shop Inventory Outgoing Records</h1>
-                <table className="table table-dark">
+                <table className="table table-light">
                         <thead>
                             <tr>
                                 <th scope="col">Date</th>

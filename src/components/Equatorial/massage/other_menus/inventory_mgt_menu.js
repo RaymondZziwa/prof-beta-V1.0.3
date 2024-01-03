@@ -23,7 +23,7 @@ const EquatorialMassageInventoryMgtMenu = () => {
                 </Link>
                 <Link className="tab_nav" to="/recordequatorialmassageinventoryrestocking">
                     <div className="mb-3 mclickable_option">
-                        Inventory Resocking
+                        Inventory Restocking
                     </div>
                 </Link>
                 <Link className="tab_nav" to="/recordequatorialmassageinventoryoutgoings">

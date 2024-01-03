@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import './receipt.css';
-import Logo from '../../../../../imgs/logo.png'
+import Logo from '../../../../../../imgs/logo.png'
 import ReactToPrint from "react-to-print";
 
 class PrintableContent extends React.Component {
     render() {
-      const { firstName, lastName, cart, clientcontact, total,balance, amountPaid, receiptNumber, paymentMethod, RecieverData, transactionId} = this.props;
+      const { firstName, lastName, cart, clientcontact, total,balance, amountPaid, receiptNumber, paymentMethod, transactionId} = this.props;
       const today = new Date();
         const options = { dateStyle: 'short', timeStyle: 'short' };
         const formattedDateTime = new Intl.DateTimeFormat(undefined, options).format(today)
@@ -18,9 +18,8 @@ class PrintableContent extends React.Component {
           <h5 style={{textAlign:'center'}}>Email: profbioresearch@gmail.com</h5>
           <h5 style={{textAlign:'center',borderBottom:'1px dashed black'}}>Contact: 0702061652 / 0779519652</h5>
           <p style={{marginTop:'40px'}}>Date: {formattedDateTime}</p>
-          <p>receipt Issued To Branch: {RecieverData.branch}</p>
-          <p>receipt Issued To Department: {RecieverData.destDept}</p>
-          <p>Presented To: {RecieverData.recievedBy}</p>
+          <p>receipt Issued To Branch: Equatorial</p>
+          <p>receipt Issued To Department: Shop</p>
           <p>Receipt Number: {receiptNumber}</p>
           <p>Client Names: {firstName} {lastName}</p>
           <p>Client Contact: {clientcontact}</p>
@@ -73,7 +72,7 @@ class PrintableContent extends React.Component {
   }
 
 
-const PaymentModule = ({ servicesList, items, total, RecieverData }) => {
+const PaymentModule = ({ items, total }) => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
@@ -88,6 +87,7 @@ const PaymentModule = ({ servicesList, items, total, RecieverData }) => {
     const [transactionId, setTransactionId] = useState()
 
     const componentRef = useRef();
+    const  printBtnRef = useRef()
 
 
     const handleFirstNameChange = (event) => {
@@ -149,9 +149,6 @@ const PaymentModule = ({ servicesList, items, total, RecieverData }) => {
 
     const handleSubmit = async (event) => {
         event.preventDefault()
-        console.log('slsl', servicesList)
-        console.log('items', items)
-
 
        let res = await axios.post('http://82.180.136.230:3005/issueequatorialprojectsexternalreceipts',{
         token: localStorage.getItem('token'),
@@ -172,13 +169,11 @@ const PaymentModule = ({ servicesList, items, total, RecieverData }) => {
         receiptIssuedFromDept: localStorage.getItem('department'),
         servedBy: localStorage.getItem('username'),
 
-        receiptIssuedToBranch: RecieverData.branch,
-        receiptIssuedToDept: RecieverData.destDept,
-        receiptIssuedToPersonnel: RecieverData.recievedBy,
+        receiptIssuedToBranch: "Equatorial",
+        receiptIssuedToDept: "Shop",
         date: new Date().toLocaleDateString()
      })
 
-      console.log('resp', res.data)
       if(res.data.status === 200){
        setStatus({ type: 'success' })
        const timestamp = new Date().getTime().toString(); // Example timestamp: "1647824898645"
@@ -186,25 +181,10 @@ const PaymentModule = ({ servicesList, items, total, RecieverData }) => {
        const random = Math.floor(Math.random() * 100000); // Example random number: 74530
        const receiptNumber = `${reducedTimestamp}-${random}`
        setReceiptNo(receiptNumber)
+       printBtnRef.current.click();
       }
     }
 
-
-    const printReceiptHandler = async (event) => {
-        event.preventDefault()
-        let res = await axios.post('http://82.180.136.230:3005/printposreceipt',{
-            token: localStorage.getItem('token'),
-            receiptNo: receiptNo,
-            firstName: firstName,
-            lastName: lastName,
-            clientcontact: phoneNumber,
-            total: total,
-            amountPaid: amount,
-            balance: balance,
-            cart: items
-        })
-        console.log(res.data)
-    }
 
     return(
         <>  
@@ -256,8 +236,7 @@ const PaymentModule = ({ servicesList, items, total, RecieverData }) => {
                     <option value='Cash'>Cash</option>    
                     <option value='Airtel Money'>Airtel Money</option>
                     <option value='MTN MoMo'>MTN MoMo</option>
-                    <option value='Prof MM'>Prof Mobile Money</option> 
-                    <option value='Visa'>Visa</option>       
+                    <option value='Prof MM'>Prof Mobile Money</option>     
                 </select>
                 { (paymentMethod === 'MTN MoMo' || paymentMethod === 'Airtel Money') && 
                     <div className="mb-3">
@@ -306,13 +285,13 @@ const PaymentModule = ({ servicesList, items, total, RecieverData }) => {
             </form>
             <ReactToPrint
                     trigger={() => (
-                        <button style={{ width: "100%",border: "none",color: "white", height: "45px", backgroundColor: "#3452A3", marginTop:'5px'}} onClick={printReceiptHandler}>Print Receipt</button>
+                        <button style={{ width: "100%",border: "none",color: "white", height: "45px", backgroundColor: "#3452A3", marginTop:'5px', display:'none'}} ref={printBtnRef}>Print Receipt</button>
                     )}
                     content={() => componentRef.current}
                     pdfPrint={true}
                 />
                 <div className="print-content">
-                    <PrintableContent ref={componentRef} firstName={firstName} lastName={lastName} cart={items} clientcontact={phoneNumber} total={total} balance={balance} amountPaid={total-balance} receiptNumber={receiptNo} paymentMethod={paymentMethod} RecieverData={RecieverData}/>
+                    <PrintableContent ref={componentRef} firstName={firstName} lastName={lastName} cart={items} clientcontact={phoneNumber} total={total} balance={balance} amountPaid={total-balance} receiptNumber={receiptNo} paymentMethod={paymentMethod} />
                 </div>
                 <style>
                     {`

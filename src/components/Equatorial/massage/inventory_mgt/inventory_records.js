@@ -2,6 +2,8 @@ import { Row, Col } from 'react-bootstrap'
 import Navbar from '../../../side navbar/sidenav'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleChevronLeft, faCircleChevronRight } from "@fortawesome/free-solid-svg-icons"
 
 const EquatorialMassageInventoryRecords = () => {
 
@@ -9,22 +11,26 @@ const EquatorialMassageInventoryRecords = () => {
     const [inventoryRecords, setInventoryRecords] = useState([])
     const [incomingRecords, setIncomingRecords] = useState([]);
     const [outgoingRecords, setOutgoingRecords] = useState([]);
+    const [currentPageIncoming, setCurrentPageIncoming] = useState(1);
+    const incomingItemsPerPage = 5
+
+    const startIndex = (currentPageIncoming - 1) * incomingItemsPerPage;
+    const endIndex = startIndex + incomingItemsPerPage;
+
+    const totalPagesIncoming = Math.ceil(incomingRecords.length / incomingItemsPerPage)
 
     const fetchShopInventoryRecords = async () => {
         let res = await axios.post('http://82.180.136.230:3005/fetchequatorialmassageinventoryrecords',{
             token: localStorage.getItem('token'),
             branch: localStorage.getItem('branch')
         })
-        console.log(res.data)
         if(Array.isArray(res.data)){
-            setAreInventoryRecordsLoading(false)
             const incoming = res.data.filter(record => record.recordcategory === 'incoming');
             const outgoing = res.data.filter(record => record.recordcategory === 'outgoing');
             setAreInventoryRecordsLoading(false);
             setInventoryRecords(res.data);
             setIncomingRecords(incoming);
             setOutgoingRecords(outgoing);
-           // setInventoryRecords(res.data)
         }
     }
 
@@ -39,7 +45,7 @@ const EquatorialMassageInventoryRecords = () => {
             </Col>
             <div className="col align-self-center" style={{marginTop:'60px'}}>
                 <h1 style={{textAlign:'center'}}>Equatorial Massage Department Inventory Restocking Records</h1>
-                <table className="table table-dark">
+                <table className="table table-light">
                         <thead>
                             <tr>
                                 <th scope="col">Date</th>
@@ -53,7 +59,8 @@ const EquatorialMassageInventoryRecords = () => {
                         </thead>
                         <tbody>
                             {areInventoryRecordsLoading ? <tr><td colSpan="7" style={{textAlign:'center'}}>Loading.....</td></tr> :
-                                incomingRecords.map(item => (
+                                incomingRecords
+                                .slice(startIndex, endIndex).map(item => (
                                     <tr>
                                         <td>{item.date}</td>
                                         <td>{item.productName}</td>
@@ -66,8 +73,15 @@ const EquatorialMassageInventoryRecords = () => {
                                 ))}
                         </tbody>
                     </table>
+                    {totalPagesIncoming > 1 && (
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
+                        <FontAwesomeIcon icon={faCircleChevronLeft} style={{color: 'blue',padding: '10px 20px',border: 'none',borderRadius: '5px',marginLeft: '10px',cursor: 'pointer', fontSize:'40px'}} disabled={currentPageIncoming === 1} onClick={() => setCurrentPageIncoming(currentPageIncoming - 1)}/>
+                    <span style={{ margin: '0 10px', color:'blue' }}>Page {currentPageIncoming} of {totalPagesIncoming}</span>
+                        <FontAwesomeIcon icon={faCircleChevronRight} style={{color: 'blue',padding: '10px 20px',border: 'none',borderRadius: '5px',marginLeft: '10px',cursor: 'pointer', fontSize:'40px'}} disabled={currentPageIncoming === totalPagesIncoming} onClick={() => setCurrentPageIncoming(currentPageIncoming + 1)}/>
+                    </div>
+                    )}
                 <h1 style={{textAlign:'center'}}>Equatorial Massage Department Inventory Outgoing Records</h1>
-                <table className="table table-dark">
+                <table className="table table-light">
                         <thead>
                             <tr>
                                 <th scope="col">Date</th>
@@ -94,6 +108,13 @@ const EquatorialMassageInventoryRecords = () => {
                                 ))}
                         </tbody>
                     </table>
+                    {/* {totalPagesOutgoing > 1 && (
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
+                        <FontAwesomeIcon icon={faCircleChevronLeft} style={{color: 'blue',padding: '10px 20px',border: 'none',borderRadius: '5px',marginLeft: '10px',cursor: 'pointer', fontSize:'40px'}} disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}/>
+                    <span style={{ margin: '0 10px', color:'blue' }}>Page {currentPage} of {totalPages}</span>
+                        <FontAwesomeIcon icon={faCircleChevronRight} style={{color: 'blue',padding: '10px 20px',border: 'none',borderRadius: '5px',marginLeft: '10px',cursor: 'pointer', fontSize:'40px'}} disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}/>
+                    </div>
+                    )} */}
             </div>
             <Col sm='12' md='2' lg='2' xl='2'></Col>
         </Row>

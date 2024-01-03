@@ -20,9 +20,9 @@ const Navbar = () => {
           </div>
           <div className="offcanvas-body">
             <ul className="navbar-nav justify-content-end flex-grow-1 pe-3">
+              <h4 style={{textAlign:'center'}}>Quick Links</h4>
             {(localStorage.getItem('branch') === 'equatorial' && localStorage.getItem('department') === 'labelling') &&
                 <>
-                  <h4 style={{textAlign:'center'}}>Quick Links</h4>
                   <li className="nav-item">
                     <Link className="nav-link" aria-current="page" to='/equatoriallabellingmanagerdashboard'>Dashboard</Link>
                   </li>
@@ -32,11 +32,46 @@ const Navbar = () => {
                   <li className="nav-item">
                     <Link className="nav-link" to="/equatoriallabellinginventorytransfermgt">Transfer Labelled Inventory</Link>
                   </li>
-                  <li className="nav-item">
+                  <li className="nav-item"> 2
                     <Link className="nav-link" to="/equatoriallabellingdailyoutputmgt">Record Daily Output</Link>
                   </li>
                   <li className="nav-item">
                     <Link className="nav-link" to="/equatoriallabellingstorestocktaking">Stock Taking</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to='/accountsettings'>Settings</Link>
+                  </li>
+                </>
+              }
+
+              {(localStorage.getItem('branch') === 'equatorial' && localStorage.getItem('department') === 'massage') &&
+                <>
+                  <li className="nav-item">
+                    <Link className="nav-link" aria-current="page" to='/massagemanagerdashboard'>Dashboard</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/equatorialmassagedepartmentpos">Products POS</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/equatorialmassageservicespos">Services POS</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/manageequatorialmassageclientservicesubscription">Manage Client Subscriptions</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/massagedailyincomesubmission">Income Submission</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/equatorialmassagedepartmentrecords">Product Sales Records</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/equatorialmassagedepartmentservicesrecords">Services Sales Records</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/equatorialmassageclientsubscriptionrecords">Client Subscription Records</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/equatorialmassagedepartmentreportsmenu">Reports Menu</Link>
                   </li>
                   <li className="nav-item">
                     <Link className="nav-link" to='/accountsettings'>Settings</Link>

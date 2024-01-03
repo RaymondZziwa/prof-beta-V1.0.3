@@ -15,7 +15,19 @@ const ShopSalesRecords = () => {
       
           if (Array.isArray(res.data)) {
             setIsLoading(false);
-            setSalesData(res.data);
+            const sortedRecords = res.data.slice().sort((a, b) => {
+                // Assuming saleDate is in the format dd/mm/yyyy
+                const partsA = a.saleDate.split('/');
+                const partsB = b.saleDate.split('/');
+                
+                // Convert to Date objects and compare in descending order
+                const dateA = new Date(`${partsA[1]}/${partsA[0]}/${partsA[2]}`);
+                const dateB = new Date(`${partsB[1]}/${partsB[0]}/${partsB[2]}`);
+        
+                return dateB - dateA;
+            });
+
+            setSalesData(sortedRecords);
           }
         };
       
