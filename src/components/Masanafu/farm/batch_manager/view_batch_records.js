@@ -32,7 +32,7 @@ const ViewBatchRecords = () => {
                 <Row>
                     <Col sm='12' md='2' lg='2' xl='2'></Col>
                     <Col sm='12' md='8' lg='8' xl='8'>
-                        <table className="table table-dark" style={{ marginTop: '50px' }}>
+                        <table className="table table-light" style={{ marginTop: '50px' }}>
                             <thead style={{ textAlign: 'center' }}>
                                 <tr>
                                     <th scope="col">Batch No.</th>
@@ -47,7 +47,7 @@ const ViewBatchRecords = () => {
                                         <tr>
                                             <td>{item.batchno}</td>
                                             <td>
-                                                <table className="table table-dark" style={{ marginTop: '2px' }}>
+                                                <table className="table table-light" style={{ marginTop: '2px' }}>
                                                     <thead>
                                                         <tr>
                                                             <th scope="col">Item Name</th>

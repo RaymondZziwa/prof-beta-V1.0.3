@@ -20,7 +20,7 @@ class PrintableContent extends React.Component {
           <h5 style={{textAlign:'center',borderBottom:'1px dashed black'}}>Contact: 0702061652 / 0779519652</h5>
           <p style={{marginTop:'40px'}}>Date: {formattedDateTime}</p>
           <p>Receipt Number: {receiptNumber}</p>
-          <p>Client First Name: {firstName} {lastName}</p>
+          <p>Client Names: {firstName} {lastName}</p>
           <p>Client Contact: {clientcontact}</p>
           <p>Payment Method: {paymentMethod}</p>
           {(paymentMethod === 'MTN MoMo' || paymentMethod === 'Airtel Money') && 
@@ -175,7 +175,6 @@ const PaymentModule = ({ servicesList, items, total }) => {
     const handleSubmit = async (event) => {
         event.preventDefault()
 
-        console.log('fd', receiptNo)
        let res = await axios.post('http://82.180.136.230:3005/equatorialmassagecartcheckout',{
         token: localStorage.getItem('token'),
         branch: localStorage.getItem('branch'),
@@ -251,8 +250,7 @@ const PaymentModule = ({ servicesList, items, total }) => {
                     <option value='Cash'>Cash</option>    
                     <option value='Airtel Money'>Airtel Money</option>
                     <option value='MTN MoMo'>MTN MoMo</option>
-                    <option value='Prof MM'>Prof Mobile Money</option>  
-                    <option value='Visa'>Visa</option>     
+                    <option value='Prof MM'>Prof Mobile Money</option>   
                 </select>
                 { (paymentMethod === 'MTN MoMo' || paymentMethod === 'Airtel Money') && 
                     <div className="mb-3">

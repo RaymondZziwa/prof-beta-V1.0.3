@@ -28,6 +28,7 @@ const SearchAndAddToCart = () => {
   //   }
   // }
 
+  
   const fetchAllMaterials = async () => {
     let res = await axios.post('http://82.180.136.230:3005/fetchallshopinventory', {
       token: localStorage.getItem('token')
@@ -137,16 +138,16 @@ const SearchAndAddToCart = () => {
               isSearchable
               placeholder="Select a product"
             /> 
-            {/* <span>
+            <span>
               <AddToCartBtn addToCart={handleAddToCart}/>
-            </span> */}
+            </span>
           </div>
               <Cart items={cartItems} setCartItems={setCartItems} total={total} setTotal={setTotal}/>
             </Col>
             <Col sm='12' md='3' lg='3' xl='3'>
                <PaymentModule items={cartItems} total={total} servicesList={servicesList} fetchData={fetchAllMaterials}/>  
             </Col>
-      </Row>  
+      </Row>
     </>
   );
 }

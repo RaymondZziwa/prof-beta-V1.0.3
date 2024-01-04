@@ -22,7 +22,7 @@ class PrintableContent extends React.Component {
           <p>receipt Issued To Department: {RecieverData.destDept}</p>
           <p>Presented To: {RecieverData.recievedBy}</p>
           <p>Receipt Number: {receiptNumber}</p>
-          <p>Client First Name: {firstName} {lastName}</p>
+          <p>Client Names: {firstName} {lastName}</p>
           <p>Client Contact: {clientcontact}</p>
           <p>Payment Method: {paymentMethod}</p>
           {(paymentMethod === 'MTN MoMo' || paymentMethod === 'Airtel Money') && 

@@ -1,0 +1,9 @@
+.btn-selector:hover {
+    background-color: #3E5AA7;
+    color: white;
+}
+
+.active {
+    background-color: #3E5AA7;
+    color: white
+}

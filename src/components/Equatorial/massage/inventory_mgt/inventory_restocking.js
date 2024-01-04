@@ -14,6 +14,16 @@ const EquatorialMassageDepartmentInventoryRestockingForm = () => {
     const [status, setStatus] = useState('')
     const [notes, setNotes] = useState('')
     const [options, setOptions] = useState([])
+
+    useEffect(() => {
+        if (status) {
+          const timer = setTimeout(() => {
+            setStatus(null);
+          }, 3000);
+    
+          return () => clearTimeout(timer);
+        }
+      }, [status]);
     
 
     const quantityInput = event => {

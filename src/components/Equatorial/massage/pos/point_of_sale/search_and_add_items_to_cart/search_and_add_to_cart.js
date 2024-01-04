@@ -15,7 +15,7 @@ const SearchAndAddToCart = () => {
 
   useEffect(() => {
     const fetchAllMaterials = async () => {
-      let res = await axios.post('http://82.180.136.230:3005/fetchallshopinventory', {
+      let res = await axios.post('http://82.180.136.230:3005/fetchallmassageshopinventory', {
         token: localStorage.getItem('token')
       });
   

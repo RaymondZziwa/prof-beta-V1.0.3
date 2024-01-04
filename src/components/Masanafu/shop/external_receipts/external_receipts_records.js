@@ -38,10 +38,12 @@ const ExternalReceiptsRecords = () => {
   return (
     <div style={{ backgroundColor: '#E9E9E9', color: 'black' }}>
       <Row>
-        <Col sm='12' md='1' lg='1' xl='1'>
+        <Col sm='12' md='12' lg='12' xl='12'>
           <Navbar />
         </Col>
-        <Col sm='12' md='10' lg='10' xl='10'>
+      </Row>
+      <Row>
+        <Col sm='12' md='12' lg='12' xl='12'>
           <h1 style={{ textAlign: 'center', color: 'black', marginTop: '60px' }}>External Receipts Records</h1>
           <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
             <div className="form-floating mb-3">
@@ -152,7 +154,6 @@ const ExternalReceiptsRecords = () => {
             </tbody>
           </table>
         </Col>
-        <Col sm='12' md='1' lg='1' xl='1'></Col>
       </Row>
       <Row style={{ marginTop: '50px' }}></Row>
     </div>

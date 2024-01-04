@@ -40,6 +40,16 @@ const ShopRestockingForm = () => {
         setNotes(event.target.value)
     }
 
+    useEffect(() => {
+        if (status) {
+          const timer = setTimeout(() => {
+            setStatus(null);
+          }, 3000);
+    
+          return () => clearTimeout(timer);
+        }
+    }, [status]);
+
     useEffect(()=>{
         let date = new Date().toLocaleDateString()
         setExpenditureDate(date)

@@ -13,6 +13,7 @@ const LabellingOutgoingForm = ({fetchInventoryRecords}) => {
     const [selectedItems, setSelectedItems] = useState([])
     const [itemsDelivered, setItemsDelivered] = useState([{ itemId: '', itemQuantity: '', mUnits: '' },])
     const [options, setOptions] = useState([])
+    const [serverMsg, setServerMsg] = useState('')
     
     const removeInput = (index) => {
         const values = [...itemsDelivered];
@@ -96,32 +97,29 @@ const LabellingOutgoingForm = ({fetchInventoryRecords}) => {
 
     const saveData = async event => {
         event.preventDefault()
-         try {
-            let res = await axios.post('http://82.180.136.230:3005/transferlabelledinventorytocustodian', {
-              token: localStorage.getItem('token'),
-              date: expenditureDate,
-              itemsDelivered: JSON.stringify(itemsDelivered),
-              deliveredto: restockSource,
-              notes: notes,
-              deliveryNoteNumber: deliveryNoteNumber,
-            });
-        
-            // Assuming `setStatus` is defined and handles state updates
-            setStatus({ type: 'success' });
-            
-            // Call the function to fetch inventory records
-            fetchInventoryRecords();
-          } catch (err) {
-            // Assuming `setStatus` is defined and handles state updates
-            setStatus({ type: 'error', err });
-          }
+        let res = await axios.post('http://82.180.136.230:3005/transferlabelledinventorytocustodian', {
+            token: localStorage.getItem('token'),
+            date: expenditureDate,
+            itemsDelivered: JSON.stringify(itemsDelivered),
+            deliveredto: restockSource,
+            notes: notes,
+            deliveryNoteNumber: deliveryNoteNumber,
+        })
 
+        if(res.data.status !== 200){
+            console.log('ssd', res.data)
+            setStatus({ type: 'error' })
+            setServerMsg(res.data.msg)
+        }else{
+            setStatus({ type: 'success' });
+            setServerMsg(res.data.msg)
+        }
     }
 
     return(
             <div className="col align-self-center" style={{marginTop:'60px'}}>
-                {status?.type === 'success' && <p style={{ margin: '20px' }} class="alert alert-success" role="alert">Success</p>}
-                {status?.type === 'error' && <p style={{ margin: '20px' }} class="alert alert-danger" role="alert">Error!</p>}
+                {status?.type === 'success' && <p style={{ margin: '20px' }} class="alert alert-success" role="alert">{serverMsg}</p>}
+                {status?.type === 'error' && <p style={{ margin: '20px' }} class="alert alert-danger" role="alert">{serverMsg}</p>}
                 <div className="form-floating mb-3">
                     <input className="form-control" id="floatingInput" placeholder="Order-Id" style={{ color: "#8CA6FE" }} value={expenditureDate} required readOnly/>
                     <label htmlFor="floatingInput">Date</label>

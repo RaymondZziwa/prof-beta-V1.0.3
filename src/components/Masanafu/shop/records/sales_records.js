@@ -15,7 +15,19 @@ const ShopSalesRecords = () => {
       
           if (Array.isArray(res.data)) {
             setIsLoading(false);
-            setSalesData(res.data);
+            const sortedRecords = res.data.slice().sort((a, b) => {
+                // Assuming saleDate is in the format dd/mm/yyyy
+                const partsA = a.saleDate.split('/');
+                const partsB = b.saleDate.split('/');
+                
+                // Convert to Date objects and compare in descending order
+                const dateA = new Date(`${partsA[1]}/${partsA[0]}/${partsA[2]}`);
+                const dateB = new Date(`${partsB[1]}/${partsB[0]}/${partsB[2]}`);
+        
+                return dateB - dateA;
+            });
+
+            setSalesData(sortedRecords);
           }
         };
       
@@ -24,10 +36,13 @@ const ShopSalesRecords = () => {
 
     return(
         <>
-            <div className='container-fluid'>
                 <Row>
-                    <Col sm='12' md='2' lg='2' xl='2'></Col>
-                    <Col sm='12' md='8' lg='8' xl='8'>
+                    <Col sm='12' md='12' lg='12' xl='12'>
+                        <Navbar />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col sm='12' md='12' lg='12' xl='12'>
                     <h2 style={{textAlign:'center', marginTop:'60px'}}>Masanafu Shop Sales Records</h2>
                         <table className="table table-light" style={{ marginTop: '20px',textAlign:'center' }}>
                             <thead style={{ textAlign: 'center' }}>
@@ -83,12 +98,8 @@ const ShopSalesRecords = () => {
                                 : <tr><td colSpan='9'>Loading...</td></tr>}
                             </tbody>
                         </table>
-                    </Col>
-                    <Col sm='12' md='2' lg='2' xl='2'>
-                        <Navbar />
-                    </Col>
+                    </Col>                
                 </Row>
-            </div>
         </>
     )
 }

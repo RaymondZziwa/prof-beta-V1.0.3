@@ -270,6 +270,7 @@ import MasanafuMainShopMgtMenu from './components/Admin/masanafu_administration/
 import MasanafuProjectsMgtMenu from './components/Admin/masanafu_administration/projects_mgt';
 import MasanafuProductionMgtMenu from './components/Admin/masanafu_administration/production_mgt';
 import MasanafuGeneralStoreMgtMenu from './components/Admin/masanafu_administration/general_store';
+import MasanafuExternalReceiptsPOS from './components/Masanafu/shop/external_receipts/issue_external_receipts/point_of_sale/pos';
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -540,7 +541,7 @@ function App() {
           </Route>)}  
           {authCtx.isLoggedIn && (<Route path="/materialcalculator">
             <MaterialCalculator />
-          </Route>)}
+          </Route>)} 
           {/* {authCtx.isLoggedIn && (<Route path="/pendingprojectsorders">
             <PendingProjectOrders />
           </Route>)}     */}
@@ -733,6 +734,10 @@ function App() {
 
           {authCtx.isLoggedIn && (<Route path="/savemasanafuexpenditurereceipts">
             <SaveShopExpenditureReceipts />
+          </Route>)}
+
+          {authCtx.isLoggedIn && (<Route path="/issuemasanafushopexternalreceipts">
+            <MasanafuExternalReceiptsPOS />
           </Route>)}
 
           {authCtx.isLoggedIn && (<Route path="/viewmasanafushopexpensesreceipts">
@@ -1046,7 +1051,7 @@ function App() {
               <SaphroneCompetitionMonthlyAnalysis />
           </Route>)}
 
-          {/* Buwama */}
+          {/* Buwama Routes*/}
           {authCtx.isLoggedIn && (<Route path="/buwamadashboard" >
               <BuwamaDashboard />
           </Route>)}

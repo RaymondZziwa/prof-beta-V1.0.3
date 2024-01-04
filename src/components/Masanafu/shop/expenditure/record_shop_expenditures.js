@@ -142,7 +142,7 @@ const RecordShopExpenditure = () => {
                 <Row>
                     <Col sm='12' md='5' lg='5' xl='5'>
                         <h3>Save Expense Data</h3>
-                        {status?.type === 'success' && <p style={{ margin: '20px' }} class="alert alert-success" role="alert">Success</p>}
+                        {status?.type === 'success' && <p style={{ margin: '20px' }} class="alert alert-success" role="alert">Expenditure saved.</p>}
                         {status?.type === 'error' && <p style={{ margin: '20px' }} class="alert alert-danger" role="alert">Error!</p>}
                         <div className="form-floating mb-3">
                             <input className="form-control" id="floatingInput" placeholder="Order-Id" style={{ color: "#8CA6FE" }} value={expenditureDate} required readOnly/>
@@ -151,6 +151,10 @@ const RecordShopExpenditure = () => {
                         <div className="mb-3">
                             <select class="form-select" aria-label="Default select example" style={{ height: "60px", color: "#8CA6FE;" }} onChange={expenditureCategoryHandler}>
                                 <option defaultValue>Select Expenditure Category</option>
+                                <option value="utilities">Utilities</option>
+                                <option value="internal projects department">Internal Projects Department</option>
+                                <option value="internal farm department">Internal Farm Department</option>
+                                <option value="internal production department">Internal Production Department</option>
                                 <option value="utilities">Utilities</option>
                                 <option value="miscellaneous expenses">Miscellaneous Expenses</option>
                                 <option value="transaction fees">Transaction Fees</option>
@@ -207,7 +211,7 @@ const RecordShopExpenditure = () => {
 
                     <Col sm='12' md='5' lg='5' xl='5'>
                         <h3>Update Expense Data</h3>
-                        {updateStatus?.type === 'success' && <p style={{ margin: '20px' }} class="alert alert-success" role="alert">Success</p>}
+                        {updateStatus?.type === 'success' && <p style={{ margin: '20px' }} class="alert alert-success" role="alert">Expenditure updated.</p>}
                         {updateStatus?.type === 'error' && <p style={{ margin: '20px' }} class="alert alert-danger" role="alert">Error!</p>}
                         <div className="form-floating mb-3">
                             <input className="form-control" id="floatingInput" placeholder="Order-Id" style={{ color: "#8CA6FE" }} value={expenditureDate} required readOnly/>

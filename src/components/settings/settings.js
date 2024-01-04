@@ -4,6 +4,10 @@ import '../Namungoona/supervisor dashboard/namungoona.css'
 import Navbar from "../side navbar/sidenav";
 
 const AccountSettings = () => {
+
+    const resetUsername = event => {}
+    const resetPassword = event => {}
+    
     return(
         <div className='container-fluid'>
             <Row>
@@ -15,7 +19,7 @@ const AccountSettings = () => {
                         <form style={{marginTop:'10px'}}> 
                                 <h4>Change Username</h4>
                                 <div className="form-floating">
-                                    <input type="text" class="form-control" id="floatingPassword" placeholder="Password" required/>
+                                    <input type="text" class="form-control" id="floatingPassword" placeholder="Password" value={localStorage.getItem('username')} readOnly/>
                                     <label for="floatingInput">Old Username</label>
                                 </div><br></br>
                                 <div className="form-floating">

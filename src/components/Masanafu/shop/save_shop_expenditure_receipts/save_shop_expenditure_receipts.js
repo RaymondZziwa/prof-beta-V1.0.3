@@ -47,8 +47,8 @@ const SaveShopExpenditureReceipts = () => {
             </Col>
             <Col sm='12' md='4' lg='4' xl='4'>
               <h1 style={{ textAlign: 'center', marginTop: '60px' }}>Save Expenditure Receipt</h1>
-              {status?.type === 'success' && <p style={{ margin: '20px' }} class="alert alert-success" role="alert">Success</p>}
-               {status?.type === 'error' && <p style={{ margin: '20px' }} class="alert alert-danger" role="alert">Error!</p>}
+              {status?.type === 'success' && <p style={{ margin: '20px' }} class="alert alert-success" role="alert">Expenditure receipt successfully saved.</p>}
+               {status?.type === 'error' && <p style={{ margin: '20px' }} class="alert alert-danger" role="alert">Error while saving receipt.</p>}
                 <div className="form-floating mb-3">
                     <input className="form-control" id="floatingInput" placeholder="Order-Id" style={{ color: "#8CA6FE" }}  required onChange={expenseIdHandler}/>
                     <label htmlFor="floatingInput">Expenditure Id</label>

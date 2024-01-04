@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import './receipt.css';
-import Logo from '../../../../../imgs/logo.png'
+import Logo from '../../../../../../imgs/logo.png'
 import ReactToPrint from "react-to-print";
-import Modal from 'react-modal'
 
 class PrintableContent extends React.Component {
     render() {
@@ -13,12 +12,14 @@ class PrintableContent extends React.Component {
         const formattedDateTime = new Intl.DateTimeFormat(undefined, options).format(today)
       return (
         <div style={{color:'black',padding:'20px'}}>
-          <h1 style={{textAlign:'center'}}> <img src={Logo} alt="receipt-logo" style={{margin:'auto'}}  height='80px'/><br></br>Prof-bioresearch {localStorage.getItem('branch')} massage receipt</h1>
+          <h1 style={{textAlign:'center'}}> <img src={Logo} alt="receipt-logo" style={{margin:'auto'}}  height='80px'/><br></br>Prof-bioresearch {localStorage.getItem('branch')} external receipt</h1>
           <h5 style={{textAlign:'center'}}>Sales Points: Equatorial near bank of Africa, Masanafu near padre pio vocational school</h5>
           <h5 style={{textAlign:'center'}}>Web: www.profbioresearch.net</h5>
           <h5 style={{textAlign:'center'}}>Email: profbioresearch@gmail.com</h5>
           <h5 style={{textAlign:'center',borderBottom:'1px dashed black'}}>Contact: 0702061652 / 0779519652</h5>
           <p style={{marginTop:'40px'}}>Date: {formattedDateTime}</p>
+          <p>receipt Issued To Branch: Equatorial</p>
+          <p>receipt Issued To Department: Shop</p>
           <p>Receipt Number: {receiptNumber}</p>
           <p>Client Names: {firstName} {lastName}</p>
           <p>Client Contact: {clientcontact}</p>
@@ -59,8 +60,10 @@ class PrintableContent extends React.Component {
                     )}
                 </tbody>
                 </table>
+          <p>receipt Issued From Branch: {localStorage.getItem('branch')}</p>
+          <p>receipt Issued From Department: {localStorage.getItem('department')}</p>
           <p>Served By: {localStorage.getItem('username')}</p>
-          <p style={{ marginTop: '5px', marginBottom:'5px', fontSize: '13px', borderTop:'1px solid black', textAlign:'center' }}>
+          <p style={{ position: 'absolute', bottom: '10px', fontSize: '12px', borderTop:'1px solid black', textAlign:'center' }}>
             Receipt Printed By {localStorage.getItem('branch')} Prof-Bioresearch POS System.
           </p>
         </div>
@@ -69,33 +72,23 @@ class PrintableContent extends React.Component {
   }
 
 
-const PaymentModule = ({ servicesList, items, total, fetchData }) => {
+const PaymentModule = ({ items, total }) => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
-    const [paymentMethod, setPaymentMethod] = useState('Cash')
-    const [paymentStatus, setPaymentStatus] = useState('fullypaid')
+    const [paymentMethod, setPaymentMethod] = useState('')
+    const [paymentStatus, setPaymentStatus] = useState('')
     const [additionalInfo, setAdditionalInfo] = useState('')
     const [amount, setAmountPaid] = useState(0)
     const  [balance, setBalance] = useState(0)
     const [status, setStatus] = useState('')
     const [receiptNo, setReceiptNo] = useState(0)
     const [services, setServices] = useState([])
-    const [serverMsg, setServerMsg] = useState('')
-    const [currentReceiptNumber, setCurrentReceiptNumber] = useState(0)
-    const [isModalOpen, setIsModalOpen] = useState(false)
-
-    const closeModal = () => {
-        setIsModalOpen(false)
-    }
-
-
-    const options = { day: '2-digit', month: '2-digit', year: 'numeric' }
-
     const [transactionId, setTransactionId] = useState()
 
     const componentRef = useRef();
     const  printBtnRef = useRef()
+
 
     const handleFirstNameChange = (event) => {
       setFirstName(event.target.value)
@@ -129,20 +122,21 @@ const PaymentModule = ({ servicesList, items, total, fetchData }) => {
     }
 
     useEffect(() => {
-        generateReceiptNumber();
-    }, [])
-
-    useEffect(() => {
         if (status) {
           const timer = setTimeout(() => {
             setStatus(null);
-          }, 3000);
+          }, 2000);
     
           return () => clearTimeout(timer);
         }
       }, [status]);
 
     useEffect(()=>{
+        const timestamp = new Date().getTime().toString(); // Example timestamp: "1647824898645"
+        const reducedTimestamp = timestamp.substring(9, 14); // Extract 5 digits from index 9 to 13
+        const random = Math.floor(Math.random() * 100000); // Example random number: 74530
+        const receiptNumber = `${reducedTimestamp}-${random}`
+        setReceiptNo(receiptNumber)
         if(paymentStatus === 'fullypaid'){
             setBalance(0)
         }else if(paymentStatus === 'partiallypaid'){
@@ -152,67 +146,52 @@ const PaymentModule = ({ servicesList, items, total, fetchData }) => {
         }
     }, [paymentStatus, amount])
 
-    function generateReceiptNumber() {
-        // Generate a new receipt number
-        const timestamp = new Date().getTime().toString();
-        const reducedTimestamp = timestamp.substring(9, 14);
-        const random = Math.floor(Math.random() * 100000);
-        const receiptNumber = `${reducedTimestamp}-${random}`;
-      
-        // Check if receiptNumber is 0 and generate a new one if needed
-        if (receiptNumber === '0') {
-          return generateReceiptNumber(); // Recursively generate a new number
-        }else{
-            setReceiptNo(receiptNumber)
-            
-        }
-
-
-        // Set the receipt number in the state
-        setReceiptNo(receiptNumber);
-      
-        return receiptNumber;
-    }
-    
 
     const handleSubmit = async (event) => {
         event.preventDefault()
-       let res = await axios.post('http://82.180.136.230:3005/equatorialshopcartcheckout',{
+
+       let res = await axios.post('http://82.180.136.230:3005/issueequatorialprojectsexternalreceipts',{
         token: localStorage.getItem('token'),
         branch: localStorage.getItem('branch'),
         services: JSON.stringify(services),
         items: JSON.stringify(items),
         receiptNo: receiptNo,
         total: total,
-        transactionId: transactionId,
         additionalInfo: additionalInfo,
         paymentMethod: paymentMethod,
+        transactionId: transactionId,
         paymentStatus: paymentStatus,
         balance: balance,
-        customerNames: `${firstName.toUpperCase().trim()} ${lastName.toUpperCase().trim()}`,
+        firstName: firstName.toUpperCase().trim(),
+        lastName: lastName.toUpperCase().trim(),
         customerContact: phoneNumber,
-        date: new Date().toLocaleDateString('en-GB', options)
-      })
+        receiptIssuedFromBranch: localStorage.getItem('branch'),
+        receiptIssuedFromDept: localStorage.getItem('department'),
+        servedBy: localStorage.getItem('username'),
 
-      if(res.data.status === '200') {
-        setStatus({ type: 'success' })
-        setServerMsg(res.data.msg)
-        printBtnRef.current.click();
-        generateReceiptNumber()
-        fetchData()
-        setIsModalOpen(true)
-      } else {
-        setStatus({ type: 'error' })
-        setServerMsg(res.data.msg)
+        receiptIssuedToBranch: "Equatorial",
+        receiptIssuedToDept: "Shop",
+        date: new Date().toLocaleDateString()
+     })
+
+      if(res.data.status === 200){
+       setStatus({ type: 'success' })
+       const timestamp = new Date().getTime().toString(); // Example timestamp: "1647824898645"
+       const reducedTimestamp = timestamp.substring(9, 14); // Extract 5 digits from index 9 to 13
+       const random = Math.floor(Math.random() * 100000); // Example random number: 74530
+       const receiptNumber = `${reducedTimestamp}-${random}`
+       setReceiptNo(receiptNumber)
+       printBtnRef.current.click();
       }
     }
+
 
     return(
         <>  
             <h3 style={{textAlign:'center'}}>Customer Details</h3>
-            {status?.type === 'success' && <p style={{ margin: '20px' }} class="alert alert-success" role="alert">{serverMsg}</p>}
-            {status?.type === 'error' && <p style={{ margin: '20px' }} class="alert alert-danger" role="alert">{serverMsg}</p>}
-            <form onSubmit={handleSubmit}>
+            {status?.type === 'success' && <p style={{ margin: '20px' }} class="alert alert-success" role="alert">Success</p>}
+            {status?.type === 'error' && <p style={{ margin: '20px' }} class="alert alert-danger" role="alert">Error!</p>}
+            <form>
                 <div className="mb-3">
                 <label htmlFor="firstName" className="form-label">
                     First Name
@@ -223,6 +202,7 @@ const PaymentModule = ({ servicesList, items, total, fetchData }) => {
                     id="firstName"
                     value={firstName}
                     onChange={handleFirstNameChange}
+                    required
                 />
                 </div>
                 <div className="mb-3">
@@ -235,6 +215,7 @@ const PaymentModule = ({ servicesList, items, total, fetchData }) => {
                     id="lastName"
                     value={lastName}
                     onChange={handleLastNameChange}
+                    required
                 />
                 </div>
                 <div className="mb-3">
@@ -247,15 +228,15 @@ const PaymentModule = ({ servicesList, items, total, fetchData }) => {
                     id="phoneNumber"
                     value={phoneNumber}
                     onChange={handlePhoneNumberChange}
+                    required
                 />
                 </div>
-                <select class="form-select" aria-label="Default select example" style={{ height: "60px", color: "#8CA6FE" }} onChange={paymentMethodHandler} >
-                    <option >Payment Method</option>
-                    <option selected value='Cash'>Cash</option>    
+                <select class="form-select" aria-label="Default select example" style={{ height: "60px", color: "#8CA6FE" }} onChange={paymentMethodHandler} required>
+                    <option selected>Payment Method</option>
+                    <option value='Cash'>Cash</option>    
                     <option value='Airtel Money'>Airtel Money</option>
                     <option value='MTN MoMo'>MTN MoMo</option>
-                    <option value='Prof MM'>Prof Mobile Money</option>  
-                    <option value='Visa'>Visa</option>     
+                    <option value='Prof MM'>Prof Mobile Money</option>     
                 </select>
                 { (paymentMethod === 'MTN MoMo' || paymentMethod === 'Airtel Money') && 
                     <div className="mb-3">
@@ -265,13 +246,13 @@ const PaymentModule = ({ servicesList, items, total, fetchData }) => {
                         </div>
                     </div>
                 }
-                <select class="form-select" aria-label="Default select example" style={{ height: "60px", color: "#8CA6FE" }} onChange={handlePaymentStatusChange} required>
-                    <option >Payment Status</option>   
-                    <option selected value='fullypaid'>Fully Paid</option>
-                    <option value='partiallypaid'>Partially Paid</option>
-                    <option value='unpaid'>Unpaid</option>
-                </select>
                 <div className="mb-3">
+                <select class="form-select" aria-label="Default select example" style={{ height: "60px", color: "#8CA6FE" }} onChange={handlePaymentStatusChange} required>
+                    <option selected>Payment Status</option>   
+                    <option value='fullypaid'>Fully Paid</option>
+                    <option value='partiallypaid'>Partially Paid</option>
+                </select>
+               
                 { paymentStatus === 'partiallypaid' && 
                     <div className="mb-3">
                         <div className="form-floating mb-3">
@@ -288,19 +269,21 @@ const PaymentModule = ({ servicesList, items, total, fetchData }) => {
                     </div>             
                 </div>
                 <button
-                    type="submit"
                     style={{
                     width: "100%",
                     border: "none",
                     color: "white",
                     height: "45px",
-                    backgroundColor: "#3452A3"
+                    backgroundColor: "#3452A3",
+                    display: 'inline-block',
+                    marginRight: '5px'
                     }}
+                    onClick={handleSubmit}
                 >
-                    Checkout
+                    Create External Receipt
                 </button>
             </form>
-                <ReactToPrint
+            <ReactToPrint
                     trigger={() => (
                         <button style={{ width: "100%",border: "none",color: "white", height: "45px", backgroundColor: "#3452A3", marginTop:'5px', display:'none'}} ref={printBtnRef}>Print Receipt</button>
                     )}
@@ -308,7 +291,7 @@ const PaymentModule = ({ servicesList, items, total, fetchData }) => {
                     pdfPrint={true}
                 />
                 <div className="print-content">
-                    <PrintableContent ref={componentRef} firstName={firstName} lastName={lastName} cart={items} clientcontact={phoneNumber} total={total} balance={balance} amountPaid={total-balance} receiptNumber={receiptNo} paymentMethod={paymentMethod} transactionId={transactionId}/>
+                    <PrintableContent ref={componentRef} firstName={firstName} lastName={lastName} cart={items} clientcontact={phoneNumber} total={total} balance={balance} amountPaid={total-balance} receiptNumber={receiptNo} paymentMethod={paymentMethod} />
                 </div>
                 <style>
                     {`
@@ -317,56 +300,6 @@ const PaymentModule = ({ servicesList, items, total, fetchData }) => {
                     }
                     `}
                 </style>
-                {/* Modal */}
-                <Modal
-                    isOpen={isModalOpen}
-                    onRequestClose={closeModal}
-                >
-                    <h2 style={{textAlign:'center'}}>View Sale</h2>
-                    <button className='btn btn-danger' style={{float:'right', marginBottom:'20px'}} onClick={closeModal}>Close</button>
-                    <p style={{marginTop:'40px'}}>Date: {new Date().toLocaleDateString('en-GB', options)}</p>
-                    <p>Receipt Number: {receiptNo}</p>
-                    <p>Client Names: {firstName} {lastName}</p>
-                    <p>Client Contact: {phoneNumber}</p>
-                    <p>Payment Method: {paymentMethod}</p>
-                    {(paymentMethod === 'MTN MoMo' || paymentMethod === 'Airtel Money') && 
-                        <p>Transaction Id: {transactionId}</p>
-                    }
-                    <p>Total Amount: UGX: {total}</p>
-                    <p>Amount Paid: UGX: {total-balance}</p>
-                    <p>Balance: UGX: {balance}</p>
-                    <table className="table table-light">
-                        <thead>
-                            <tr>
-                            <th>Item Name</th>
-                            <th>Unit Cost (UGX)</th>
-                            <th>Discount (%)</th>
-                            <th>Total Quantity</th>
-                            <th>Total Cost (UGX)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {items.length === 0 ? (
-                            <tr>
-                                <td colSpan="8" style={{ textAlign: "center" }}>
-                                There are no items in the cart.
-                                </td>
-                            </tr>
-                            ) : (
-                                items.map((item) => (
-                                <tr key={item.id}>
-                                <td>{item.name}</td>
-                                <td>{item.unitCost}</td>
-                                <td>{item.discount}</td>
-                                <td>{item.quantity}</td>
-                                <td>{item.totalCost}</td>
-                                </tr>
-                            ))
-                            )}
-                        </tbody>
-                </table>
-                <p>Served By: {localStorage.getItem('username')}</p>
-                </Modal>
        </> 
     )
 }

@@ -55,11 +55,6 @@ const ChickenMgtDashboard = () => {
                         Batch Records
                     </div>
                 </Link>
-                <Link className="tab_nav" to="/chickenfarmreport">
-                    <div className="mb-3 mclickable_option">
-                       Graphical Report Analysis
-                    </div>
-                </Link>
                 <Link className="tab_nav" to="/chickenfarmstatementreport">
                     <div className="mb-3 mclickable_option">
                        Statemental Report
@@ -71,7 +66,7 @@ const ChickenMgtDashboard = () => {
                     </div>
                 </Link>
             </div>
-            <Col sm='12' md='2' lg='2' xl='2'>
+            <Col sm='12' md='1' lg='1' xl='1'>
             </Col>
         </Row>
     )

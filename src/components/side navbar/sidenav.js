@@ -9,17 +9,77 @@ const Navbar = () => {
   return (
     <nav className="navbar navbar-dark bg-primary fixed-top" style={{ marginBottom: '50px' }}>
       <div className="container-fluid">
-        <Link className="navbar-brand" href="#"><img src={logo} alt='logo' style={{ height: '20px' }} />{localStorage.getItem("isUserLoggedIn") ? localStorage.getItem('branch') : <><img src={attention} alt="attention" style={{ height: '20px' }}/><span style={{color:'red'}}>Your session is expired.Log In.</span></>} (Beta Release V.1.0)</Link>
+        <Link className="navbar-brand" href="#"><img src={logo} alt='logo' style={{ height: '20px' }} />{localStorage.getItem("isUserLoggedIn") ? localStorage.getItem('branch') : <><img src={attention} alt="attention" style={{ height: '20px' }}/><span style={{color:'red'}}>Your session is expired.Log In.</span></>} (Beta Release V.1.5)</Link>
         <button id="open" className="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="offcanvas offcanvas-end text-bg-dark" tabIndex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
-          <div className="offcanvas-header">
+          <div className="offcanvas-header" style={{marginTop:'50px'}}>
             <h5 className="offcanvas-title" id="offcanvasDarkNavbarLabel">Prof Bioresearch - {localStorage.getItem('branch')}</h5>
             <button type="button" id="close" className="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
           </div>
           <div className="offcanvas-body">
             <ul className="navbar-nav justify-content-end flex-grow-1 pe-3">
+              <h4 style={{textAlign:'center'}}>Quick Links</h4>
+            {(localStorage.getItem('branch') === 'equatorial' && localStorage.getItem('department') === 'labelling') &&
+                <>
+                  <li className="nav-item">
+                    <Link className="nav-link" aria-current="page" to='/equatoriallabellingmanagerdashboard'>Dashboard</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/equatoriallabellingincominginventorymgt">Record Incoming Inventory</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/equatoriallabellinginventorytransfermgt">Transfer Labelled Inventory</Link>
+                  </li>
+                  <li className="nav-item"> 2
+                    <Link className="nav-link" to="/equatoriallabellingdailyoutputmgt">Record Daily Output</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/equatoriallabellingstorestocktaking">Stock Taking</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to='/accountsettings'>Settings</Link>
+                  </li>
+                </>
+              }
+
+              {(localStorage.getItem('branch') === 'equatorial' && localStorage.getItem('department') === 'massage') &&
+                <>
+                  <li className="nav-item">
+                    <Link className="nav-link" aria-current="page" to='/massagemanagerdashboard'>Dashboard</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/equatorialmassagedepartmentpos">Products POS</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/equatorialmassageservicespos">Services POS</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/manageequatorialmassageclientservicesubscription">Manage Client Subscriptions</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/massagedailyincomesubmission">Income Submission</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/equatorialmassagedepartmentrecords">Product Sales Records</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/equatorialmassagedepartmentservicesrecords">Services Sales Records</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/equatorialmassageclientsubscriptionrecords">Client Subscription Records</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/equatorialmassagedepartmentreportsmenu">Reports Menu</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link" to='/accountsettings'>Settings</Link>
+                  </li>
+                </>
+              }
+
+
               {localStorage.getItem('branch') === 'namungoona' &&
                 <>
                   <li className="nav-item">

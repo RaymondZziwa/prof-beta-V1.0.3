@@ -19,6 +19,11 @@ return(
                 Saffron Competition
             </div>
         </Link>
+        <Link className="tab_nav" to="/issuemasanafushopexternalreceipts">
+            <div className="mb-3 mclickable_option">
+                Issue External Receipts
+            </div>
+        </Link>
         <Link className="tab_nav" to="/manageexternalreceipts">
             <div className="mb-3 mclickable_option">
                 Retrieve/Manage External Receipts
@@ -81,7 +86,7 @@ return(
             </div>
         </Link>
     </div>
-    <Col sm='12' md='2' lg='2' xl='2'>
+    <Col sm='12' md='1' lg='1' xl='1'>
     </Col>
 </Row>
 )
