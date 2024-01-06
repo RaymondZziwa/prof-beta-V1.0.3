@@ -25,7 +25,7 @@ const EquatorialProjectsReceiptsClientPaymentStatus = () => {
             token: localStorage.getItem('token'),
             receiptNumber: receiptNumber
         })
-        console.log(res.data)
+
         setReceiptData(res.data[0])
     } 
 
@@ -35,14 +35,12 @@ const EquatorialProjectsReceiptsClientPaymentStatus = () => {
         const month = today.getMonth() + 1; // Get the current month (0-11, hence adding 1)
         const year = today.getFullYear(); // Get the current year (e.g., 2023)
 
-        // Format the date as DD/MM/YYYY
         const formattedDate = `${day.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}/${year}`
         setDate(formattedDate)
     },[])
 
     useEffect(()=> {
         if(receiptData && typeof receiptData.paymentPlan === "string" ){
-            console.log('pp', JSON.parse(receiptData.paymentPlan))
             setPaymentPlan(receiptData.paymentPlan)
         }
     },[receiptData])

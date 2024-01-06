@@ -259,7 +259,7 @@ const PaymentModule = ({ servicesList, items, total }) => {
                     <div className="mb-3">
                         <div className="form-floating mb-3">
                             <input className="form-control" rows="6" id="floatingInput" placeholder="johndoe" style={{ color: "#8CA6FE" }} onChange={(e)=>setTransactionId(e.target.value)} min='0' />
-                            <label for="floatingInput">Transaction ID</label>
+                            <label for="floatingInput">Transaction ID / Cheque Number</label>
                         </div>
                     </div>
                 }
