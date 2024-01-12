@@ -252,13 +252,14 @@ const PaymentModule = ({ servicesList, items, total }) => {
                     <option value='Airtel Money'>Airtel Money</option>
                     <option value='MTN MoMo'>MTN MoMo</option>
                     <option value='Prof MM'>Prof Mobile Money</option>  
-                    <option value='Visa'>Visa</option>     
+                    <option value='Visa'>Visa</option> 
+                    <option value='Cheque'>Cheque</option>      
                 </select>
-                { (paymentMethod === 'MTN MoMo' || paymentMethod === 'Airtel Money') && 
+                { (paymentMethod === 'MTN MoMo' || paymentMethod === 'Airtel Money' || paymentMethod === 'Cheque') && 
                     <div className="mb-3">
                         <div className="form-floating mb-3">
                             <input className="form-control" rows="6" id="floatingInput" placeholder="johndoe" style={{ color: "#8CA6FE" }} onChange={(e)=>setTransactionId(e.target.value)} min='0' />
-                            <label for="floatingInput">Transaction ID</label>
+                            <label for="floatingInput">Transaction ID / Cheque Number</label>
                         </div>
                     </div>
                 }
