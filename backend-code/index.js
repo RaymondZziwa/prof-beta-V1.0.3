@@ -254,11 +254,11 @@ app.post('/itemlist', (req, res) => {
         if (err) {
             res.status(403).send("You are not authorized to perform this action.");
         } else {
-            db.query('SELECT * from inventory;', (error, results) => {
+            let category = 'seed'
+            db.query('SELECT * from inventory WHERE category = ?', category, (error, results) => {
                 if (error) throw (error);
 
                 if (results.length > 0) {
-                    console.log(results)
                     res.send(results)
                 } else {
                     res.send('There are no saved items.')
@@ -1022,7 +1022,6 @@ app.post('/requestseeds', (req, res) => {
                 if (err) {
                     console.log(err)
                 } else {
-                    console.log('success')
                     res.send('Operation Successful');
                 }
             })
@@ -1686,6 +1685,26 @@ app.post('/fetchallmasanafushopinventory', (req, res) => {
     })
 })
 
+
+//fetch all registered product names
+app.post('/fetchallshopproducts', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            db.query('SELECT * FROM shopProducts', (error, results) => {
+                //if the query is faulty , throw the error
+                if (error) console.log(error);
+                //if account exists
+                if (results.length > 0) {
+                    res.send(results)
+                } else {
+                    res.send('No data found.')
+                }
+            })
+        }
+    })
+})
 
 //route to fetch product data from db
 app.post('/fetchallshopinventory', (req, res) => {

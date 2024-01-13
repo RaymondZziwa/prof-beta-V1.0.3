@@ -53,6 +53,16 @@ const RequestSeeds = () => {
         setOrderId(event.target.value)
     }
 
+    useEffect(() => {
+        if (status) {
+          const timer = setTimeout(() => {
+            setStatus(null);
+          }, 3000);
+    
+          return () => clearTimeout(timer);
+        }
+    }, [status]);
+
     const fetchDepartmentData = event => {
         event.preventDefault()
         try {
@@ -149,11 +159,11 @@ const RequestSeeds = () => {
 
     return(
             <Row>
-                <Col sm='12' md='2' lg='2' xl='2'>
+                <Col sm='12' md='1' lg='1' xl='1'>
                     <Navbar />
                 </Col>
-                <Col className="col align-self-center">
-                    <h2 style={{ marginTop: '60px', fontSize: '30px', textAlign: 'center' }}>Request Planting Seeds</h2>
+                <Col className="col align-self-center" style={{textAlign:'center'}}>
+                    <h2 style={{ marginTop: '100px', fontSize: '30px', textAlign: 'center' }}>Request Seeds</h2>
                         <Form>    
                             {status?.type === 'success' && <span style={{ margin: '20px' }} class="alert alert-success" role="alert">Request successfully submitted</span>}
                             {status?.type === 'error' && <span style={{ margin: '20px' }} class="alert alert-danger" role="alert">Error! Request was not submitted</span>}
@@ -166,7 +176,7 @@ const RequestSeeds = () => {
                                     </div> */}
                                     </Col>
                                 </Row>
-                                <h3 style={{ marginTop: '10px', fontSize: '30px', textAlign: 'center' }}>Request Reciever's Data</h3>
+                                <h3 style={{ marginTop: '10px', fontSize: '30px', textAlign: 'center' }}>Reciever's Data</h3>
                                 <select className="form-select" aria-label="Default select example" style={{ height: "60px", color: "#8CA6FE" }} ref={branchRef} onChange={fetchDepartmentData} required>
                                     <option selected>Order To ( Branch )</option>
                                     <option value="masanafu">Masanafu</option>
@@ -234,17 +244,15 @@ const RequestSeeds = () => {
                                                             required>
 
                                                             <option selected>Measurement</option>
-                                                            <option value="L">Litres</option>
-                                                            <option value="KG">Kilograms</option>
-                                                            <option value="MLS">Milliliters</option>
                                                             <option value="Pcs">Pcs</option>
                                                         </select>
-                                            </div>
-                                            <FontAwesomeIcon onClick={addNewInput} icon={faPlusCircle} style={{ color: 'green', fontSize: '30px', cursor: 'pointer' }} />
-                                            <FontAwesomeIcon onClick={() => removeInput(index)} icon={faMinusCircle} style={{ color: 'red', fontSize: '30px', marginLeft: '2px', cursor: 'pointer' }} />
+                                            </div><br></br>
+                                            <FontAwesomeIcon onClick={addNewInput} icon={faPlusCircle} style={{ color: 'green', fontSize: '50px', cursor: 'pointer' }} />
+                                            <FontAwesomeIcon onClick={() => removeInput(index)} icon={faMinusCircle} style={{ color: 'red', fontSize: '50px', marginLeft: '2px', cursor: 'pointer' }} />
                                         </div>
                                     ))
                                     }
+                                    
                                 <h3 style={{ marginTop: '10px', fontSize: '30px', textAlign: 'center' }}>Additional Information</h3>
                                 <div className="mb-3">
                                     <div className="form-floating mb-3">
@@ -274,6 +282,8 @@ const RequestSeeds = () => {
                                 </div>
                             </div>
                         </Form>
+                </Col>
+                <Col sm='12' md='1' lg='1' xl='1'>
                 </Col>
             </Row>
     )

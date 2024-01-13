@@ -67,7 +67,7 @@ const StartBatchProcess = () => {
                 <button style={{marginTop:'10px'}} className="btn btn-primary" onClick={fetchBatchData}>Retrieve Batch Data</button>
             </div>
 
-            <table className="table table-dark" style={{ marginTop: '50px' }}>
+            <table className="table table-light" style={{ marginTop: '50px' }}>
                             <thead style={{ textAlign: 'center' }}>
                                 <tr>
                                     <th scope="col">Batch Number</th>
