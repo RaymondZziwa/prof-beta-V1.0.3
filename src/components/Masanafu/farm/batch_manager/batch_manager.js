@@ -48,6 +48,8 @@ const ManageBatch = () => {
                         }
                     </Form>
                 </Col>
+                <Col sm='12' md='1' lg='1' xl='1'>
+                </Col>
             </Row>
     )
 }
