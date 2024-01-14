@@ -52,7 +52,6 @@ const FilteredParticipantDashboard = () => {
 
     useEffect(() => {
        const filteredData = filterDataByDateRange (allRecords, fromDate, toDate)
-        console.log('man', filteredData)
 
        const employeeTotals = {}; // Create an object to store totals for each employeeId
 

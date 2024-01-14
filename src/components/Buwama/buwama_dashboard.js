@@ -9,7 +9,7 @@ return(
         <Navbar />
     </Col>
     <div className="col align-self-center" style={{marginTop:'20px'}}>
-    <Link className="tab_nav" to="/buwamageneralstoremenu">
+        <Link className="tab_nav" to="/buwamageneralstoremenu">
             <div className="mb-3 mclickable_option">
                Manage General Store
             </div>
