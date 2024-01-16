@@ -32,6 +32,7 @@ const ProjectsRecords = () => {
         }
     },[filteredData, recordsList, currentPage, startIndex])
 
+
     const fetchProjectsRecords = async () => {
         let res = await axios.post('http://82.180.136.230:3005/fetchallprojectsrecords', {
             token: localStorage.getItem('token')
