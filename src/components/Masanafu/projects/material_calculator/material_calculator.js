@@ -27,7 +27,6 @@ const MaterialCalculator = () => {
             machineryName : itemName
         })
 
-        console.log('fetchOrderMaterialData', res.data)
          if(Array.isArray(res.data)){
              setMaterials(JSON.parse(res.data[0].itemsrequired))
              setIsCalculating(false)
@@ -70,7 +69,7 @@ const MaterialCalculator = () => {
             <Navbar />
         </Col>
         <div className="col align-self-center" style={{marginTop:'40px'}}>
-            <h1 style={{textAlign:'center'}}>Material Calculator</h1>
+            <h1 style={{textAlign:'center'}}>MATERIAL CALCULATOR</h1>
             <div className="mb-3">
                 <div className="form-floating mb-3">
                     <input type="text" className="form-control" id="floatingInput" min="0" placeholder="Quantity" onChange={orderIdInput} style={{ color: "#8CA6FE" }} />
@@ -83,7 +82,7 @@ const MaterialCalculator = () => {
             <Row>
                 <Col sm='12' md='4' lg='4' xl='4'>
                     <h3 style={{textAlign:'center'}}>Order Details</h3>
-                        <table className="table table-dark" style={{ marginTop: '2px' }}>
+                        <table className="table table-light" style={{ marginTop: '2px' }}>
                             <thead>
                                 <tr>
                                     <th scope="col">Name</th>
@@ -101,7 +100,7 @@ const MaterialCalculator = () => {
                                         </tr>
                                     ) :
                                     <tr>
-                                        <td>No Data.</td>
+                                        <td colSpan='3'>No Data.</td>
                                     </tr>
                                 }
                             </tbody>
@@ -109,7 +108,7 @@ const MaterialCalculator = () => {
                 </Col>
                 <Col sm='12' md='8' lg='8' xl='8'>
                     <h3 style={{textAlign:'center'}}>Materials Needed</h3>
-                    {!isCalculating ? <OrderSummaryTable materials={materials} orderQuantity={itemQuantityOrdered} /> : <p style={{textAlign:'center'}}>Loading....</p>}
+                    {!isCalculating ? <OrderSummaryTable materials={materials} orderQuantity={itemQuantityOrdered} /> : <p style={{textAlign:'center'}}>No data....</p>}
                 </Col>
             </Row>
         </div>

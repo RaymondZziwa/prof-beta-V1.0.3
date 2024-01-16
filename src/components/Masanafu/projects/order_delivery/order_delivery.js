@@ -92,7 +92,7 @@ const OrderDelivery = () => {
                 <Navbar />
             </Col>
             <div className="col align-self-center" style={{marginTop:'40px'}}>
-                <h1 style={{textAlign:'center'}}> Projects Order Delivery Form</h1>
+                <h1 style={{textAlign:'center'}}> PROJECTS ORDER DELIVERY FORM</h1>
                 <div className="form-floating mb-3">
                     <input className="form-control" id="floatingInput" placeholder="Order-Id" style={{ color: "#8CA6FE" }} onChange={orderIdInput} required />
                     <label for="floatingInput">Order-Id</label>
@@ -101,7 +101,7 @@ const OrderDelivery = () => {
                 <Row>
                     <Col sm='12' md='4' lg='4' xl='4'>
                         <h3 style={{textAlign:'center'}}>Order Details</h3>
-                            <table className="table table-dark" style={{ marginTop: '2px' }}>
+                            <table className="table table-light" style={{ marginTop: '2px' }}>
                                 <thead>
                                     <tr>
                                         <th scope="col">Name</th>
@@ -125,7 +125,7 @@ const OrderDelivery = () => {
                                 </tbody>
                             </table>
                             <h3 style={{textAlign:'center'}}>Past Order Deliveries</h3>
-                            <table className="table table-dark" style={{ marginTop: '2px' }}>
+                            <table className="table table-light" style={{ marginTop: '2px' }}>
                                 <thead>
                                     <tr>
                                         <th scope="col">Delivery Date</th>
@@ -150,7 +150,7 @@ const OrderDelivery = () => {
                             </table>
 
                             <h3 style={{textAlign:'center'}}>Order Status</h3>
-                            <table className="table table-dark" style={{ marginTop: '2px' }}>
+                            <table className="table table-light" style={{ marginTop: '2px' }}>
                                 <thead>
                                     <tr>
                                         <th scope="col">Quantity Ordered</th>
@@ -181,10 +181,6 @@ const OrderDelivery = () => {
                                 <input className="form-control" id="floatingInput" placeholder="Order-Id" style={{ color: "#8CA6FE" }} value={deliveryDate} required readOnly/>
                                 <label for="floatingInput">Date Of Delivery</label>
                             </div>
-                            {/* <div className="form-floating mb-3">
-                                <input type='text' className="form-control" id="floatingInput" placeholder="Order-Id" style={{ color: "#8CA6FE" }}  onChange={handleDeliveredItemChange} required />
-                                <label for="floatingInput">Delivered Item Name</label>
-                            </div> */}
                             <div className="form-floating mb-3">
                                 <input type='number' className="form-control" id="floatingInput" placeholder="Order-Id" onChange={itemQuantityDeliveredHandler} style={{ color: "#8CA6FE" }} min='0' required/>
                                 <label for="floatingInput">Item Quantity Delivered</label>

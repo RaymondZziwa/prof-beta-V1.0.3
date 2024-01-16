@@ -20,12 +20,6 @@ const FarmDashboard = () => {
                         Seed Requests Records
                     </div>
                 </Link> 
-                {/* <Link className="tab_nav" to="/farmrequestsrecords">
-                    <div className="mb-3 mclickable_option">
-                        Farm Requests Records
-                    </div>
-                </Link> */}
-
                 <Link className="tab_nav" to="/managebatch">
                     <div className="mb-3 mclickable_option">
                         Start / Manage Batches

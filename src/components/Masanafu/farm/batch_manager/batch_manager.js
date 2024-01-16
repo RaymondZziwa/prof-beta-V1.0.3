@@ -31,14 +31,12 @@ const ManageBatch = () => {
                 <Col className="col align-self-center" style={{marginTop:'60px'}}>
                     <h3 style={{textAlign:'center'}}>Start / Update Batch </h3>
 
-                    <div className="form-floating mb-3">
-                        <select className="form-select" aria-label="Default select example" style={{ height: "60px", color: "#8CA6FE" }} onChange={formTypeHandler} required>
+                    <select className="form-select" aria-label="Default select example" style={{ height: "40px", color: "#8CA6FE" }} onChange={formTypeHandler} required>
                         <option defaultValue>Choose form type</option>
                             <option value='register'>Start</option>
                             <option value='monitor'>Update</option>
-                        </select>
-                    </div>
-
+                    </select>
+                    
                     <Form>
                         {formType === 'register' && 
                             <StartBatchProcess /> 

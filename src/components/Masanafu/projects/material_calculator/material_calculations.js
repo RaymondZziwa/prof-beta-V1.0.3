@@ -3,10 +3,6 @@ import { useEffect } from 'react';
 
 const OrderSummaryTable = ({ materials, orderQuantity }) => {
 
-  useEffect(()=>{
-    console.log('materials', materials)
-    console.log('orderQuantity', orderQuantity)
-  })
   const totals = materials.map(material => {
     const totalQuantity = material.itemQuantity * orderQuantity;
     const totalCost = totalQuantity * material.unitPrice;
