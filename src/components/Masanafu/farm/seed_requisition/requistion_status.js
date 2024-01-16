@@ -8,14 +8,28 @@ import { faCircleChevronLeft, faCircleChevronRight } from "@fortawesome/free-sol
 const RequisitionStatus = () => {
     const [ordersList, setOrdersList] = useState([])
     const [isOrdersListLoading, setisOrdersListLoading] = useState(true)
-    const [currentPage, setCurrentPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState(1)
+    const [filteredData, setFilteredData] = useState([])
+    const [startIndex, setStartIndex] = useState(0)
+    const [endIndex, setEndIndex] = useState(0)
+    const [totalPages, setTotalPages] = useState(0)
 
     const itemsPerPage = 3
 
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
+    useEffect(()=>{
+        if(filteredData.length > 0){
+            setStartIndex((currentPage - 1) * itemsPerPage)
+            setEndIndex(startIndex + itemsPerPage)
 
-    const totalPages = Math.ceil(ordersList.length / itemsPerPage)
+            setTotalPages(Math.ceil(filteredData.length / itemsPerPage))
+
+        }else{
+            setStartIndex((currentPage - 1) * itemsPerPage)
+            setEndIndex(startIndex + itemsPerPage);
+
+            setTotalPages(Math.ceil(ordersList.length / itemsPerPage))
+        }
+    },[filteredData, ordersList, currentPage, startIndex])
 
     const formatDate = (date) => {
         const day = date.getDate().toString().padStart(2, '0');
@@ -37,8 +51,10 @@ const RequisitionStatus = () => {
                 ...record,
                 date: new Date(record.date),
             }));
-            const sortedRecords = recordsWithDates.sort((a, b) => b.date - a.date);
+            const sortedRecords = recordsWithDates.sort((a, b) => b.date - a.date)
+
             setOrdersList(sortedRecords)
+            
             setisOrdersListLoading(false)
         }
         
@@ -47,6 +63,21 @@ const RequisitionStatus = () => {
     useEffect(() => {
         fetchOrders()
     }, [])
+
+    const filterData = (event) => {
+        let input = event.target.value
+        setCurrentPage(1)
+
+        if(ordersList.length > 0){
+            let FilteredRecords = ordersList.filter((record)=>{
+                return (record.status === input && record.requesterbranch === 'masanafu')
+            })
+
+            setFilteredData(FilteredRecords)
+        }
+
+    }
+
     return(
         <>
             <div className='container-fluid'>
@@ -56,6 +87,16 @@ const RequisitionStatus = () => {
                     </Col>
                     <Col sm='12' md='10' lg='10' xl='10'>
                         <h2 style={{textAlign:'center', marginTop: '100px'}}>SEEDS REQUESTS RECORDS</h2>
+                        <h5>Filter by status:</h5>
+                        <span>
+                                    <select className="form-select" aria-label="Default select example" style={{ height: "40px" }} onChange={filterData}>
+                                        <option defaultValue>Select Status</option>
+                                        <option value="">All</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="approved">Approved</option>
+                                        <option value="rejected">Rejected</option>
+                                    </select>
+                        </span>
                         <table className="table table-light" style={{ marginTop: '10px' }}>
                             <thead >
                                 <tr>
@@ -71,7 +112,7 @@ const RequisitionStatus = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {!isOrdersListLoading ? ordersList.slice(startIndex, endIndex).map((item) => (
+                                {(!isOrdersListLoading && filteredData.length === 0)  ? ordersList.slice(startIndex, endIndex).map((item) => (
                                     <tr>
                                         <td>{item.requisitionid}</td>
                                         <td>{formatDate(item.date)}</td>
@@ -103,7 +144,39 @@ const RequisitionStatus = () => {
                                         <td>{item.comment}</td>
                                     </tr>
                                 ))
-                                : <tr><td>{ordersList}</td></tr>}
+                                : 
+                                filteredData.slice(startIndex, endIndex).map((item) => (
+                                    <tr>
+                                        <td>{item.requisitionid}</td>
+                                        <td>{formatDate(item.date)}</td>
+                                        <td>{item.batchno}</td>
+                                        <td>{item.requesterrole}</td>
+                                        <td>{item.requestedby}</td>
+                                        <td>{item.additionalinfo}</td>
+                                        <td>
+                                            <table className="table table-light" style={{ marginTop: '2px' }}>
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Item Name</th>
+                                                        <th scope="col">Quantity</th>
+                                                        <th scope="col">Units Of Measurement</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody style={{ textAlign: 'center' }}>
+                                                    {JSON.parse(item.itemsrequested).map(( itemrequested) =>
+                                                        <tr>
+                                                            <td>{itemrequested.itemName}</td>
+                                                            <td>{itemrequested.itemQuantity}</td>
+                                                            <td>{itemrequested.mUnits}</td>
+                                                        </tr>
+                                                    )}
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                        <td>{item.status}</td>
+                                        <td>{item.comment}</td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
                         {totalPages > 1 && (
