@@ -80,7 +80,7 @@ const StartBatchProcess = () => {
                                         <tr>
                                             <td>{item.batchno}</td>
                                             <td>
-                                                <table className="table table-dark" style={{ marginTop: '2px' }}>
+                                                <table className="table table-light" style={{ marginTop: '2px' }}>
                                                     <thead>
                                                         <tr>
                                                             <th scope="col">Item Name</th>

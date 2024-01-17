@@ -81,8 +81,6 @@ const UpdateBatchStatus = () => {
     
     return(
      <>
-            {status?.type === 'success' && <span style={{ margin: '20px' }} class="alert alert-success" role="alert">Operation Successful</span>}
-            {status?.type === 'error' && <span style={{ margin: '20px' }} class="alert alert-danger" role="alert">Error!</span>}
             <div className="form-floating mb-3" style={{marginBottom:'20px'}}>
                 <input className="form-control" id="floatingInput" placeholder="Order-Id" style={{ color: "#8CA6FE" }} onChange={batchNoHandler} required />
                 <label for="floatingInput">Batch Number</label>

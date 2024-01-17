@@ -271,6 +271,7 @@ import MasanafuProjectsMgtMenu from './components/Admin/masanafu_administration/
 import MasanafuProductionMgtMenu from './components/Admin/masanafu_administration/production_mgt';
 import MasanafuGeneralStoreMgtMenu from './components/Admin/masanafu_administration/general_store';
 import MasanafuExternalReceiptsPOS from './components/Masanafu/shop/external_receipts/issue_external_receipts/point_of_sale/pos';
+import RegisterFarmSeeds from './components/Masanafu/farm/register_seeds/register_seeds';
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -639,6 +640,9 @@ function App() {
 
           {authCtx.isLoggedIn && (<Route path="/chickenfarmmanagerdashboard">
             <ChickenMgtDashboard />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/registerfarmseeds">
+            <RegisterFarmSeeds />
           </Route>)}
 
           {authCtx.isLoggedIn && (<Route path="/masanafuchickenfeedsmgt">

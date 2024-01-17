@@ -10,6 +10,11 @@ const FarmDashboard = () => {
                 <Navbar />
             </Col>
             <div className="col align-self-center" style={{marginTop:'20px'}}>
+                <Link className="tab_nav" to="/registerfarmseeds">
+                    <div className="mb-3 mclickable_option">
+                        Register Seeds
+                    </div>
+                </Link>
                 <Link className="tab_nav" to="/requestseeds">
                     <div className="mb-3 mclickable_option">
                         Request Planting Seeds

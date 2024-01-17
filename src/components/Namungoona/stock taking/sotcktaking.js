@@ -2,96 +2,196 @@ import { Row, Col } from 'react-bootstrap'
 import Navbar from "../../side navbar/sidenav";
 import './stockpage.css'
 import axios from 'axios';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AdminNavbar from '../../side navbar/adminnavbar';
+import Select from 'react-select'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleChevronLeft, faCircleChevronRight } from "@fortawesome/free-solid-svg-icons"
+
 
 const Stocktaking = () => {
-    const [isLoading, setisLoading] = useState(true)
-    const [Data, setData] = useState()
+    const [isStockDataLoading, setIsStockDataLoading] = useState(true)
+    const [shopStock, setShopStock] = useState([])
+    const [inStock, setInStock] = useState([])
+    const [outOfStock, setOutOfStock] = useState([])
+    const [runningOutOfStock, setRunningOutOfStock] = useState([])
+    const [options, setOptions] = useState([])
+    const [allData, setAllData] = useState([])
+    const [searchedItem, setSearchedItem] = useState(null)
+    const [currentPage, setCurrentPage] = useState(1);
+    const [activeButton, setActiveButton] = useState(null)
+
+    const itemsPerPage = 8
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+
+    const totalPages = Math.ceil(shopStock.length / itemsPerPage)
+
+    useEffect(() => {
+        const fetchData = async () => {
+          if (isStockDataLoading) {
+            const res = await axios.post('http://82.180.136.230:3005/stocktaking', {
+              token: localStorage.getItem('token')
+            })
+            if (Array.isArray(res.data)) {
+              setIsStockDataLoading(false);
+              console.log(res.data)
+              setAllData(res.data)
+              setShopStock(res.data);
+  
+  
+              const transformedOptions = res.data.map((item) => ({
+                value: item.name,
+                label: `${item.name}     |       Quantity In Stock: ${item.quantityinstock} Pcs`,
+                productData: item
+              }))
+              setOptions(transformedOptions)
+            }
+          }
+        };
+      
+        fetchData();
+      }, [isStockDataLoading]);
 
 
-    const fetchOutOfStockItems = async event => {
-        event.preventDefault()
-        setData()
-        let stockFilter = "outofstock";
-        let res = await axios.post('http://82.180.136.230:3005/stocktaking', {
-            branch: localStorage.getItem('branch'),
-            department: localStorage.getItem('department'),
-            role: localStorage.getItem('role'),
-            stockFilter: stockFilter,
-            token: localStorage.getItem("token")
-        })
-        console.log(res.data)
-        setisLoading(false)
-        setData(res.data)
-    }
-
-    const fetchRunningOutOfStockItems = async event => {
-        event.preventDefault()
-        setData()
-        let stockFilter = "runningoutofstock";
-        let res = await axios.post('http://82.180.136.230:3005/stocktaking', {
-            branch: localStorage.getItem('branch'),
-            department: localStorage.getItem('department'),
-            role: localStorage.getItem('role'),
-            stockFilter: stockFilter,
-            token: localStorage.getItem("token")
-        })
-        console.log(res.data)
-        setisLoading(false)
-        setData(res.data)
-    }
-
-    const fetchInStockItems = async event => {
-        event.preventDefault()
-        setData()
-        let stockFilter = "instock";
-        let res = await axios.post('http://82.180.136.230:3005/stocktaking', {
-            branch: localStorage.getItem('branch'),
-            department: localStorage.getItem('department'),
-            role: localStorage.getItem('role'),
-            stockFilter: stockFilter,
-            token: localStorage.getItem("token")
-        })
-        if(res.status !== '204'){
-            setisLoading(false)
-            setData(res.data)
+      useEffect(() => {
+        if (shopStock) {
+          setInStock([]);
+          setRunningOutOfStock([]);
+          setOutOfStock([]);
+      
+          shopStock.forEach(item => {
+            if (item.quantityinstock > 50) {
+              setInStock(prevState => [...prevState, item]);
+            } else if (item.quantityinstock > 0) {
+              setRunningOutOfStock(prevState => [...prevState, item]);
+            } else {
+              setOutOfStock(prevState => [...prevState, item]);
+            }
+          });
         }
-        
-    }
+      }, [shopStock]);
+
+      const handleButtonClick = (buttonName) => {
+        setActiveButton(buttonName)
+      }
+
+      const filterOutOfStock = event => {
+        event.preventDefault()
+        setCurrentPage(1)
+        handleButtonClick('outOfStock')
+        const filteredItems = allData.filter((item) => item.quantityinstock === 0);
+        setShopStock(filteredItems);
+      }
+
+      const filterRunningOutOfStock = event => {
+        event.preventDefault()
+        setCurrentPage(1)
+        handleButtonClick('runningOutOfStock')
+        const filteredItems = allData.filter(
+          (item) => item.quantityinstock > 0 && item.quantityinstock <= 10
+        );
+        setShopStock(filteredItems);
+      }
+
+      const filterInStock = event => {
+        event.preventDefault()
+        setCurrentPage(1)
+        handleButtonClick('inStock')
+        const filteredItems = allData.filter((item) => item.quantityinstock > 10);
+        setShopStock(filteredItems);
+      }
+  
+
+
 
     return (
-        <div className='container-fluid'>
-            <Row>
-                <Col sm='12' md='12' lg='12' xl='12'>
-                    {localStorage.getItem("branch") !== 'admin' ? <Navbar /> : <AdminNavbar />}
-                    <ul className='stocktakingnavigation' style={{ marginTop: '50px' }}>
-                        <li>
-                            <button className='btn btn-danger' onClick={fetchOutOfStockItems}>Out of Stock</button>
-                        </li>
-                        <li>
-                            <button className='btn btn-success' onClick={fetchRunningOutOfStockItems}>Running Out of Stock</button>
-                        </li>
-                        <li>
-                            <button className='btn btn-primary' onClick={fetchInStockItems}>In Stock</button>
-                        </li>
-                    </ul>
-                    <table className="table table-dark">
+        <>
+        <Row>
+            <Col sm='12' md='12' lg='12' xl='12'>
+                {localStorage.getItem("branch") !== 'admin' ? <Navbar /> : <AdminNavbar />}
+            </Col>
+        </Row>
+        <Row className='row justify-content-center' style={{marginTop:'60px'}}>
+            <Col className='col-8'>
+                <h1 style={{textAlign:'center'}}>Namungoona Shop Stock Taking</h1>
+                <button className={`btn-selector ${activeButton === 'runningOutOfStock' ? 'active' : ''}`} style={{margin:'20px', borderRadius:'10px', height:'50px', width:'250px'}} onClick={filterRunningOutOfStock}>Running Out Of Stock</button>
+                <button className={`btn-selector ${activeButton === 'outOfStock' ? 'active' : ''}`} style={{margin:'20px', borderRadius:'10px', height:'50px', width:'250px'}} onClick={filterOutOfStock}>Out Of Stock</button>
+                <button className={`btn-selector ${activeButton === 'inStock' ? 'active' : ''}`} style={{margin:'20px', borderRadius:'10px', height:'50px', width:'250px' }} onClick={filterInStock}>In Stock</button>
+            </Col>
+        </Row>
+        <Row className='row justify-content-center' >
+            <Col className='col-10'>
+                <Select
+                value={searchedItem}
+                options={options}
+                isSearchable
+                placeholder="Search an item"
+                /> 
+                <div>
+                <table className="table table-light" style={{textAlign:'center'}}>
                         <thead>
                             <tr>
-                                <th scope="col">Item Name</th>
-                                <th scope="col">Quantity In Stock</th>
-                                <th scope="col">Unit Of Measurement</th>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                            <th>Unit</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {Array.isArray(Data) ? Data.map((item => (
-                                <tr><td>{item.name}</td><td>{item.quantityinstock}</td><td>{item.measurementunits}</td></tr>))) : <td><tr>There are no items matching this criteria</tr></td>}
+                                {searchedItem === null || Object.keys(searchedItem).length === 0 ? (
+                                    shopStock && shopStock.length > 0 ? (
+                                        shopStock
+                                        .slice(startIndex, endIndex)
+                                        .map((item, index) => {
+                                            const globalIndex = startIndex + index + 1; // Calculate the global index
+
+                                            return (
+                                            <tr key={item.name}>
+                                                <td>{item.name}</td>
+                                                <td>{item.quantityinstock}</td>
+                                                <td>{item.measurementunits}</td>
+                                            </tr>
+                                            );
+                                        })
+                                    ) : (
+                                        <tr>
+                                        <td colSpan="4" style={{ textAlign: 'center' }}>
+                                            There are no items matching this criteria.
+                                        </td>
+                                        </tr>
+                                    )
+                                    ) : (
+                                    searchedItem && searchedItem.length > 0 ? (
+                                        searchedItem.map((item, index) => (
+                                        <tr key={item.name}>
+                                            <td>{item.productData.name}</td>
+                                            <td>{item.productData.quantityinstock}</td>
+                                            <td>{item.productData.measurementunits}</td>
+                                        </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                        <td colSpan="4" style={{ textAlign: 'center' }}>
+                                            No items found for the search criteria.
+                                        </td>
+                                        </tr>
+                                    )
+                                    )}
                         </tbody>
+
                     </table>
-                </Col>
-            </Row>
-        </div>
+                    {totalPages > 1 && (
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
+                            <FontAwesomeIcon icon={faCircleChevronLeft} style={{color: 'blue',padding: '10px 20px',border: 'none',borderRadius: '5px',marginLeft: '10px',cursor: 'pointer', fontSize:'40px'}} disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}/>
+                        <span style={{ margin: '0 10px', color:'blue' }}>Page {currentPage} of {totalPages}</span>
+                            <FontAwesomeIcon icon={faCircleChevronRight} style={{color: 'blue',padding: '10px 20px',border: 'none',borderRadius: '5px',marginLeft: '10px',cursor: 'pointer', fontSize:'40px'}} disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}/>
+                        </div>
+                        )}
+                </div>
+            </Col>
+        </Row>
+        </>
     );
 }
 
