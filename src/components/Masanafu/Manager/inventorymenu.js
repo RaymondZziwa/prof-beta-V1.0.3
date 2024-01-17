@@ -10,7 +10,8 @@ const InventoryMenu = () => {
                         <Navbar />
                     </Col>
                     <Col sm='12' md='7' lg='7' xl='7'>
-                        <div className="container min-vh-50 d-flex  align-items-center">                        <div style={{ padding: "30px", borderRadius: "10px" }}>
+                        <div className="container min-vh-50 d-flex  align-items-center"> 
+                         <div style={{ padding: "30px", borderRadius: "10px" }}>
                             <Link className="tab_nav" to="/manageinventory">
                                 <div className="mb-3 clickable_option">
                                     Save New Production Item

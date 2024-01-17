@@ -192,6 +192,7 @@ app.post('/registeritem', (req, res) => {
             res.status(403).send("You are not authorized to perform this action.");
         } else {
             const name = req.body.itemName
+            const category = req.body.category
             //missing code to check if item already exists
             db.query('SELECT * FROM inventory WHERE name = ?;', name, function (error, results) {
                 // If there is an issue with the query, output the error
@@ -200,8 +201,8 @@ app.post('/registeritem', (req, res) => {
                 if (results.length > 0) {
                     res.send('This item is already registered.')
                 } else {
-                    const sqlInsert = "Insert into inventory(name) values(?)"
-                    db.query(sqlInsert, [name], (err) => {
+                    const sqlInsert = "Insert into inventory(name, category) values(?, ?)"
+                    db.query(sqlInsert, [name, category], (err) => {
                         if (err) {
                             console.log(err)
                         } else {
@@ -254,11 +255,11 @@ app.post('/itemlist', (req, res) => {
         if (err) {
             res.status(403).send("You are not authorized to perform this action.");
         } else {
-            db.query('SELECT * from inventory;', (error, results) => {
+            let category = 'seed'
+            db.query('SELECT * from inventory WHERE category = ?', category, (error, results) => {
                 if (error) throw (error);
 
                 if (results.length > 0) {
-                    console.log(results)
                     res.send(results)
                 } else {
                     res.send('There are no saved items.')
@@ -777,8 +778,8 @@ app.post('/stocktaking', (req, res) => {
                         res.status(204).send('There are no items that are out of stock.');
                     }
                 })
-            } else if (branch === 'namungoona' && stockFilter === 'outofstock') {
-                db.query('SELECT * FROM store WHERE quantityinstock = 0;', (error, results) => {
+            } else if (branch === 'namungoona') {
+                db.query('SELECT * FROM store;', (error, results) => {
                     if (error) throw (error);
 
                     if (results.length > 0) {
@@ -810,17 +811,6 @@ app.post('/stocktaking', (req, res) => {
                         res.status(204).send('There are no items that are running out of stock.');
                     }
                 })
-            } else if (branch === 'namungoona' && stockFilter === 'runningoutofstock') {
-                db.query('SELECT * FROM store WHERE quantityinstock < ? AND quantityinstock > 0;', roos, (error, results) => {
-                    if (error) throw (error);
-
-                    if (results.length > 0) {
-                        console.log(results)
-                        res.send(results)
-                    } else {
-                        res.status(204).send('There are no items that are running out of stock.');
-                    }
-                })
             } else if (branch === 'masanafu' && department === 'production' && role === "custodian" && stockFilter === 'instock') {
                 db.query('SELECT * FROM mgeneralstore WHERE quantityinstock > ?;', roos, (error, results) => {
                     if (error) throw (error);
@@ -843,18 +833,7 @@ app.post('/stocktaking', (req, res) => {
                         res.status(204).send('All items are out or running out of stock');
                     }
                 })
-            } else if (branch === 'namungoona' && stockFilter === 'instock') {
-                db.query('SELECT * FROM store WHERE quantityinstock > ?;', roos, (error, results) => {
-                    if (error) throw (error);
-
-                    if (results.length > 0) {
-                        console.log(results)
-                        res.send(results)
-                    } else {
-                        res.status(204).send('All items are out or running out of stock');
-                    }
-                })
-            } else {
+            }else {
                 console.log('Failed Operation due to empty parameters.')
             }
         }
@@ -1022,7 +1001,6 @@ app.post('/requestseeds', (req, res) => {
                 if (err) {
                     console.log(err)
                 } else {
-                    console.log('success')
                     res.send('Operation Successful');
                 }
             })
@@ -1687,6 +1665,26 @@ app.post('/fetchallmasanafushopinventory', (req, res) => {
 })
 
 
+//fetch all registered product names
+app.post('/fetchallshopproducts', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            db.query('SELECT * FROM shopProducts', (error, results) => {
+                //if the query is faulty , throw the error
+                if (error) console.log(error);
+                //if account exists
+                if (results.length > 0) {
+                    res.send(results)
+                } else {
+                    res.send('No data found.')
+                }
+            })
+        }
+    })
+})
+
 //route to fetch product data from db
 app.post('/fetchallshopinventory', (req, res) => {
     jwt.verify(req.body.token, 'SECRETKEY', (err) => {
@@ -1848,11 +1846,13 @@ app.post('/fetchordermaterialdata', (req, res) => {
                 if (error) console.log(error);
                 //if account exists
                 if (results.length > 0) {
+                    console.log(results)
                     const id = results[0].id
                     db.query('SELECT * FROM requirements WHERE machineid = ?;', id , (error, results) => {
                         if (error) console.log(error)
 
                         if (results.length > 0) {
+                            console.log(results)
                             const itemsRequired = JSON.parse(results[0].itemsrequired);
                             const itemNames = itemsRequired.map(item => item.itemName);
 
@@ -1877,36 +1877,6 @@ app.post('/fetchordermaterialdata', (req, res) => {
                             itemNames.forEach((itemName, index) => {
                             fetchUnitPrice(itemName, index);
                             });
-                            // //res.send(results)
-                            // const itemsRequired = JSON.parse(results[0].itemsrequired)
-                            // const itemNames = itemsRequired.map(item=> item.itemName)
-                            
-                            // const fetchUnitPrice = (itemName, index) => {
-                            //     db.query('SELECT unitPrice FROM materials WHERE name = ?;', itemName, (error, unitPriceResults) => {
-                            //       if (error) {
-                            //         console.log(error);
-                            //         return;
-                            //       }
-                          
-                            //       const unitPrice = unitPriceResults[0] ? unitPriceResults[0].unitPrice : null;
-                            //       itemsRequired[index].unitPrice = unitPrice; // Add unitPrice to the respective item in itemsRequired array
-                          
-                            //       if (index === itemNames.length - 1) {
-                            //         // All unit prices fetched, send the modified results
-                            //         res.send(results);
-                            //       }
-                            //     });
-                            //   };
-                          
-                            //   itemNames.forEach((itemName, index) => {
-                            //     fetchUnitPrice(itemName, index);
-                            //     })
-                            // itemNames.map(itemName => {
-                            //     db.query('SELECT unitPrice FROM materials WHERE name = ?;', itemName , (error, results) => {
-                            //         if (error) console.log(error)
-                                    
-                            //     })
-                            // })
                         } else {
                             res.send('No data found.')
                         }    

@@ -6,10 +6,15 @@ import Navbar from "../../side navbar/sidenav";
 const FarmDashboard = () => {
     return (
         <Row>
-            <Col sm='12' md='2' lg='2' xl='2'>
+            <Col sm='12' md='1' lg='1' xl='1'>
                 <Navbar />
             </Col>
             <div className="col align-self-center" style={{marginTop:'20px'}}>
+                <Link className="tab_nav" to="/registerfarmseeds">
+                    <div className="mb-3 mclickable_option">
+                        Register Seeds
+                    </div>
+                </Link>
                 <Link className="tab_nav" to="/requestseeds">
                     <div className="mb-3 mclickable_option">
                         Request Planting Seeds
@@ -17,24 +22,14 @@ const FarmDashboard = () => {
                 </Link>
                 <Link className="tab_nav" to="/farmrequisitionstatus">
                     <div className="mb-3 mclickable_option">
-                        Planting Seeds Requests Status
+                        Seed Requests Records
                     </div>
-                </Link>
-                <Link className="tab_nav" to="/farmrequestsrecords">
-                    <div className="mb-3 mclickable_option">
-                        Farm Requests Records
-                    </div>
-                </Link>
+                </Link> 
                 <Link className="tab_nav" to="/managebatch">
                     <div className="mb-3 mclickable_option">
                         Start / Manage Batches
                     </div>
                 </Link>
-                {/* <Link className="tab_nav" to="/chickenmgtdashboard">
-                    <div className="mb-3 mclickable_option">
-                        Chicken Farm Management
-                    </div>
-                </Link> */}
                 <Link className="tab_nav" to="/startbatchfrommothergarden">
                     <div className="mb-3 mclickable_option">
                         Start Batch From Mother Garden
@@ -51,7 +46,7 @@ const FarmDashboard = () => {
                     </div>
                 </Link>
             </div>
-            <Col sm='12' md='2' lg='2' xl='2'>
+            <Col sm='12' md='1' lg='1' xl='1'>
             </Col>
         </Row>
     )

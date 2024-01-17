@@ -8,15 +8,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const StartBatchFromMotherGarden = () => {
     const [status, setStatus] = useState({})
-    const [itemList, setitemList] = useState()
+    const [itemList, setitemList] = useState() 
     const [isItemListLoading, setisItemListLoading] = useState(true)
-    const [orderId, setOrderId] = useState('')
     const [itemsRequested, setItemsRequested] = useState([{ itemName: '', itemQuantity: '', mUnits: '' },])
     const [additionalInfo, setAdditionalinfo] = useState('')
-
-    const branchRef = useRef()
-    const deptRef = useRef()
-    const roleRef = useRef()
 
     const additionalInfoInput = event => {
         event.preventDefault()
@@ -74,10 +69,10 @@ const StartBatchFromMotherGarden = () => {
 
     return(
         <Row>
-                <Col sm='12' md='2' lg='2' xl='2'>
+                <Col sm='12' md='1' lg='1' xl='1'>
                     <Navbar />
                 </Col>
-                <Col className="col align-self-center">
+                <Col className="col align-self-center" style={{textAlign:'center'}}>
                     <h2 style={{ marginTop: '60px', fontSize: '30px', textAlign: 'center' }}>Start Batch Form</h2>
                         <Form>    
                             {status?.type === 'success' && <span style={{ margin: '20px' }} class="alert alert-success" role="alert">Batch successfully registered</span>}
@@ -130,9 +125,9 @@ const StartBatchFromMotherGarden = () => {
                                                             <option selected>Measurement</option>
                                                             <option value="Pcs">Pcs</option>
                                                         </select>
-                                            </div>
-                                            <FontAwesomeIcon onClick={addNewInput} icon={faPlusCircle} style={{ color: 'green', fontSize: '30px', cursor: 'pointer' }} />
-                                            <FontAwesomeIcon onClick={() => removeInput(index)} icon={faMinusCircle} style={{ color: 'red', fontSize: '30px', marginLeft: '2px', cursor: 'pointer' }} />
+                                            </div><br></br>
+                                            <FontAwesomeIcon onClick={addNewInput} icon={faPlusCircle} style={{ color: 'green', fontSize: '50px', cursor: 'pointer' }} />
+                                            <FontAwesomeIcon onClick={() => removeInput(index)} icon={faMinusCircle} style={{ color: 'red', fontSize: '50px', marginLeft: '2px', cursor: 'pointer' }} />
                                         </div>
                                     ))
                                     }
@@ -143,28 +138,13 @@ const StartBatchFromMotherGarden = () => {
                                         <label for="floatingInput">Additional Information</label>
                                     </div>
                                 </div>
-                                {/* <h3 style={{ marginTop: '10px', fontSize: '30px', textAlign: 'center' }}>Sender's Data</h3>
-                                <div className="form-floating mb-3">
-                                    <input className="form-control" id="floatingInput" placeholder="Order-Id" style={{ color: "#8CA6FE" }} value={localStorage.getItem('branch')} required readOnly />
-                                    <label for="floatingInput">Order From ( Branch )</label>
-                                </div>
-                                <div className="form-floating mb-3">
-                                    <input className="form-control" id="floatingInput" placeholder="Order-Id" style={{ color: "#8CA6FE" }} value={localStorage.getItem('department')} required readOnly />
-                                    <label for="floatingInput">Ordered By ( Department )</label>
-                                </div>
-                                <div className="form-floating mb-3">
-                                    <input className="form-control" id="floatingInput" placeholder="Order-Id" style={{ color: "#8CA6FE" }} value={localStorage.getItem('role')} required readOnly />
-                                    <label for="floatingInput">Ordered By ( Role )</label>
-                                </div>
-                                <div className="form-floating mb-3">
-                                    <input className="form-control" id="floatingInput" placeholder="Order-Id" style={{ color: "#8CA6FE" }} value={localStorage.getItem('username')} required readOnly />
-                                    <label for="floatingInput">Ordered By ( username )</label>
-                                </div> */}
                                 <div className="mb-3" style={{ textAlign: 'center' }}>
                                     <button style={{ width: "50%", border: "none", color: "white", height: "45px", backgroundColor: "#3452A3", marginTop: '10px' }} onClick={submitRequestHandler}>REGISTER BATCH</button>
                                 </div>
                             </div>
                         </Form>
+                </Col>
+                <Col sm='12' md='1' lg='1' xl='1'>
                 </Col>
             </Row>
     )

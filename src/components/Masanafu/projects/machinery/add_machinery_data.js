@@ -14,6 +14,7 @@ const AddmachineryData = () => {
     const [isFetchedEquipmentLoading, setIsFetchedEquipmentLoading] = useState(true)
     const [fetchedEquipment, setFetchedEquipment] = useState([])
     const [status, setStatus] = useState('')
+    
     const fetchAllMaterials = async () => {
         let res = await axios.post('http://82.180.136.230:3005/fetchallmaterials',{
             token: localStorage.getItem('token')
@@ -23,7 +24,6 @@ const AddmachineryData = () => {
             setIsFetchedEquipmentLoading(false)
             setFetchedEquipment(res.data)
         }
-        console.log(res.data)
     }
 
     const fetchAllProjects = async () => {
@@ -86,7 +86,7 @@ const AddmachineryData = () => {
         </Col>
         <div className="col align-self-center" style={{marginTop:'40px'}}>
         <div>
-             <h1 style={{textAlign:'center'}}>Save Project Material Data</h1>
+             <h1 style={{textAlign:'center'}}>SAVE PROJECTS MATERIAL DATA</h1>
              {(status !== '' && status === 'success') && <span style={{ margin: '20px' }} class="alert alert-success" role="alert">Success</span>}
              {(status !== '' && status !== 'success') && <span style={{ margin: '20px' }} class="alert alert-danger" role="alert">Error</span>}
              

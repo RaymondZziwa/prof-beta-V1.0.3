@@ -31,13 +31,11 @@ const UpdateBatchStatus = () => {
 
     const fetchBatchData = async event => {
         event.preventDefault()
-        console.log('sent')
-        
+
         let res = await axios.post('http://82.180.136.230:3005/fetchdatafromfarm',{
             token: localStorage.getItem('token'),
-            batchNo: batchNo.trim()
+            batchNo: batchNo.trim().toUpperCase()
         })
-        console.log('btc' , res.data)
 
         if(typeof res.data === "string"){
             setFetchErr('No records found.')
@@ -71,8 +69,6 @@ const UpdateBatchStatus = () => {
 
             
 
-         console.log(JSON.stringify(itemsPostRequested))
-
          let res = await axios.post('http://82.180.136.230:3005/savebatchstage',{
              token: localStorage.getItem('token'),
              batchNumber: batchNo,
@@ -85,15 +81,14 @@ const UpdateBatchStatus = () => {
     
     return(
      <>
-            {status?.type === 'success' && <span style={{ margin: '20px' }} class="alert alert-success" role="alert">Operation Successful</span>}
-            {status?.type === 'error' && <span style={{ margin: '20px' }} class="alert alert-danger" role="alert">Error!</span>}
-            <div className="form-floating mb-3">
+            <div className="form-floating mb-3" style={{marginBottom:'20px'}}>
                 <input className="form-control" id="floatingInput" placeholder="Order-Id" style={{ color: "#8CA6FE" }} onChange={batchNoHandler} required />
                 <label for="floatingInput">Batch Number</label>
                 <button style={{marginTop:'10px'}} className="btn btn-primary" onClick={fetchBatchData}>Retrieve Batch Data</button>
             </div>
-
-            <table className="table table-dark" style={{ marginTop: '50px' }}>
+            {status?.type === 'success' && <span style={{ margin: '20px' }} class="alert alert-success" role="alert">Operation Successful</span>}
+            {status?.type === 'error' && <span style={{ margin: '20px' }} class="alert alert-danger" role="alert">Error!</span>}
+            <table className="table table-light" style={{ marginTop: '50px' }}>
                             <thead style={{ textAlign: 'center' }}>
                                 <tr>
                                     <th scope="col">Batch Number</th>
@@ -108,7 +103,7 @@ const UpdateBatchStatus = () => {
                                         <tr>
                                             <td>{item.batchno}</td>
                                             <td>
-                                                <table className="table table-dark" style={{ marginTop: '2px' }}>
+                                                <table className="table table-light" style={{ marginTop: '2px' }}>
                                                     <thead>
                                                         <tr>
                                                             <th scope="col">Item Name</th>
