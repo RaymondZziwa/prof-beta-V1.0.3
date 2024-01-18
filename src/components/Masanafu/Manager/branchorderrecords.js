@@ -2,14 +2,21 @@ import { Row, Col } from "react-bootstrap";
 import Navbar from "../../side navbar/sidenav";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import ReactPaginate from "react-paginate"
-import '../../Namungoona/inventory crud/pagination.css'
-import arrowLeft from '../../../imgs/arrowleft.svg'
-import arrowRight from '../../../imgs/arrowright.svg'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleChevronLeft, faCircleChevronRight } from "@fortawesome/free-solid-svg-icons"
+
 
 const BranchOrderRecords = () => {
     const [ordersList, setOrdersList] = useState([])
     const [isOrdersListLoading, setisOrdersListLoading] = useState(true)
+    const [currentPage, setCurrentPage] = useState(1)
+
+    const itemsPerPage = 5
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+
+    const totalPages = Math.ceil(ordersList.length / itemsPerPage)
 
     const fetchOrders = async () => {
         const res = await axios.post('http://82.180.136.230:3005/branchorderrecords', {
@@ -35,24 +42,13 @@ const BranchOrderRecords = () => {
         return () => clearInterval(interval)
     })
 
-    const [itemsPerPage] = useState(4)
-    const [currentPage, setCurrentPage] = useState(1);
-
-    const indexOfLastPost = currentPage * itemsPerPage;
-    const indexOfFirstPost = indexOfLastPost - itemsPerPage;
-    const currentRecords = ordersList.slice(indexOfFirstPost, indexOfLastPost);
-
-    const paginate = ({ selected }) => {
-        setCurrentPage(selected + 1);
-     };
-  
     return (
         <>
-            <div className='container-fluid'>
-                <Row>
-                    <Col sm='12' md='2' lg='2' xl='2'></Col>
-                    <Col sm='12' md='8' lg='8' xl='8'>
-                        <table className="table table-dark" style={{ marginTop: '100px' }}>
+                <Row style={{marginTop:'60px'}}>
+                    <Col sm='12' md='1' lg='1' xl='1'></Col>
+                    <Col sm='12' md='10' lg='10' xl='10'>
+                        <h1 style={{textAlign:'center'}}>Namungoona Order Records</h1>
+                        <table className="table table-light" style={{ marginTop: '10px' }}>
                             <thead style={{ textAlign: 'center' }}>
                                 <tr>
                                     <th scope="col">Order Id</th>
@@ -67,7 +63,7 @@ const BranchOrderRecords = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {!isOrdersListLoading ? currentRecords.map(item => (
+                                {!isOrdersListLoading ? ordersList.slice(startIndex, endIndex).map(item => (
                                     <tr>
                                         <td>{item.orderid}</td>
                                         <td>{item.date}</td>
@@ -76,7 +72,7 @@ const BranchOrderRecords = () => {
                                         <td>{item.destinationbranch}</td>
                                         <td>{item.deliveredto}</td>
                                         <td>
-                                            <table className="table table-dark" style={{ marginTop: '2px' }}>
+                                            <table className="table table-light" style={{ marginTop: '2px' }}>
                                                 <thead>
                                                     <tr>
                                                         <th scope="col">Item Name</th>
@@ -102,24 +98,18 @@ const BranchOrderRecords = () => {
                                 : <tr><td>{ordersList}</td></tr>}
                             </tbody>
                         </table>
-
-                        <ReactPaginate
-                            onPageChange={paginate}
-                            pageCount={Math.ceil(ordersList.length / itemsPerPage)}
-                            previousLabel={<img src={arrowLeft} className = 'previous' alt="arrow-left"/>}
-                            nextLabel={<img src={arrowRight} className = 'next' alt="arrow-right"/>}
-                            containerClassName={'pagination'}
-                            pageLinkClassName={'page-number'}
-                            previousLinkClassName={'page-number'}
-                            nextLinkClassName={'page-number'}
-                            activeLinkClassName={'active'}
-                        />
+                        {totalPages > 1 && (
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
+                            <FontAwesomeIcon icon={faCircleChevronLeft} style={{color: 'blue',padding: '10px 20px',border: 'none',borderRadius: '5px',marginLeft: '10px',cursor: 'pointer', fontSize:'40px'}} disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}/>
+                        <span style={{ margin: '0 10px', color:'blue' }}>Page {currentPage} of {totalPages}</span>
+                            <FontAwesomeIcon icon={faCircleChevronRight} style={{color: 'blue',padding: '10px 20px',border: 'none',borderRadius: '5px',marginLeft: '10px',cursor: 'pointer', fontSize:'40px'}} disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}/>
+                        </div>
+                    )}
                     </Col>
-                    <Col sm='12' md='2' lg='2' xl='2'>
+                    <Col sm='12' md='1' lg='1' xl='1'>
                         <Navbar />
                     </Col>
                 </Row>
-            </div>
         </>
     )
 }

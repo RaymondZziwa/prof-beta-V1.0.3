@@ -1,6 +1,7 @@
 import { Row, Col, Form } from "react-bootstrap";
 import './forms.css'
 import Navbar from "../../side navbar/sidenav";
+import AdminNavbar from "../../side navbar/adminnavbar";
 import axios from "axios";
 import { useEffect, useState, useRef } from "react";
 
@@ -17,7 +18,6 @@ const Saveinventoryrecords = () => {
     const [recievedBy, setrecievedBy] = useState('')
     const [quantity, setquantity] = useState('')
     const [actualQuantity, setactualQuantity] = useState('')
-    const [damages, setdamages] = useState(0)
     const [mUnit, setmUnit] = useState('')
     const [tCategory, settCategory] = useState('')
     const [outputMUnint, setoutputMUnint] = useState('')
@@ -71,10 +71,7 @@ const Saveinventoryrecords = () => {
         event.preventDefault()
         setactualQuantity(event.target.value)
     }
-    const damagesInput = event => {
-        event.preventDefault()
-        setdamages(event.target.value)
-    }
+
     const recievedByInput = event => {
         event.preventDefault()
         setrecievedBy(event.target.value)
@@ -194,12 +191,11 @@ const Saveinventoryrecords = () => {
     }
 
     return (
-        <div className='container-fluid'>
-            <Row>
-                <Col sm='12' md='12' lg='12' xl='12'>
-                    <Navbar />
-                    <div className="container  d-flex align-items-center" style={{ marginTop: '50px' }}>
-                        <Form>
+        <Row style={{marginTop:'70px'}}>
+            <Col sm='12' md='12' lg='12' xl='12' style={{textAlign:'center'}}>
+                {localStorage.getItem("branch") !== 'admin' ? <Navbar /> : <AdminNavbar />}
+                <h1 style={{textAlign:'center'}}>Save Inventory Transaction</h1>
+                <Form>
                             {status?.type === 'success' && <span style={{ margin: '20px' }} class="alert alert-success" role="alert">Transaction saved</span>}
                             {status?.type === 'error' && <span style={{ margin: '20px' }} class="alert alert-danger" role="alert">Error! Transaction was not saved</span>}
                             <div style={{ marginTop: '20px' }}>
@@ -388,10 +384,8 @@ const Saveinventoryrecords = () => {
                                 </div>
                             </div>
                         </Form>
-                    </div>
-                </Col>
-            </Row>
-        </div>
+            </Col>
+        </Row>
     )
 }
 

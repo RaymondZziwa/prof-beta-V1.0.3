@@ -269,6 +269,25 @@ app.post('/itemlist', (req, res) => {
     })
 })
 
+app.post('/allitemslist', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            db.query('SELECT * from inventory', (error, results) => {
+                if (error) throw (error);
+
+                if (results.length > 0) {
+                    res.send(results)
+                } else {
+                    res.send('There are no saved items.')
+                }
+            })
+        }
+    })
+})
+
+
 //5. fetching item list from database ---route is tested and it is working as expected
 app.post('/fetchprojectsequipment', (req, res) => {
     jwt.verify(req.body.token, 'SECRETKEY', (err) => {
@@ -672,76 +691,20 @@ app.post('/inventoryrecords', (req, res) => {
         if (err) {
             res.status(403).send("You are not authorized to perform this action.");
         } else {
-            const branch = req.body.branch
-            const role = req.body.role
-            const department = req.body.department
-            let itemName = req.body.itemName
-            let categoryFilter = req.body.filter
-            let sourceBranch = req.body.sourceBranch
-            let destBranch = req.body.destBranch
-            let date = req.body.date
+            db.query('SELECT * FROM inventorytransactions', (error, results) => {
+                if (error) throw (error);
 
-            if (categoryFilter !== '' && sourceBranch == '' && destBranch == '' && date == '') {
-                db.query('SELECT * FROM inventorytransactions WHERE category = ? AND branch = ? AND department = ? AND authorizedbyrole = ?;', [categoryFilter, branch, department, role], (error, results) => {
-                    if (error) throw (error);
-
-                    if (results.length > 0) {
-                        console.log(results)
-                        res.send(results)
-                    } else {
-                        res.send(`There are no ${categoryFilter} records found.`)
-                    }
-                })
-            } else if (itemName !== "") {
-                db.query('SELECT * FROM inventorytransactions WHERE inventoryname = ? AND branch = ? AND department = ? AND authorizedbyrole = ?;', [itemName, branch, department, role], (error, results) => {
-                    if (error) throw (error);
-
-                    if (results.length > 0) {
-                        console.log(results)
-                        res.send(results)
-                    } else {
-                        res.send(`There are no records found.`)
-                    }
-                })
-            } else if (sourceBranch !== '') {
-                db.query('SELECT * FROM inventorytransactions WHERE sourcebranch = ? AND branch = ? AND department = ? AND authorizedbyrole = ?;', [sourceBranch, branch, department, role], (error, results) => {
-                    if (error) throw (error);
-
-                    if (results.length > 0) {
-                        console.log(results)
-                        res.send(results)
-                    } else {
-                        res.send(`There are no records found.`)
-                    }
-                })
-            } else if (destBranch !== '') {
-                db.query('SELECT * FROM inventorytransactions WHERE destinationbranch = ? AND branch = ? AND department = ? AND authorizedbyrole = ?;', [destBranch, branch, department, role], (error, results) => {
-                    if (error) throw (error);
-
-                    if (results.length > 0) {
-                        console.log(results)
-                        res.send(results)
-                    } else {
-                        res.send(`There are no records found.`)
-                    }
-                })
-            } else if (date !== '') {
-                db.query('SELECT * FROM inventorytransactions WHERE date = ? AND branch = ? AND department = ? AND authorizedbyrole = ?;', [date, branch, department, role], (error, results) => {
-                    if (error) throw (error);
-
-                    if (results.length > 0) {
-                        console.log(results)
-                        res.send(results)
-                    } else {
-                        res.send(`There are no records found.`)
-                    }
-                })
-            } else {
-                console.log('Failed Operation due to empty parameters.')
-            }
+                if (results.length > 0) {
+                    console.log(results)
+                    res.send(results)
+                } else {
+                    res.send({status:500, msg:'There are no records found.'})
+                }
+            })
         }
     })
 })
+
 
 
 //fetch stock taking records ---route is tested and it is working as expected
