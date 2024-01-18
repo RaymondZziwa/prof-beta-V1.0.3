@@ -105,7 +105,7 @@ const Viewinventoryrecords = () => {
             <Row style={{marginTop:'60px'}}>
                 <Col sm='12' md='12' lg='12' xl='12'>
                     {localStorage.getItem("branch") !== 'admin' ? <Navbar /> : <AdminNavbar />}
-                    <h1 style={{textAlign:'center'}}>Namungoona Inventory Records</h1>
+                    <h1 style={{textAlign:'center'}}>Inventory Records</h1>
                     <Form>
                         Filters:
                         <select class="form-select" id='fil' aria-label="Default select example" onChange={itemNameInput} required>
@@ -128,6 +128,7 @@ const Viewinventoryrecords = () => {
                             <option value="masanafu">Masanafu Branch</option>
                             <option value="buwama">Buwama Branch</option>
                             <option value="equatorial">Equatorial Branch</option>
+                            <option value="namungoona">Namungoona Branch</option>
                         </select>
                         <select class="form-select" id='fil' aria-label="Default select example" onChange={destBranchInput}>
                             <option value="">Destination Branch</option>

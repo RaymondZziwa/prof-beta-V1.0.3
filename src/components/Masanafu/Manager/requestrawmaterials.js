@@ -152,7 +152,7 @@ const RequestRawMaterialsForm = () => {
         <div className='container-fluid'>
             <Row>
                 <Col sm='2' md='2' lg='2' xl='2'></Col>
-                <Col sm='12' md='8' lg='8' xl='8'>
+                <Col sm='12' md='8' lg='8' xl='8' style={{textAlign:'center'}}>
                         <Form>
                             <h2 style={{ marginTop: '60px', fontSize: '40px', textAlign: 'center' }}>Request Raw Materials</h2>
                             {status?.type === 'success' && <span style={{ margin: '20px' }} class="alert alert-success" role="alert">Request successfully submitted</span>}
@@ -235,13 +235,10 @@ const RequestRawMaterialsForm = () => {
                                                             <option value="KG">Kilograms</option>
                                                             <option value="MLS">Milliliters</option>
                                                             <option value="Pcs">Pcs</option>
-                                                        </select>
-                                                        <FontAwesomeIcon onClick={() => removeInput(index)} icon={faMinusCircle} style={{ color: 'red', fontSize: '40px', marginLeft: '2px', cursor: 'pointer' , marginTop: '2px'}} /> 
-                                                        <FontAwesomeIcon onClick={addNewInput} icon={faPlusCircle} style={{ color: 'green', fontSize: '40px', cursor: 'pointer' , marginTop: '2px', marginLeft: '2px'}} />
-                                                    </div>
-                                                    <span>
-                                                         
-                                                    </span>
+                                                        </select> 
+                                                    </div><br></br>
+                                                    <FontAwesomeIcon onClick={() => removeInput(index)} icon={faMinusCircle} style={{ color: 'red', fontSize: '40px', marginLeft: '2px', cursor: 'pointer' , marginTop: '2px'}} /> 
+                                                    <FontAwesomeIcon onClick={addNewInput} icon={faPlusCircle} style={{ color: 'green', fontSize: '40px', cursor: 'pointer' , marginTop: '2px', marginLeft: '2px'}} />
                                             </div>
                                         ))
                                     }

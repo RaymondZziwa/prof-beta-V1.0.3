@@ -86,7 +86,7 @@ const RawMaterialRequestsRecords = () => {
     return (
                 <Row>
                     <Col sm='12' md='1' lg='1' xl='1'></Col>
-                    <Col sm='12' md='8' lg='8' xl='8'>
+                    <Col sm='12' md='10' lg='10' xl='10'>
                         <h2 style={{textAlign:'center',marginTop:'100px'}}>RAW MATERIAL REQUESTS RECORDS</h2>
                         <h5>Filter by status:</h5>
                         <span>
@@ -190,7 +190,7 @@ const RawMaterialRequestsRecords = () => {
                     </div>
                     )}
                     </Col>
-                    <Col sm='12' md='2' lg='2' xl='2'>
+                    <Col sm='12' md='1' lg='1' xl='1'>
                         <Navbar />
                     </Col>
                 </Row>

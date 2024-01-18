@@ -33,7 +33,9 @@ const Stocktaking = () => {
           if (isStockDataLoading) {
             const res = await axios.post('http://82.180.136.230:3005/stocktaking', {
               token: localStorage.getItem('token'),
-              branch: localStorage.getItem('branch')
+              branch: localStorage.getItem('branch'),
+              department: localStorage.getItem('department'),
+              role: localStorage.getItem('role')
             })
             if (Array.isArray(res.data)) {
               setIsStockDataLoading(false);
@@ -115,7 +117,7 @@ const Stocktaking = () => {
         </Row>
         <Row className='row justify-content-center' style={{marginTop:'60px'}}>
             <Col className='col-8'>
-                <h1 style={{textAlign:'center'}}>Namungoona Stock Taking</h1>
+                <h1 style={{textAlign:'center'}}>Stock Taking</h1>
                 <button className={`btn-selector ${activeButton === 'runningOutOfStock' ? 'active' : ''}`} style={{margin:'20px', borderRadius:'10px', height:'50px', width:'250px'}} onClick={filterRunningOutOfStock}>Running Out Of Stock</button>
                 <button className={`btn-selector ${activeButton === 'outOfStock' ? 'active' : ''}`} style={{margin:'20px', borderRadius:'10px', height:'50px', width:'250px'}} onClick={filterOutOfStock}>Out Of Stock</button>
                 <button className={`btn-selector ${activeButton === 'inStock' ? 'active' : ''}`} style={{margin:'20px', borderRadius:'10px', height:'50px', width:'250px' }} onClick={filterInStock}>In Stock</button>

@@ -25,7 +25,7 @@ const Saveinventoryrecords = () => {
     const dmgsRef = useRef()
 
     const fetchItems = async () => {
-        const res = await axios.post('http://82.180.136.230:3005/itemlist', {
+        const res = await axios.post('http://82.180.136.230:3005/allitemslist', {
             token: localStorage.getItem("token")
         })
         setitemList(res.data)

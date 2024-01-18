@@ -109,7 +109,7 @@ const MakeProjectsOrder = () => {
 
 
     const fetchItems = async () => {
-        const res = await axios.post('http://82.180.136.230:3005/itemlist', {
+        const res = await axios.post('http://82.180.136.230:3005/allitemslist', {
             token: localStorage.getItem("token")
         })
         setitemList(res.data)
@@ -145,22 +145,16 @@ const MakeProjectsOrder = () => {
             token: localStorage.getItem("token")
         }).then(() => setStatus({ type: 'success' }))
         .catch((err) => setStatus({ type: 'error', err }))
-
-      //  window.location.reload(false);
     }
 
     return(
-        <div className='container-fluid'>
-            <Row>
-                <Col sm='2' md='2' lg='2' xl='2'></Col>
-                <Col sm='12' md='8' lg='8' xl='8'>
-                    <div className="container  d-flex align-items-center" style={{ marginTop: '50px' }}>
-
-                        <Form>
-                            <h2 style={{ marginTop: '10px', fontSize: '50px', textAlign: 'center' }}>Place Projects Order</h2>
+            <Row style={{textAlign:'center'}}>
+                <Col sm='2' md='1' lg='1' xl='1'></Col>
+                <Col sm='12' md='10' lg='10' xl='10'>
+                    <h2 style={{ marginTop: '60px', textAlign: 'center' }}>Place Projects Order</h2>
                             {status?.type === 'success' && <span style={{ margin: '20px' }} class="alert alert-success" role="alert">Order Successfully Placed</span>}
                             {status?.type === 'error' && <span style={{ margin: '20px' }} class="alert alert-danger" role="alert">Error! Transaction was not saved</span>}
-                            <div style={{ marginTop: '20px' }}>
+                            <div style={{ marginTop: '10px' }}>
                                 <h3 style={{ marginTop: '10px', fontSize: '30px', textAlign: 'center' }}>Reciever's Data</h3>
                                 <select class="form-select" aria-label="Default select example" style={{ height: "60px", color: "#8CA6FE" }} ref={branchRef} onChange={fetchDepartmentData} required>
                                     <option selected>Order To ( Branch )</option>
@@ -190,22 +184,9 @@ const MakeProjectsOrder = () => {
                                     <input className="form-control" id="floatingInput" placeholder="Order-Id" style={{ color: "#8CA6FE" }} onChange={orderIdInput} required />
                                     <label for="floatingInput">Order Id</label>
                                 </div>
-                                <table className="table" style={{ marginTop: '10px' }}>
-                                    <thead>
-                                        <tr style={{ textAlign: 'center' }}>
-                                            <th scope="col">Item Name</th>
-                                            <th scope="col">Quantity</th>
-                                            <th scope="col">Unit Of Measurement</th>
-                                            <th scope="col">Action</th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-
                                         {itemsRequested.map((itemRequested, index) => (
 
-                                            <tr key={index}>
-                                                <td>
+                                            <div key={index}>
                                                     <div className="form-floating mb-3">
                                                         <select class="form-select"
                                                             name="itemName"
@@ -223,10 +204,7 @@ const MakeProjectsOrder = () => {
                                                                 ))}
                                                         </select>
                                                     </div>
-                                                </td>
-
-
-                                                <td>
+                                             
                                                     <div className="form-floating mb-3">
                                                         <input type="text"
                                                             className="form-control"
@@ -239,9 +217,7 @@ const MakeProjectsOrder = () => {
                                                             required />
                                                         <label for="floatingInput">Item Quantity</label>
                                                     </div>
-                                                </td>
-
-                                                <td>
+                                            
 
                                                     <div className="form-floating mb-3">
                                                         <select
@@ -259,24 +235,19 @@ const MakeProjectsOrder = () => {
                                                             <option value="KG">Kilograms</option>
                                                             <option value="Pcs">Pcs</option>
                                                         </select>
-                                                    </div>
-                                                </td>
-
-                                                <td>
-                                                    <FontAwesomeIcon onClick={addNewInput} icon={faPlusCircle} style={{ color: 'green', fontSize: '30px', cursor: 'pointer' }} />
-                                                    <FontAwesomeIcon onClick={() => removeInput(index)} icon={faMinusCircle} style={{ color: 'red', fontSize: '30px', marginLeft: '2px', cursor: 'pointer' }} />
-                                                </td>
-
-                                            </tr>
+                                                    </div><br></br>
+                                              
+                                                    <FontAwesomeIcon onClick={addNewInput} icon={faPlusCircle} style={{ color: 'green', fontSize: '40px', cursor: 'pointer' }} />
+                                                    <FontAwesomeIcon onClick={() => removeInput(index)} icon={faMinusCircle} style={{ color: 'red', fontSize: '40px', marginLeft: '2px', cursor: 'pointer' }} />
+                                             </div>  
 
                                         ))
                                         }
-                                    </tbody>
-                                </table>
+                                  
                                 <h3 style={{ marginTop: '10px', fontSize: '30px', textAlign: 'center' }}>Additional Information</h3>
                                 <div className="mb-3">
                                     <div className="form-floating mb-3">
-                                        <textarea type="text" className="form-control" rows="6" id="floatingInput" placeholder="johndoe" style={{ color: "#8CA6FE;", height: '200px', width: '500px' }} onChange={additionalInfoInput} />
+                                        <textarea type="text" className="form-control" rows="6" id="floatingInput" placeholder="johndoe" style={{ color: "#8CA6FE;", height: '200px', width: '300px' }} onChange={additionalInfoInput} />
                                         <label for="floatingInput">Additional Information</label>
                                     </div>
                                 </div>
@@ -303,14 +274,11 @@ const MakeProjectsOrder = () => {
                                     <button style={{ width: "50%", border: "none", color: "white", height: "45px", backgroundColor: "#3452A3", marginTop: '10px' }} onClick={submitRequestHandler}>SUBMIT REQUEST</button>
                                 </div>
                             </div>
-                        </Form>
-                    </div>
                 </Col>
-                <Col sm='12' md='2' lg='2' xl='2'>
+                <Col sm='12' md='1' lg='1' xl='1'>
                     <Navbar />
                 </Col>
             </Row>
-        </div>
     )
 }
 

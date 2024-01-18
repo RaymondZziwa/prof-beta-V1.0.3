@@ -716,11 +716,9 @@ app.post('/stocktaking', (req, res) => {
             const branch = req.body.branch
             const department = req.body.department
             const role = req.body.role
-            let stockFilter = req.body.stockFilter
-            let roos = 10;
 
-            if (branch === 'masanafu' && department === 'production' && role === "manager" && stockFilter === 'outofstock') {
-                db.query('SELECT * FROM mpstore WHERE quantityinstock = 0;', (error, results) => {
+            if (branch === 'masanafu' && department === 'production' && role === "manager" ) {
+                db.query('SELECT * FROM mpstore;', (error, results) => {
                     if (error) throw (error);
 
                     if (results.length > 0) {
@@ -730,8 +728,8 @@ app.post('/stocktaking', (req, res) => {
                         res.status(204).send('There are no items that are out of stock.');
                     }
                 })
-            } else if (branch === 'masanafu' && department === 'production' && role === "custodian" && stockFilter === 'outofstock') {
-                db.query('SELECT * FROM mgeneralstore WHERE quantityinstock = 0;', (error, results) => {
+            } else if (branch === 'masanafu' && department === 'production' && role === "custodian" ) {
+                db.query('SELECT * FROM mgeneralstore;', (error, results) => {
                     if (error) throw (error);
 
                     if (results.length > 0) {
@@ -751,52 +749,8 @@ app.post('/stocktaking', (req, res) => {
                     } else {
                         res.status(204).send('There are no items that are out of stock.');
                     }
-                })
-            } else if (branch === 'masanafu' && department === 'production' && role === "custodian" && stockFilter === 'runningoutofstock') {
-                db.query('SELECT * FROM mgeneralstore WHERE quantityinstock < ? AND quantityinstock > 0;', roos, (error, results) => {
-                    if (error) throw (error);
-
-                    if (results.length > 0) {
-                        console.log(results)
-                        res.send(results)
-                    } else {
-                        res.status(204).send('There are no items that are running out of stock.');
-                    }
-                })
-            } else if (branch === 'masanafu' && department === 'production' && role === "manager" && stockFilter === 'runningoutofstock') {
-                db.query('SELECT * FROM mpstore WHERE quantityinstock < ? AND quantityinstock > 0;', roos, (error, results) => {
-                    if (error) throw (error);
-
-                    if (results.length > 0) {
-                        console.log(results)
-                        res.send(results)
-                    } else {
-                        res.status(204).send('There are no items that are running out of stock.');
-                    }
-                })
-            } else if (branch === 'masanafu' && department === 'production' && role === "custodian" && stockFilter === 'instock') {
-                db.query('SELECT * FROM mgeneralstore WHERE quantityinstock > ?;', roos, (error, results) => {
-                    if (error) throw (error);
-
-                    if (results.length > 0) {
-                        console.log(results)
-                        res.send(results)
-                    } else {
-                        res.status(204).send('All items are out or running out of stock');
-                    }
-                })
-            } else if (branch === 'masanafu' && department === 'production' && role === "manager" && stockFilter === 'instock') {
-                db.query('SELECT * FROM mpstore WHERE quantityinstock > ?;', roos, (error, results) => {
-                    if (error) throw (error);
-
-                    if (results.length > 0) {
-                        console.log(results)
-                        res.send(results)
-                    } else {
-                        res.status(204).send('All items are out or running out of stock');
-                    }
-                })
-            }else {
+                })  
+            } else {
                 console.log('Failed Operation due to empty parameters.')
             }
         }
@@ -1112,8 +1066,7 @@ app.post('/saveexhibitiondata', (req, res) => {
                 const filledbyuser = req.body.filledbyuser
                 const formType = req.body.status
 
-                console.log('pre-exhibition-data', exhibitionName, date, items, filledfrombranch, filledbydepartment, filledbyrole, filledbyuser, formType)
-                
+
                 JSON.parse(items).map(item => {
                     db.query('SELECT * FROM mgeneralstore WHERE name = ? AND measurementunits = ?;', [item.itemName, item.mUnits], function (error, results) {
                         // If there is an issue with the query, output the error
@@ -1125,7 +1078,6 @@ app.post('/saveexhibitiondata', (req, res) => {
                         } else if (results.length > 0){
                             if (parseFloat(results[0].quantityinstock) < parseFloat(item.itemQuantity)){
                                 res.send("The quantity of one of the items in the store is less than the quantity required. Please restock and try again");
-                                console.log('second ', results, results[0].quantityinstock, parseFloat(results[0].quantityinstock), parseFloat(item.itemQuantity))  
                             }else{
                                 let newStockCount = parseFloat(results[0].quantityinstock) - parseFloat(item.itemQuantity);
                                 console.log('third ', results, results[0].quantityinstock, parseFloat(results[0].quantityinstock), parseFloat(item.itemQuantity), newStockCount)
@@ -1146,7 +1098,6 @@ app.post('/saveexhibitiondata', (req, res) => {
                         if (err) {
                             console.log(err)
                         }else{
-                            console.log("exhibition data saved successfully")
                             res.send("Exhibition data has been saved successfully")
                         }
                     })
