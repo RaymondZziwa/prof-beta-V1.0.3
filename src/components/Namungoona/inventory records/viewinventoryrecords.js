@@ -3,80 +3,44 @@ import Navbar from '../../side navbar/sidenav'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import AdminNavbar from '../../Admin/admin dashboard/adminDashboard'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleChevronLeft, faCircleChevronRight } from "@fortawesome/free-solid-svg-icons"
+
 const Viewinventoryrecords = () => {
     const [isLoading, setisLoading] = useState(true)
-    const [Filter, setFilter] = useState('')
     const [Data, setData] = useState([])
-    const [sourceBranch, setsourceBranch] = useState('')
-    const [destBranch, setdestBranch] = useState('')
-    const [date, setdate] = useState('')
-    const [itemList, setitemList] = useState()
-    const [itemName, setitemName] = useState('')
+    const [itemList, setitemList] = useState([])
     const [isItemListLoading, setisItemListLoading] = useState(true)
+    const [filteredData, setFilteredData] = useState([])
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const [recordsPerPage] = useState(12);
+    const [currentPage, setCurrentPage] = useState(1)
 
-    const indexOfLastPost = currentPage * recordsPerPage;
-    const indexOfFirstPost = indexOfLastPost - recordsPerPage;
-    const currentrecords = Data.slice(indexOfFirstPost, indexOfLastPost);
+    const itemsPerPage = 7
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+
+    const totalPages = Math.ceil(Data.length / itemsPerPage)
 
     const fetchItems = async () => {
-        const res = await axios.post('http://82.180.136.230:3005/itemlist', {
+        const res = await axios.post('http://82.180.136.230:3005/allitemslist', {
             token: localStorage.getItem("token")
         })
-        setitemList(res.data)
-        setisItemListLoading(false)
+
+        if(Array.isArray(res.data)){
+            setisItemListLoading(false)
+            const filteredItems = res.data.filter((item)=> item.category !== 'seed')
+            setitemList(filteredItems)
+        }
     }
 
     useEffect(() => {
         fetchItems()
     }, [])
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            if (Filter === 'incoming') {
-                setdestBranch(localStorage.getItem('branch'))
-            } else if (Filter === 'outgoing') {
-                setsourceBranch(localStorage.getItem('branch'))
-            }
-        }, 1000)
-
-
-        return () => clearInterval(interval)
-    }, [Filter])
-
-    const filterData = async event => {
-        event.preventDefault()
-        let res = await axios.post('http://82.180.136.230:3005/inventoryrecords', {
-            branch: localStorage.getItem('branch'),
-            role: localStorage.getItem('role'),
-            department: localStorage.getItem('department'),
-            itemName: itemName,
-            filter: Filter,
-            sourceBranch: sourceBranch,
-            destBranch: destBranch,
-            date: date,
-            token: localStorage.getItem("token")
-        })
-        if(Array.isArray(res.data)){
-            setData(res.data)
-            setisLoading(false)
-        }else{
-            console.log('np data')
-        }
-    }
 
     const fetchData = async () => {
         let res = await axios.post('http://82.180.136.230:3005/inventoryrecords', {
-            branch: localStorage.getItem('branch'),
-            role: localStorage.getItem('role'),
-            department: localStorage.getItem('department'),
-            itemName: itemName,
-            filter: Filter,
-            sourceBranch: sourceBranch,
-            destBranch: destBranch,
-            date: date,
             token: localStorage.getItem("token")
         })
         if(Array.isArray(res.data)){
@@ -85,37 +49,65 @@ const Viewinventoryrecords = () => {
         }
     }
 
-    // useEffect(()=> {
-    //     fetchData()
-    // },[])
+    useEffect(()=> {
+         fetchData()
+    },[])
 
     const itemNameInput = event => {
         event.preventDefault()
-        setitemName(event.target.value)
+        let itemName = event.target.value
+
+        if(Data.length > 0){
+            const filteredRecords = Data.filter((record)=>record.inventoryname === itemName)
+            setFilteredData(prevFilteredData => [...filteredRecords])
+        }
     }
 
     const filterInput = event => {
         event.preventDefault()
-        setFilter(event.target.value)
+        let category = event.target.value
+        if(Data.length > 0){
+            const filteredRecords = Data.filter((record)=>record.category === category)
+            setFilteredData(prevFilteredData => [...filteredRecords])
+        }
     }
     const dateInput = event => {
         event.preventDefault()
-        setdate(event.target.value)
+        let date = event.target.value
+        
+        if(Data.length > 0){
+            const filteredRecords = Data.filter((record)=>record.date === date)
+            setFilteredData(filteredRecords)
+        }
     }
     const sourceBranchInput = event => {
         event.preventDefault()
-        setsourceBranch(event.target.value)
+        let sBranch = event.target.value
+
+        if(Data.length > 0){
+            const filteredRecords = Data.filter((record)=>record.sourcebranch === sBranch)
+            setFilteredData(prevFilteredData => [...filteredRecords])
+        }
     }
+
     const destBranchInput = event => {
         event.preventDefault()
-        setdestBranch(event.target.value)
+        let destBranch = event.target.value
+
+        if(Data.length > 0){
+            const filteredRecords = Data.filter((record)=>record.destinationbranch === destBranch)
+            setFilteredData(prevFilteredData => [...filteredRecords])
+        }
     }
+    
     return (
         <div className='container-fluid'>
-            <Row>
+            <Row style={{marginTop:'60px'}}>
                 <Col sm='12' md='12' lg='12' xl='12'>
                     {localStorage.getItem("branch") !== 'admin' ? <Navbar /> : <AdminNavbar />}
+                    <h1 style={{textAlign:'center'}}>Inventory Records</h1>
                     <Form>
+                        Filters:
                         <select class="form-select" id='fil' aria-label="Default select example" onChange={itemNameInput} required>
                             <option selected>Filter By Item Name</option>
                             {isItemListLoading ? <option>Loading Items From Database</option> :
@@ -132,10 +124,11 @@ const Viewinventoryrecords = () => {
                         </select>
                         <select class="form-select" id='fil' aria-label="Default select example" onChange={sourceBranchInput}>
                             <option value="">Source Branch</option>
-                            <option value="namungoona">Namungoona Branch</option>
+                            <option value="external-supplier">External Suppliers</option>
                             <option value="masanafu">Masanafu Branch</option>
                             <option value="buwama">Buwama Branch</option>
                             <option value="equatorial">Equatorial Branch</option>
+                            <option value="namungoona">Namungoona Branch</option>
                         </select>
                         <select class="form-select" id='fil' aria-label="Default select example" onChange={destBranchInput}>
                             <option value="">Destination Branch</option>
@@ -145,9 +138,8 @@ const Viewinventoryrecords = () => {
                             <option value="equatorial">Equatorial Branch</option>
                         </select>
                         <input class="form-control" id='fil' type='date' placeholder='Filter by date' onChange={dateInput} />
-                        <button class='btn btn-primary' style={{ cursor: 'pointer' }} onClick={ filterData }>Filter</button>
                     </Form>
-                    <table className="table table-dark">
+                    <table className="table table-light">
                         <thead>
                             <tr>
                                 <th scope="col">Date</th>
@@ -168,8 +160,8 @@ const Viewinventoryrecords = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {(!isLoading && Data.length > 0) ? <tr><td>Apply filters to load data</td></tr> :
-                                Data.map(item => (
+                            {(filteredData.length !== 0 && !isLoading) ? 
+                                filteredData.slice(startIndex, endIndex).map(item => (
                                     <tr>
                                         <td>{item.date}</td>
                                         <td>{item.inventoryname}</td>
@@ -186,9 +178,35 @@ const Viewinventoryrecords = () => {
                                         <td>{item.category}</td>
                                         <td>{item.authorizedby}</td>
                                     </tr>
-                                ))}
+                                )) :
+                                Data.slice(startIndex, endIndex).map(item => (
+                                    <tr>
+                                        <td>{item.date}</td>
+                                        <td>{item.inventoryname}</td>
+                                        <td>{item.reason}</td>
+                                        <td>{item.additionalnotes}</td>
+                                        <td>{item.sourcebranch}</td>
+                                        <td>{item.broughtby}</td>
+                                        <td>{item.destinationbranch}</td>
+                                        <td>{item.recievedby}</td>
+                                        <td>{item.quantity} {item.measurementunit}</td>
+                                        <td>{item.actualquantity} {item.measurementunit}</td>
+                                        <td>{item.damages} {item.measurementunit}</td>
+                                        <td>{item.expectedoutput}</td>
+                                        <td>{item.category}</td>
+                                        <td>{item.authorizedby}</td>
+                                    </tr>
+                                ))
+                            }                           
                         </tbody>
                     </table>
+                    {totalPages > 1 && (
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
+                            <FontAwesomeIcon icon={faCircleChevronLeft} style={{color: 'blue',padding: '10px 20px',border: 'none',borderRadius: '5px',marginLeft: '10px',cursor: 'pointer', fontSize:'40px'}} disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}/>
+                        <span style={{ margin: '0 10px', color:'blue' }}>Page {currentPage} of {totalPages}</span>
+                            <FontAwesomeIcon icon={faCircleChevronRight} style={{color: 'blue',padding: '10px 20px',border: 'none',borderRadius: '5px',marginLeft: '10px',cursor: 'pointer', fontSize:'40px'}} disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}/>
+                        </div>
+                    )}
                 </Col>
             </Row>
         </div>

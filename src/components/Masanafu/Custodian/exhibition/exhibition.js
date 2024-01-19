@@ -62,7 +62,7 @@ const Exhibitionmanagement = () => {
     }
 
     const fetchItems = async () => {
-        const res = await axios.post('http://82.180.136.230:3005/itemlist', {
+        const res = await axios.post('http://82.180.136.230:3005/allitemslist', {
             token: localStorage.getItem("token")
         })
         setitemList(res.data)
@@ -144,8 +144,7 @@ const Exhibitionmanagement = () => {
 
     const submitDataHandler = async event => {
         event.preventDefault()
-        console.log(itemsRequested)
-        console.log(itemsPostRequested)
+
         if (formType === 'preexhibition') {
             let res = await axios.post('http://82.180.136.230:3005/saveexhibitiondata', {
                 exhibitionName: exhibitionName,
@@ -181,14 +180,11 @@ const Exhibitionmanagement = () => {
     }
 
     return (
-        <div className='container-fluid'>
-            <Row>
+            <Row style={{textAlign:'center'}}>
                 <Col sm='2' md='1' lg='1' xl='1'></Col>
                 <Col sm='12' md='10' lg='10' xl='10'>
-                    <div className="container  d-flex align-items-center" style={{ marginTop: '50px' }}>
-
                         <Form>
-                            <h2 style={{ marginTop: '10px', fontSize: '50px', textAlign: 'center' }}>Exhibition Management</h2>
+                            <h2 style={{ marginTop: '60px', fontSize: '50px', textAlign: 'center' }}>Exhibition Management</h2>
                             {status?.type === 'success' && <span style={{ margin: '20px' }} class="alert alert-success" role="alert">Success</span>}
                             {status?.type === 'error' && <span style={{ margin: '20px' }} class="alert alert-danger" role="alert">Error!</span>}
                             <div style={{ marginTop: '20px' }}>
@@ -202,7 +198,7 @@ const Exhibitionmanagement = () => {
                                 </div>
                                 {formType === 'preexhibition' &&
                                     <>
-                                        <h3 style={{ marginTop: '10px', fontSize: '30px', textAlign: 'center' }}>Exhibition Data</h3>
+                                        <h3 style={{ marginTop: '10px',  textAlign: 'center' }}>Exhibition Data</h3>
                                         <div className="form-floating mb-3">
                                             <input className="form-control" id="floatingInput" placeholder="Exhibition Name" style={{ color: "#8CA6FE" }} onChange={exNameInput} required />
                                             <label for="floatingInput">Exhibition Name</label>
@@ -212,22 +208,9 @@ const Exhibitionmanagement = () => {
                                             <label for="floatingInput">Exhibition Date</label>
                                         </div><br></br>
                                         <h3 style={{ marginTop: '10px', fontSize: '30px', textAlign: 'center' }}>Items Data</h3>
-                                        <table className="table" style={{ marginTop: '10px' }}>
-                                            <thead>
-                                                <tr style={{ textAlign: 'center' }}>
-                                                    <th scope="col">Item Name</th>
-                                                    <th scope="col">Quantity Taken</th>
-                                                    <th scope="col">Unit Of Measurement</th>
-                                                    <th scope="col">Action</th>
-                                                </tr>
-                                            </thead>
-
-                                            <tbody>
-
                                                 {itemsRequested.map((itemRequested, index) => (
 
-                                                    <tr key={index}>
-                                                        <td>
+                                                    <div key={index}>
                                                             <div className="form-floating mb-3">
                                                                 <select class="form-select"
                                                                     name="itemName"
@@ -245,8 +228,7 @@ const Exhibitionmanagement = () => {
                                                                         ))}
                                                                 </select>
                                                             </div>
-                                                        </td>
-                                                        <td>
+
                                                             <div className="form-floating mb-3">
                                                                 <input type="text"
                                                                     className="form-control"
@@ -259,9 +241,6 @@ const Exhibitionmanagement = () => {
                                                                     required />
                                                                 <label for="floatingInput">Item Quantity</label>
                                                             </div>
-                                                        </td>
-
-                                                        <td>
 
                                                             <div className="form-floating mb-3">
                                                                 <select
@@ -305,20 +284,13 @@ const Exhibitionmanagement = () => {
                                                                     <option value="700mlpcs">700 mls Pcs</option>
                                                                     <option value="750mlpcs">750 mls Pcs</option>
                                                                 </select>
-                                                            </div>
-                                                        </td>
+                                                            </div><br></br>
 
-                                                        <td>
-                                                            <FontAwesomeIcon onClick={addNewInput} icon={faPlusCircle} style={{ color: 'green', fontSize: '60px', cursor: 'pointer' }} />
-                                                            <FontAwesomeIcon onClick={() => removeInput(index)} icon={faMinusCircle} style={{ color: 'red', fontSize: '60px', marginLeft: '2px', cursor: 'pointer' }} />
-                                                        </td>
-
-                                                    </tr>
-
+                                                            <FontAwesomeIcon onClick={addNewInput} icon={faPlusCircle} style={{ color: 'green', fontSize: '40px', cursor: 'pointer' }} />
+                                                            <FontAwesomeIcon onClick={() => removeInput(index)} icon={faMinusCircle} style={{ color: 'red', fontSize: '40px', marginLeft: '2px', cursor: 'pointer' }} />
+                                                    </div>
                                                 ))
                                                 }
-                                            </tbody>
-                                        </table>
                                     </>
                                 }
 
@@ -351,22 +323,11 @@ const Exhibitionmanagement = () => {
 
 
                                         <h3 style={{ marginTop: '10px', fontSize: '30px', textAlign: 'center' }}>Items Data</h3>
-                                        <table className="table" style={{ marginTop: '10px' }}>
-                                            <thead>
-                                                <tr style={{ textAlign: 'center' }}>
-                                                    <th scope="col">Item Name</th>
-                                                    <th scope="col">Quantity Taken</th>
-                                                    <th scope="col">Quantity Sold</th>
-                                                    <th scope="col">Quantity Returned</th>
-                                                    <th scope="col">Unit Of Measurement</th>
-                                                </tr>
-                                            </thead>
 
-                                            <tbody style={{ textAlign: 'center', fontWeight: 'bold' }}>
                                                 {isExDataLoading ? <tr>There is no Exhibition Data From Database. Please edit the parameters.</tr> :
                                                     itemsPostRequested.map((item, index) => (
-                                                        <tr key={index}>
-                                                            <td>
+                                                        <div key={index}>
+                                                           
                                                                 <div className="form-floating mb-3">
                                                                     <input class="form-select"
                                                                         name="itemName"
@@ -378,8 +339,7 @@ const Exhibitionmanagement = () => {
                                                                         required />
                                                                     <label for="floatingInput">Item Name</label>
                                                                 </div>
-                                                            </td>
-                                                            <td>
+                                                           
                                                                 <div className="form-floating mb-3">
                                                                     <input type="text"
                                                                         className="form-control"
@@ -392,8 +352,7 @@ const Exhibitionmanagement = () => {
                                                                         required />
                                                                     <label for="floatingInput">Item Quantity</label>
                                                                 </div>
-                                                            </td>
-                                                            <td>
+                                                           
                                                                 <div className="form-floating mb-3">
                                                                     <input
                                                                         className="form-control"
@@ -406,8 +365,7 @@ const Exhibitionmanagement = () => {
                                                                         required />
                                                                     <label for="floatingInput">Item Quantity Sold</label>
                                                                 </div>
-                                                            </td>
-                                                            <td>
+                                                           
                                                                 <div className="form-floating mb-3">
                                                                     <input
                                                                         className="form-control"
@@ -420,8 +378,7 @@ const Exhibitionmanagement = () => {
                                                                         required />
                                                                     <label for="floatingInput">Item Quantity Returned</label>
                                                                 </div>
-                                                            </td>
-                                                            <td>
+                                                           
                                                                 <div className="form-floating mb-3">
                                                                     <input
                                                                         class="form-select"
@@ -435,12 +392,10 @@ const Exhibitionmanagement = () => {
                                                                         required />
                                                                     <label for="floatingInput">Measurement Units</label>
                                                                 </div>
-                                                            </td>
-                                                        </tr>
+                                                           
+                                                        </div>
                                                     ))
                                                 }
-                                            </tbody>
-                                        </table>
                                     </>
                                 }
                                 <h3 style={{ marginTop: '10px', fontSize: '30px', textAlign: 'center' }}>Official's Data</h3>
@@ -465,13 +420,11 @@ const Exhibitionmanagement = () => {
                                 </div>
                             </div>
                         </Form>
-                    </div>
                 </Col>
                 <Col sm='12' md='1' lg='1' xl='1'>
                     <Navbar />
                 </Col>
             </Row>
-        </div>
     );
 }
 export default Exhibitionmanagement

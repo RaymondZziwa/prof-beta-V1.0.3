@@ -269,6 +269,25 @@ app.post('/itemlist', (req, res) => {
     })
 })
 
+app.post('/allitemslist', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            db.query('SELECT * from inventory', (error, results) => {
+                if (error) throw (error);
+
+                if (results.length > 0) {
+                    res.send(results)
+                } else {
+                    res.send('There are no saved items.')
+                }
+            })
+        }
+    })
+})
+
+
 //5. fetching item list from database ---route is tested and it is working as expected
 app.post('/fetchprojectsequipment', (req, res) => {
     jwt.verify(req.body.token, 'SECRETKEY', (err) => {
@@ -672,76 +691,20 @@ app.post('/inventoryrecords', (req, res) => {
         if (err) {
             res.status(403).send("You are not authorized to perform this action.");
         } else {
-            const branch = req.body.branch
-            const role = req.body.role
-            const department = req.body.department
-            let itemName = req.body.itemName
-            let categoryFilter = req.body.filter
-            let sourceBranch = req.body.sourceBranch
-            let destBranch = req.body.destBranch
-            let date = req.body.date
+            db.query('SELECT * FROM inventorytransactions', (error, results) => {
+                if (error) throw (error);
 
-            if (categoryFilter !== '' && sourceBranch == '' && destBranch == '' && date == '') {
-                db.query('SELECT * FROM inventorytransactions WHERE category = ? AND branch = ? AND department = ? AND authorizedbyrole = ?;', [categoryFilter, branch, department, role], (error, results) => {
-                    if (error) throw (error);
-
-                    if (results.length > 0) {
-                        console.log(results)
-                        res.send(results)
-                    } else {
-                        res.send(`There are no ${categoryFilter} records found.`)
-                    }
-                })
-            } else if (itemName !== "") {
-                db.query('SELECT * FROM inventorytransactions WHERE inventoryname = ? AND branch = ? AND department = ? AND authorizedbyrole = ?;', [itemName, branch, department, role], (error, results) => {
-                    if (error) throw (error);
-
-                    if (results.length > 0) {
-                        console.log(results)
-                        res.send(results)
-                    } else {
-                        res.send(`There are no records found.`)
-                    }
-                })
-            } else if (sourceBranch !== '') {
-                db.query('SELECT * FROM inventorytransactions WHERE sourcebranch = ? AND branch = ? AND department = ? AND authorizedbyrole = ?;', [sourceBranch, branch, department, role], (error, results) => {
-                    if (error) throw (error);
-
-                    if (results.length > 0) {
-                        console.log(results)
-                        res.send(results)
-                    } else {
-                        res.send(`There are no records found.`)
-                    }
-                })
-            } else if (destBranch !== '') {
-                db.query('SELECT * FROM inventorytransactions WHERE destinationbranch = ? AND branch = ? AND department = ? AND authorizedbyrole = ?;', [destBranch, branch, department, role], (error, results) => {
-                    if (error) throw (error);
-
-                    if (results.length > 0) {
-                        console.log(results)
-                        res.send(results)
-                    } else {
-                        res.send(`There are no records found.`)
-                    }
-                })
-            } else if (date !== '') {
-                db.query('SELECT * FROM inventorytransactions WHERE date = ? AND branch = ? AND department = ? AND authorizedbyrole = ?;', [date, branch, department, role], (error, results) => {
-                    if (error) throw (error);
-
-                    if (results.length > 0) {
-                        console.log(results)
-                        res.send(results)
-                    } else {
-                        res.send(`There are no records found.`)
-                    }
-                })
-            } else {
-                console.log('Failed Operation due to empty parameters.')
-            }
+                if (results.length > 0) {
+                    console.log(results)
+                    res.send(results)
+                } else {
+                    res.send({status:500, msg:'There are no records found.'})
+                }
+            })
         }
     })
 })
+
 
 
 //fetch stock taking records ---route is tested and it is working as expected
@@ -753,11 +716,9 @@ app.post('/stocktaking', (req, res) => {
             const branch = req.body.branch
             const department = req.body.department
             const role = req.body.role
-            let stockFilter = req.body.stockFilter
-            let roos = 10;
 
-            if (branch === 'masanafu' && department === 'production' && role === "manager" && stockFilter === 'outofstock') {
-                db.query('SELECT * FROM mpstore WHERE quantityinstock = 0;', (error, results) => {
+            if (branch === 'masanafu' && department === 'production' && role === "manager" ) {
+                db.query('SELECT * FROM mpstore;', (error, results) => {
                     if (error) throw (error);
 
                     if (results.length > 0) {
@@ -767,8 +728,8 @@ app.post('/stocktaking', (req, res) => {
                         res.status(204).send('There are no items that are out of stock.');
                     }
                 })
-            } else if (branch === 'masanafu' && department === 'production' && role === "custodian" && stockFilter === 'outofstock') {
-                db.query('SELECT * FROM mgeneralstore WHERE quantityinstock = 0;', (error, results) => {
+            } else if (branch === 'masanafu' && department === 'production' && role === "custodian" ) {
+                db.query('SELECT * FROM mgeneralstore;', (error, results) => {
                     if (error) throw (error);
 
                     if (results.length > 0) {
@@ -788,52 +749,8 @@ app.post('/stocktaking', (req, res) => {
                     } else {
                         res.status(204).send('There are no items that are out of stock.');
                     }
-                })
-            } else if (branch === 'masanafu' && department === 'production' && role === "custodian" && stockFilter === 'runningoutofstock') {
-                db.query('SELECT * FROM mgeneralstore WHERE quantityinstock < ? AND quantityinstock > 0;', roos, (error, results) => {
-                    if (error) throw (error);
-
-                    if (results.length > 0) {
-                        console.log(results)
-                        res.send(results)
-                    } else {
-                        res.status(204).send('There are no items that are running out of stock.');
-                    }
-                })
-            } else if (branch === 'masanafu' && department === 'production' && role === "manager" && stockFilter === 'runningoutofstock') {
-                db.query('SELECT * FROM mpstore WHERE quantityinstock < ? AND quantityinstock > 0;', roos, (error, results) => {
-                    if (error) throw (error);
-
-                    if (results.length > 0) {
-                        console.log(results)
-                        res.send(results)
-                    } else {
-                        res.status(204).send('There are no items that are running out of stock.');
-                    }
-                })
-            } else if (branch === 'masanafu' && department === 'production' && role === "custodian" && stockFilter === 'instock') {
-                db.query('SELECT * FROM mgeneralstore WHERE quantityinstock > ?;', roos, (error, results) => {
-                    if (error) throw (error);
-
-                    if (results.length > 0) {
-                        console.log(results)
-                        res.send(results)
-                    } else {
-                        res.status(204).send('All items are out or running out of stock');
-                    }
-                })
-            } else if (branch === 'masanafu' && department === 'production' && role === "manager" && stockFilter === 'instock') {
-                db.query('SELECT * FROM mpstore WHERE quantityinstock > ?;', roos, (error, results) => {
-                    if (error) throw (error);
-
-                    if (results.length > 0) {
-                        console.log(results)
-                        res.send(results)
-                    } else {
-                        res.status(204).send('All items are out or running out of stock');
-                    }
-                })
-            }else {
+                })  
+            } else {
                 console.log('Failed Operation due to empty parameters.')
             }
         }
@@ -1149,8 +1066,7 @@ app.post('/saveexhibitiondata', (req, res) => {
                 const filledbyuser = req.body.filledbyuser
                 const formType = req.body.status
 
-                console.log('pre-exhibition-data', exhibitionName, date, items, filledfrombranch, filledbydepartment, filledbyrole, filledbyuser, formType)
-                
+
                 JSON.parse(items).map(item => {
                     db.query('SELECT * FROM mgeneralstore WHERE name = ? AND measurementunits = ?;', [item.itemName, item.mUnits], function (error, results) {
                         // If there is an issue with the query, output the error
@@ -1162,7 +1078,6 @@ app.post('/saveexhibitiondata', (req, res) => {
                         } else if (results.length > 0){
                             if (parseFloat(results[0].quantityinstock) < parseFloat(item.itemQuantity)){
                                 res.send("The quantity of one of the items in the store is less than the quantity required. Please restock and try again");
-                                console.log('second ', results, results[0].quantityinstock, parseFloat(results[0].quantityinstock), parseFloat(item.itemQuantity))  
                             }else{
                                 let newStockCount = parseFloat(results[0].quantityinstock) - parseFloat(item.itemQuantity);
                                 console.log('third ', results, results[0].quantityinstock, parseFloat(results[0].quantityinstock), parseFloat(item.itemQuantity), newStockCount)
@@ -1183,7 +1098,6 @@ app.post('/saveexhibitiondata', (req, res) => {
                         if (err) {
                             console.log(err)
                         }else{
-                            console.log("exhibition data saved successfully")
                             res.send("Exhibition data has been saved successfully")
                         }
                     })

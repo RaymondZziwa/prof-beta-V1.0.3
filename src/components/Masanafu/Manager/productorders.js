@@ -17,7 +17,6 @@ const ProductOrders = () => {
             branch: localStorage.getItem("branch"),
             token: localStorage.getItem("token")
         })
-        console.log(res.data)
         if(Array.isArray(res.data)){
             setOrdersList(res.data)
             setisOrdersListLoading(false)
@@ -60,12 +59,12 @@ const ProductOrders = () => {
         setisOrdersListLoading(true)
     }
     return (
-        <>
-            <div className='container-fluid'>
+
                 <Row>
                     <Col sm='12' md='1' lg='1' xl='1'></Col>
                     <Col sm='12' md='10' lg='10' xl='10'>
-                        <table className="table table-dark" style={{ marginTop: '100px' }}>
+                    <h2 style={{textAlign:'center',marginTop:'100px'}}>PRODUCTION ORDERS</h2>
+                        <table className="table table-light" style={{ marginTop: '10px' }}>
                             <thead style={{ textAlign: 'center' }}>
                                 <tr>
                                     <th scope="col">Order Id</th>
@@ -90,7 +89,7 @@ const ProductOrders = () => {
                                         <td>{item.orderby}</td>
                                         <td>{item.deliveredto}</td>
                                         <td>
-                                            <table className="table table-dark" style={{ marginTop: '2px' }}>
+                                            <table className="table table-light" style={{ marginTop: '2px' }}>
                                                 <thead>
                                                     <tr>
                                                         <th scope="col">Item Name</th>
@@ -125,7 +124,7 @@ const ProductOrders = () => {
                                         </td>
                                     </tr>
                                 ))
-                                : <tr><td>There are no pending orders</td></tr>}
+                                : <tr><td colSpan='10'>There are no pending orders</td></tr>}
                             </tbody>
                         </table>
                     </Col>
@@ -133,8 +132,6 @@ const ProductOrders = () => {
                         <Navbar />
                     </Col>
                 </Row>
-            </div>
-        </>
     )
 }
 

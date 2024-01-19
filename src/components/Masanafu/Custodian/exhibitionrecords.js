@@ -6,7 +6,7 @@ import axios from "axios";
 const ExhibitionRecords = () => {
     const [isExListLoading, setIsExListListLoading] = useState(true)
 
-    const [exList, setExList] = useState()
+    const [exList, setExList] = useState([])
     const [isExDataLoading, setIsExDataLoading] = useState(true)
     const [selectedExhibitionName, setSelectedExhibitionName] = useState()
     const [exData, setExData] = useState()
@@ -54,21 +54,14 @@ const ExhibitionRecords = () => {
     }
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            fetchExhibitionList()
-        }, 1000)
-
-
-        return () => clearInterval(interval)
+        fetchExhibitionList()
     }, [])
 
 
     return (
-        <>
-            <div className='container-fluid'>
                 <Row>
-                    <Col sm='12' md='2' lg='2' xl='2'></Col>
-                    <Col sm='12' md='8' lg='8' xl='8'>
+                    <Col sm='12' md='1' lg='1' xl='1'></Col>
+                    <Col sm='12' md='10' lg='10' xl='10'>
                         <h3 style={{ marginTop: '60px', fontSize: '30px', textAlign: 'center' }}>Retrieve Exhibition Data</h3>
                         <div className="form-floating mb-3">
                             <select class="form-select"
@@ -93,7 +86,7 @@ const ExhibitionRecords = () => {
                         </div>
 
                         <button className="btn btn-primary" onClick={fetchExhibitionData}>Retrieve Data</button>
-                        <table className="table table-dark" style={{ marginTop: '50px' }}>
+                        <table className="table table-light" style={{ marginTop: '50px' }}>
                             <thead style={{ textAlign: 'center' }}>
                                 <tr>
                                     <th scope="col">Exhibition Name</th>
@@ -107,13 +100,13 @@ const ExhibitionRecords = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {isExDataLoading ? <tr><td>There is no Exhibition Data From Database. Please edit the parameters.</td></tr> :
+                                {isExDataLoading ? <tr><td colSpan='8'>There is no Exhibition Data From Database. Please edit the parameters.</td></tr> :
                                     exData.map(item => (
                                         <tr>
                                             <td>{item.exhibitionname}</td>
                                             <td>{item.date}</td>
                                             <td>
-                                                <table className="table table-dark" style={{ marginTop: '2px' }}>
+                                                <table className="table table-light" style={{ marginTop: '2px' }}>
                                                     <thead>
                                                         <tr>
                                                             <th scope="col">Item Name</th>
@@ -151,12 +144,10 @@ const ExhibitionRecords = () => {
                             </tbody>
                         </table>
                     </Col>
-                    <Col sm='12' md='2' lg='2' xl='2'>
+                    <Col sm='12' md='1' lg='1' xl='1'>
                         <Navbar />
                     </Col>
                 </Row>
-            </div>
-        </>
     )
 }
 

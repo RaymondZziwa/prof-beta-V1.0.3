@@ -2,16 +2,24 @@ import { Row, Col } from "react-bootstrap";
 import Navbar from "../../side navbar/sidenav";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import ReactPaginate from "react-paginate"
-import '../../Namungoona/inventory crud/pagination.css'
-import arrowLeft from '../../../imgs/arrowleft.svg'
-import arrowRight from '../../../imgs/arrowright.svg'
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleChevronLeft, faCircleChevronRight } from "@fortawesome/free-solid-svg-icons"
 
 const FarmRequests = () => {
     const [ordersList, setOrdersList] = useState([])
     const [isOrdersListLoading, setisOrdersListLoading] = useState(true)
     const [comment, setComment] = useState('')
+
+    const [currentPage, setCurrentPage] = useState(1)
+
+    const itemsPerPage = 7
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+
+    const totalPages = Math.ceil(ordersList.length / itemsPerPage)
+
+
     const url = 'http://82.180.136.230:3005'
     const commentInput = event => {
         event.preventDefault()
@@ -24,10 +32,10 @@ const FarmRequests = () => {
             token: localStorage.getItem("token")
         })
         if(typeof res.data === 'string'){
-            console.log(res)
             setOrdersList('There are no pending farm requests.')
         }else{
-            setOrdersList(res.data)
+            const filteredRecords = res.data.filter((record)=> record.requesterdepartment === 'farm')
+            setOrdersList(filteredRecords)
             setisOrdersListLoading(false)
         }     
     }
@@ -35,18 +43,6 @@ const FarmRequests = () => {
     useEffect(() => {
         fetchOrders()
     },[])
-
-    const [itemsPerPage] = useState(4)
-    const [currentPage, setCurrentPage] = useState(1);
-
-    const indexOfLastPost = currentPage * itemsPerPage;
-    const indexOfFirstPost = indexOfLastPost - itemsPerPage;
-    const currentRecords = ordersList.slice(indexOfFirstPost, indexOfLastPost);
-
-    const paginate = ({ selected }) => {
-        setCurrentPage(selected + 1);
-     };
-  
 
     const rejectOrder = event => {
         event.preventDefault()
@@ -58,6 +54,7 @@ const FarmRequests = () => {
             newStatus: 'rejected',
             token: localStorage.getItem("token")
         })
+        fetchOrders()
     }
 
     const approveOrder = event => {
@@ -70,14 +67,14 @@ const FarmRequests = () => {
             comment: comment,
             token: localStorage.getItem("token")
         })
+        fetchOrders()
     }
     return (
-        <>
-            <div className='container-fluid'>
                 <Row>
                     <Col sm='12' md='1' lg='1' xl='1'></Col>
                     <Col sm='12' md='10' lg='10' xl='10'>
-                        <table className="table table-dark" style={{ marginTop: '100px', width: '100%' }}>
+                        <h1 style={{textAlign:'center', marginTop:'60px'}}>Farm Seeds Requests Records</h1>
+                        <table className="table table-light" style={{ marginTop: '10px' }}>
                             <thead >
                                 <tr>
                                     <th scope="col">Requisition Id</th>
@@ -94,7 +91,7 @@ const FarmRequests = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {!isOrdersListLoading ? ordersList.map(item => (
+                                {!isOrdersListLoading ? ordersList.slice(startIndex, endIndex).map(item => (
                                     <tr>
                                         <td>{item.requisitionid}</td>
                                         <td>{item.date}</td>
@@ -103,7 +100,7 @@ const FarmRequests = () => {
                                         <td>{item.requesterrole}</td>
                                         <td>{item.requestedby}</td>
                                         <td>
-                                            <table className="table table-dark" style={{ marginTop: '2px' }}>
+                                            <table className="table table-light" style={{ marginTop: '2px' }}>
                                                 <thead>
                                                     <tr>
                                                         <th scope="col">Item Name</th>
@@ -139,27 +136,21 @@ const FarmRequests = () => {
                                         
                                     </tr>
                                 ))
-                                : <tr><td>{ordersList}</td></tr>}
+                                : <tr><td colSpan='11'>{ordersList}</td></tr>}
                             </tbody>
                         </table>
-                        <ReactPaginate
-                            onPageChange={paginate}
-                            pageCount={Math.ceil(ordersList.length / itemsPerPage)}
-                            previousLabel={<img src={arrowLeft} className = 'previous' alt="arrow-left"/>}
-                            nextLabel={<img src={arrowRight} className = 'next' alt="arrow-right"/>}
-                            containerClassName={'pagination'}
-                            pageLinkClassName={'page-number'}
-                            previousLinkClassName={'page-number'}
-                            nextLinkClassName={'page-number'}
-                            activeLinkClassName={'active'}
-                        />
+                        {totalPages > 1 && (
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
+                                <FontAwesomeIcon icon={faCircleChevronLeft} style={{color: 'blue',padding: '10px 20px',border: 'none',borderRadius: '5px',marginLeft: '10px',cursor: 'pointer', fontSize:'40px'}} disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}/>
+                            <span style={{ margin: '0 10px', color:'blue' }}>Page {currentPage} of {totalPages}</span>
+                                <FontAwesomeIcon icon={faCircleChevronRight} style={{color: 'blue',padding: '10px 20px',border: 'none',borderRadius: '5px',marginLeft: '10px',cursor: 'pointer', fontSize:'40px'}} disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}/>
+                            </div>
+                        )}
                     </Col>
                     <Col sm='12' md='1' lg='1' xl='1'>
                         <Navbar />
                     </Col>
                 </Row>
-            </div>
-        </>
     )
 }
 

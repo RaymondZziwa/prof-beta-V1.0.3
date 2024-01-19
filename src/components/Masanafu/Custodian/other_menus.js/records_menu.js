@@ -21,7 +21,7 @@ const CustodianRecordsMenu = () => {
                 </Link>
                 <Link className="tab_nav" to="/rawmaterialrequestsrecords">
                     <div className="mb-3 mclickable_option">
-                    Production Raw Material Requests Records
+                    Production Requests Records
                     </div>
                 </Link>
                 <Link className="tab_nav" to="/productionrecords">
