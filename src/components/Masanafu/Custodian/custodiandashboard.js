@@ -124,7 +124,7 @@ const CustodianDashboard = () => {
                             </Link>
                             <Link className="tab_nav" to="/productorders">
                                 <div className="mb-3 mclickable_option">
-                                    Production Orders <p style={{ borderRadius: '80%', backgroundColor: 'red', textAlign: 'center', display: 'inline-block', width: '22px', color: 'white' }}>{totalNumberOfPendingOrders}</p>
+                                    Orders <p style={{ borderRadius: '80%', backgroundColor: 'red', textAlign: 'center', display: 'inline-block', width: '22px', color: 'white' }}>{totalNumberOfPendingOrders}</p>
                                 </div>
                             </Link>
 

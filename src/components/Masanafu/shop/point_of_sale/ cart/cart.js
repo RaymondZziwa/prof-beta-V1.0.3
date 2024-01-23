@@ -23,7 +23,7 @@ const Cart = ({items, setCartItems, total, setTotal}) => {
     const newDiscount = parseInt(event.target.value);
     const updatedItems = items.map((item) => {
       if (item.id === itemId) {
-        const totalCost = item.quantity * item.unitCost * (1 - newDiscount / 100);
+        const totalCost = item.quantity * item.unitCost - newDiscount;
         return { ...item, discount: newDiscount, totalCost };
       }
       return item;
@@ -69,7 +69,7 @@ const Cart = ({items, setCartItems, total, setTotal}) => {
           <th>Item Name</th>
           <th>Quantity per Item</th>
           <th>Unit Cost (UGX)</th>
-          <th>Discount (%)</th>
+          <th>Discount (UGX)</th>
           <th>Total Quantity</th>
           <th>Total Cost (UGX)</th>
           <th>Action</th>
@@ -101,8 +101,6 @@ const Cart = ({items, setCartItems, total, setTotal}) => {
               <input
                 type="number"
                 className="form-control"
-                min="0"
-                max="100"
                 value={item.discount}
                 onChange={(event) => handleDiscountChange(item.id, event)}
               />

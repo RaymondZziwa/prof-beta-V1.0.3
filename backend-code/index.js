@@ -1282,7 +1282,7 @@ app.post('/approvedorders', (req, res) => {
                     }
                 })
             }else{
-                db.query('SELECT * FROM productorders WHERE status = ? AND destinationbranch = ? AND orderedbydepartment = ?;', [initialStatus, branch, dept], (error, results) => {
+                db.query('SELECT * FROM productorders WHERE status = ? AND destinationbranch = ? ;', [initialStatus, branch], (error, results) => {
                 //if the query is faulty , throw the error
                 if (error) console.log(error);
                 //if account exists
