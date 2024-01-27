@@ -11,7 +11,7 @@ const Cart = ({items, setCartItems, total, setTotal}) => {
     const newQuantity = parseInt(event.target.value);
     const updatedItems = items.map((item) => {
       if (item.id === itemId) {
-        const totalCost = newQuantity * item.unitCost * (1 - item.discount / 100);
+        const totalCost = newQuantity * item.unitCost - item.discount;
         return { ...item, quantity: newQuantity, totalCost };
       }
       return item;
@@ -34,7 +34,7 @@ const Cart = ({items, setCartItems, total, setTotal}) => {
   const calculateTotal = () => {
     let total = 0;
     for (const item of items) {
-      total += item.quantity * item.unitCost * (1 - item.discount / 100);
+      total += item.quantity * item.unitCost - item.discount;
     }
     return total;
   };
@@ -54,7 +54,7 @@ const Cart = ({items, setCartItems, total, setTotal}) => {
   useEffect(() => {
     let calculatedTotal = 0;
     for (const item of items) {
-      calculatedTotal += item.quantity * item.unitCost * (1 - item.discount / 100);
+      calculatedTotal += item.quantity * item.unitCost - item.discount;
     }
     setTotal(calculatedTotal);
   }, [items, setTotal]);
