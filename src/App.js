@@ -912,9 +912,7 @@ function App() {
           {authCtx.isLoggedIn && (<Route path="/equatorialshopsalesrecords">
             <EquatorialShopSalesRecords />
           </Route>)}
-          {authCtx.isLoggedIn && (<Route path="/equatorialshopexpensesrecords">
-            <EquatorialShopExpensesRecords />
-          </Route>)}
+
           {authCtx.isLoggedIn && (<Route path="/equatorialshopexpensesrecords">
             <EquatorialShopExpensesRecords />
           </Route>)}

@@ -5753,6 +5753,7 @@ app.post('/updateequatorialexpendituredata', (req, res) => {
             const amountPaid = req.body.amountPaid
             const date = req.body.date
             const notes = req.body.additionalInfo
+            const newExpenseAmount = req.body.newExpenseAmount
             const paymentMethod = req.body.paymentMethod
             console.log(paymentMethod)
             let paymentStatus;
@@ -5769,20 +5770,44 @@ app.post('/updateequatorialexpendituredata', (req, res) => {
                         paymentStatus = 'partially paid'
                      }
 
-                     db.query('INSERT INTO equatorialshopexpensespayments (paymentdate, expenseid, additionalnotes, amountpaid, paymentmethod) VALUES (?, ?, ?, ?, ?);', [date, expenseId, notes, amountPaid, paymentMethod], error => {
-                         //if the query is faulty , throw the error
-                         if (error) {
-                             console.log(error);
-                             res.send('Error')
-                         } else {
-                             res.send('Success')
-                             db.query('UPDATE equatorialshopexpenditure SET amountspent = ?, balance = ?, paymentstatus = ? WHERE expenditureid = ? ;', [amountSpent, newBalance, paymentStatus, expenseId], error => {
-                                if (error) {
-                                    console.log(error)
-                                }
-                            })
-                         }
-                     })
+                     if(newExpenseAmount > 0){
+                        let calcBalance = newExpenseAmount - results[0].balance
+                        if (calcBalance === 0 ){
+                            paymentStatus = 'fully paid'
+                        }else{
+                            paymentStatus = 'partially paid'
+                        }
+
+                        db.query('INSERT INTO equatorialshopexpensespayments (paymentdate, expenseid, additionalnotes, amountpaid, paymentmethod) VALUES (?, ?, ?, ?, ?);', [date, expenseId, notes, amountPaid, paymentMethod], error => {
+                            //if the query is faulty , throw the error
+                            if (error) {
+                                console.log(error);
+                                res.send('Error')
+                            } else {
+                                res.send('Success')
+                                db.query('UPDATE equatorialshopexpenditure SET expenditurecost = ?, amountspent = ?, balance = ?, paymentstatus = ? WHERE expenditureid = ? ;', [newExpenseAmount, amountSpent, calcBalance, paymentStatus, expenseId], error => {
+                                   if (error) {
+                                       console.log(error)
+                                   }
+                               })
+                            }
+                        })
+                     }else{
+                        db.query('INSERT INTO equatorialshopexpensespayments (paymentdate, expenseid, additionalnotes, amountpaid, paymentmethod) VALUES (?, ?, ?, ?, ?);', [date, expenseId, notes, amountPaid, paymentMethod], error => {
+                            //if the query is faulty , throw the error
+                            if (error) {
+                                console.log(error);
+                                res.send('Error')
+                            } else {
+                                res.send('Success')
+                                db.query('UPDATE equatorialshopexpenditure SET amountspent = ?, balance = ?, paymentstatus = ? WHERE expenditureid = ? ;', [amountSpent, newBalance, paymentStatus, expenseId], error => {
+                                   if (error) {
+                                       console.log(error)
+                                   }
+                               })
+                            }
+                        })
+                     }
                 }
             })
         }

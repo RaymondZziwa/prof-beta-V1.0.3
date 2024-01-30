@@ -22,8 +22,14 @@ const RecordEquatorialShopExpenditure = () => {
     const [amountNotPaid, setAmountNotPaid] = useState()
     const [updateExpenseName, setUpdateExpenseName] = useState('')
     const [updateExpenseCategory, setUpdateExpenseCategory] = useState('')
+    const [newExpenseAmount, setNewExpenseAmount] = useState(0)
 
     const options = { day: '2-digit', month: '2-digit', year: 'numeric' }
+
+    const newExpenseTotal = event => {
+        event.preventDefault()
+        setNewExpenseAmount(event.target.value)
+    }
 
 
     const expenseIdHandler = event => {
@@ -129,6 +135,7 @@ const RecordEquatorialShopExpenditure = () => {
              date: new Date().toLocaleDateString('en-GB', options),
              expenditureId: expenditureId,
              additionalInfo: desc,
+             newExpenseAmount: newExpenseAmount,
              amountPaid: amountPaid,
              paymentMethod: paymentMethod
          })
@@ -235,6 +242,10 @@ const RecordEquatorialShopExpenditure = () => {
                         <div className="form-floating mb-3">
                             <input type="number" className="form-control" rows="6" id="floatingInput" placeholder="johndoe" style={{ color: "#8CA6FE" }} value={updateExpenseTotal} min='0' readOnly/>
                             <label for="floatingInput">Expenditure Total Cost</label>
+                        </div>
+                        <div className="form-floating mb-3">
+                            <input type="number" className="form-control" rows="6" id="floatingInput" placeholder="johndoe" style={{ color: "#8CA6FE" }} onChange={newExpenseTotal} min='0' />
+                            <label for="floatingInput">New Expenditure Total Cost</label>
                         </div>
                         <div>
                             <div className="form-floating mb-3">
