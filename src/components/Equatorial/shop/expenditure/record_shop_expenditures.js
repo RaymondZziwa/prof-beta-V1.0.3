@@ -16,7 +16,7 @@ const RecordEquatorialShopExpenditure = () => {
     const [balance, setBalance] = useState('')
     const [status, setStatus] = useState('')
     const [updateStatus, setUpdateStatus] = useState('')
-
+    const [paidAmount, setPaidAmount] = useState()
     const [expenseData, setExpenseData] = useState()
     const [updateExpenseTotal, setUpdateExpenseTotal] = useState()
     const [amountNotPaid, setAmountNotPaid] = useState()
@@ -29,6 +29,11 @@ const RecordEquatorialShopExpenditure = () => {
     const newExpenseTotal = event => {
         event.preventDefault()
         setNewExpenseAmount(event.target.value)
+    }
+
+    const getUpdatedPaidAmount = event => {
+        event.preventDefault()
+        setPaidAmount(event.target.value)
     }
 
 
@@ -111,7 +116,6 @@ const RecordEquatorialShopExpenditure = () => {
              expenseId: expenditureId
          })
          setExpenseData(res.data)
-         console.log(res.data)
     }
 
     useEffect(()=>{
@@ -122,10 +126,19 @@ const RecordEquatorialShopExpenditure = () => {
         if (expenseData) {
             setUpdateExpenseName(expenseData[0].expenditurename)
             setUpdateExpenseCategory(expenseData[0].expenditurecategory)
+            setPaidAmount(expenseData[0].expenditurecost-expenseData[0].balance)
             setUpdateExpenseTotal(expenseData[0].expenditurecost)
             setAmountNotPaid(expenseData[0].balance)
         }
     },[expenseData])
+
+     useEffect(()=>{
+         setAmountNotPaid(updateExpenseTotal-paidAmount)
+     },[paidAmount])
+
+     useEffect(()=>{
+        setAmountNotPaid(newExpenseAmount-paidAmount)
+    },[newExpenseAmount])
 
 
     const updateExpenseData = async event => {
@@ -136,6 +149,7 @@ const RecordEquatorialShopExpenditure = () => {
              expenditureId: expenditureId,
              additionalInfo: desc,
              newExpenseAmount: newExpenseAmount,
+             newPaidAmount: paidAmount,
              amountPaid: amountPaid,
              paymentMethod: paymentMethod
          })
@@ -191,7 +205,7 @@ const RecordEquatorialShopExpenditure = () => {
                         <div>
                             <div className="form-floating mb-3">
                                 <input type="number" className="form-control" rows="6" id="floatingInput" placeholder="johndoe" style={{ color: "#8CA6FE" }} onChange={amountInput} min='0' />
-                                <label for="floatingInput">Amount Spent</label>
+                                <label for="floatingInput">Amount Paid</label>
                             </div>
                         </div>
                         <div>
@@ -237,15 +251,20 @@ const RecordEquatorialShopExpenditure = () => {
                         </div>
                         <div className="mb-3">
                             <textarea type="text" className="form-control" rows="6" id="floatingInput" placeholder="Additional Notes" style={{ color: "#8CA6FE", height: '130px', width: '300px' }} onChange={additionalInfoInput} />
-                            {/* <label for="floatingInput">Expenditure Description</label> */}
                         </div>
                         <div className="form-floating mb-3">
-                            <input type="number" className="form-control" rows="6" id="floatingInput" placeholder="johndoe" style={{ color: "#8CA6FE" }} value={updateExpenseTotal} min='0' readOnly/>
+                            <input type="number" className="form-control" rows="6" id="floatingInput" placeholder="johndoe" style={{ color: "#8CA6FE" }} value={updateExpenseTotal} min='0' />
                             <label for="floatingInput">Expenditure Total Cost</label>
                         </div>
                         <div className="form-floating mb-3">
-                            <input type="number" className="form-control" rows="6" id="floatingInput" placeholder="johndoe" style={{ color: "#8CA6FE" }} onChange={newExpenseTotal} min='0' />
+                            <input type="number" className="form-control" rows="6" id="floatingInput" placeholder="johndoe" style={{ color: "#8CA6FE" }} value={newExpenseAmount} onChange={newExpenseTotal}  />
                             <label for="floatingInput">New Expenditure Total Cost</label>
+                        </div>
+                        <div>
+                            <div className="form-floating mb-3">
+                                <input type="number" className="form-control" rows="6" id="floatingInput" placeholder="johndoe" style={{ color: "#8CA6FE" }}  min='0' value={paidAmount} onChange={getUpdatedPaidAmount}/>
+                                <label for="floatingInput">Amount Already Paid</label>
+                            </div>
                         </div>
                         <div>
                             <div className="form-floating mb-3">
