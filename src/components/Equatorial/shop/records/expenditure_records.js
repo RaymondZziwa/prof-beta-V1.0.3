@@ -2,10 +2,22 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Navbar from '../../../side navbar/sidenav'
 import { Row, Col } from 'react-bootstrap'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleChevronLeft, faCircleChevronRight } from "@fortawesome/free-solid-svg-icons"
 
 const EquatorialShopExpensesRecords = () => {
     const [isLoading, setIsLoading] = useState(true)
     const [expensesData, setExpensesData] = useState([])
+
+    const [currentPage, setCurrentPage] = useState(1)
+
+    const itemsPerPage = 5
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+
+    const totalPages = Math.ceil(expensesData.length / itemsPerPage)
+    
 
     useEffect(() => {
         const fetchExpensesData = async () => {
@@ -15,7 +27,18 @@ const EquatorialShopExpensesRecords = () => {
       
           if (Array.isArray(res.data)) {
             setIsLoading(false);
-            setExpensesData(res.data);
+            const sortedRecords = res.data.slice().sort((a, b) => {
+                // Assuming saleDate is in the format dd/mm/yyyy
+                const partsA = a.date.split('/');
+                const partsB = b.date.split('/');
+                
+                // Convert to Date objects and compare in descending order
+                const dateA = new Date(`${partsA[1]}/${partsA[0]}/${partsA[2]}`);
+                const dateB = new Date(`${partsB[1]}/${partsB[0]}/${partsB[2]}`);
+        
+                return dateB - dateA;
+            });
+            setExpensesData(sortedRecords);
           }
         }
       
@@ -23,8 +46,6 @@ const EquatorialShopExpensesRecords = () => {
       }, [])
 
       return(
-        <>
-            <div className='container-fluid'>
                 <Row>
                     <Col sm='12' md='2' lg='2' xl='2'></Col>
                     <Col sm='12' md='8' lg='8' xl='8'>
@@ -43,8 +64,8 @@ const EquatorialShopExpensesRecords = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {!isLoading ? expensesData.map(item => (
-                                    <tr>
+                                {!isLoading ? expensesData.slice(startIndex, endIndex).map(item => (
+                                    <tr key={item.expenditureid}>
                                         <td>{item.expenditureid}</td>
                                         <td>{item.date}</td>
                                         <td>{item.expenditurecategory}</td>
@@ -58,13 +79,18 @@ const EquatorialShopExpensesRecords = () => {
                                 : <tr><td colSpan='8'>Loading...</td></tr>}
                             </tbody>
                         </table>
+                        {totalPages > 1 && (
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
+                            <FontAwesomeIcon icon={faCircleChevronLeft} style={{color: 'blue',padding: '10px 20px',border: 'none',borderRadius: '5px',marginLeft: '10px',cursor: 'pointer', fontSize:'40px'}} disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}/>
+                        <span style={{ margin: '0 10px', color:'blue' }}>Page {currentPage} of {totalPages}</span>
+                            <FontAwesomeIcon icon={faCircleChevronRight} style={{color: 'blue',padding: '10px 20px',border: 'none',borderRadius: '5px',marginLeft: '10px',cursor: 'pointer', fontSize:'40px'}} disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}/>
+                        </div>
+                    )}
                     </Col>
                     <Col sm='12' md='2' lg='2' xl='2'>
                         <Navbar />
                     </Col>
                 </Row>
-            </div>
-        </>
     )
 }
 

@@ -46,7 +46,7 @@ const EquatorialShopInventoryRestockingForm = () => {
     },[])
 
     const fetchItems = async () => {
-        const res = await axios.post('http://82.180.136.230:3005/fetchallshopinventory', {
+        const res = await axios.post('http://82.180.136.230:3005/fetchallshopproducts', {
             token: localStorage.getItem("token")
         })
         setitemList(res.data)

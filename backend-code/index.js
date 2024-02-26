@@ -5753,13 +5753,14 @@ app.post('/updateequatorialexpendituredata', (req, res) => {
             const amountPaid = req.body.amountPaid
             const date = req.body.date
             const notes = req.body.additionalInfo
+            const updatedPaidAmount = req.body.newPaidAmount
+            const newExpenseAmount = req.body.newExpenseAmount
             const paymentMethod = req.body.paymentMethod
             console.log(paymentMethod)
             let paymentStatus;
             db.query('SELECT expenditurecost, amountspent, balance, paymentstatus FROM equatorialshopexpenditure WHERE expenditureid = ?', [expenseId], (error, results) => {
                 if (error) throw error;
                 if(results.length > 0){
-                    console.log(results)
                      const amountSpent = parseFloat(results[0].amountspent) + parseFloat(amountPaid)
                      const newBalance = parseFloat(results[0].balance) - amountPaid
                      
@@ -5769,20 +5770,54 @@ app.post('/updateequatorialexpendituredata', (req, res) => {
                         paymentStatus = 'partially paid'
                      }
 
-                     db.query('INSERT INTO equatorialshopexpensespayments (paymentdate, expenseid, additionalnotes, amountpaid, paymentmethod) VALUES (?, ?, ?, ?, ?);', [date, expenseId, notes, amountPaid, paymentMethod], error => {
-                         //if the query is faulty , throw the error
-                         if (error) {
-                             console.log(error);
-                             res.send('Error')
-                         } else {
-                             res.send('Success')
-                             db.query('UPDATE equatorialshopexpenditure SET amountspent = ?, balance = ?, paymentstatus = ? WHERE expenditureid = ? ;', [amountSpent, newBalance, paymentStatus, expenseId], error => {
-                                if (error) {
-                                    console.log(error)
-                                }
-                            })
-                         }
-                     })
+                     if(newExpenseAmount > 0){
+                        console.log(1)
+                        let calcBalance = newExpenseAmount - results[0].balance
+                        if (calcBalance === 0 ){
+                            paymentStatus = 'fully paid'
+                        }else{
+                            paymentStatus = 'partially paid'
+                        }
+
+                        db.query('UPDATE equatorialshopexpenditure SET expenditurecost = ?, balance = ?, paymentstatus = ? WHERE expenditureid = ? ;', [newExpenseAmount, calcBalance, paymentStatus, expenseId], error => {
+                            if (error) {
+                                console.log(error)
+                            }
+                            res.send('Success')
+                        })
+                     }else  if(updatedPaidAmount > 0 && amountPaid === 0){
+                        console.log(2)
+                        let calcBalance = results[0].expenditurecost - updatedPaidAmount
+                        if (calcBalance === 0 ){
+                            paymentStatus = 'fully paid'
+                        }else{
+                            paymentStatus = 'partially paid'
+                        }
+
+                        console.log(results[0].expenditurecost, updatedPaidAmount, calcBalance)
+                        db.query('UPDATE equatorialshopexpenditure SET amountspent = ?, balance = ?, paymentstatus = ? WHERE expenditureid = ? ;', [updatedPaidAmount, calcBalance, paymentStatus, expenseId], error => {
+                            if (error) {
+                                console.log(error)
+                            }
+                            res.send('Success')
+                        })     
+
+                    }else{
+                        console.log(amountSpent, newBalance, paymentStatus, expenseId, 3)
+                        db.query('INSERT INTO equatorialshopexpensespayments (paymentdate, expenseid, additionalnotes, amountpaid, paymentmethod) VALUES (?, ?, ?, ?, ?);', [date, expenseId, notes, amountPaid, paymentMethod], error => {
+                            //if the query is faulty , throw the error
+                            if (error) {
+                                res.send('Error')
+                            } else {
+                                res.send('Success')
+                                db.query('UPDATE equatorialshopexpenditure SET amountspent = ?, balance = ?, paymentstatus = ? WHERE expenditureid = ? ;', [amountSpent, newBalance, paymentStatus, expenseId], error => {
+                                   if (error) {
+                                       console.log(error)
+                                   }
+                               })
+                            }
+                        })
+                     }
                 }
             })
         }
