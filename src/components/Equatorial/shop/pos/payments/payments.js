@@ -66,7 +66,7 @@ class PrintableContent extends React.Component {
         </div>
       );
     }
-  }
+}
 
 
 const PaymentModule = ({ servicesList, items, total, fetchData }) => {

@@ -1,7 +1,73 @@
 import { Row, Col } from 'react-bootstrap'
 import Navbar from '../../../side navbar/sidenav'
 import axios from 'axios'
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
+import Logo from '../../../../imgs/logo.png'
+import ReactToPrint from "react-to-print";
+
+class PrintableContent extends React.Component {
+    render() {
+      const { firstName, lastName, cart, clientcontact, total,balance, amountPaid, receiptNumber, paymentMethod, transactionId, saleDate} = this.props;
+      const today = new Date();
+        const options = { dateStyle: 'short', timeStyle: 'short' };
+        const formattedDateTime = new Intl.DateTimeFormat(undefined, options).format(today)
+      return (
+        <div style={{color:'black',padding:'20px'}}>
+          <h1 style={{textAlign:'center'}}> <img src={Logo} alt="receipt-logo" style={{margin:'auto'}}  height='80px'/><br></br>Prof-bioresearch {localStorage.getItem('branch')} massage receipt</h1>
+          <h5 style={{textAlign:'center'}}>Sales Points: Equatorial near bank of Africa, Masanafu near padre pio vocational school</h5>
+          <h5 style={{textAlign:'center'}}>Web: www.profbioresearch.net</h5>
+          <h5 style={{textAlign:'center'}}>Email: profbioresearch@gmail.com</h5>
+          <h5 style={{textAlign:'center',borderBottom:'1px dashed black'}}>Contact: 0702061652 / 0779519652</h5>
+          <p style={{marginTop:'40px'}}>Date: {formattedDateTime}</p>
+          <p>Original Sale Date: {saleDate}</p>
+          <p>Receipt Number: {receiptNumber}</p>
+          <p>Client Names: {firstName} {lastName}</p>
+          <p>Client Contact: {clientcontact}</p>
+          <p>Payment Method: {paymentMethod}</p>
+          {(paymentMethod === 'MTN MoMo' || paymentMethod === 'Airtel Money') && 
+            <p>Transaction Id: {transactionId}</p>
+          }
+          <p>Total Amount: UGX: {total}</p>
+          <p>Amount Paid: UGX: {amountPaid}</p>
+          <p>Balance: UGX: {balance}</p>
+          <table className="table table-light">
+                <thead>
+                    <tr>
+                    <th>Item Name</th>
+                    <th>Unit Cost (UGX)</th>
+                    <th>Discount (%)</th>
+                    <th>Total Quantity</th>
+                    <th>Total Cost (UGX)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {!cart || cart.length === 0 ? (
+                    <tr>
+                        <td colSpan="8" style={{ textAlign: "center" }}>
+                        There are no items in the cart.
+                        </td>
+                    </tr>
+                    ) : (
+                    JSON.parse(cart).map((item) => (
+                        <tr key={item.id}>
+                        <td>{item.name}</td>
+                        <td>{item.unitCost}</td>
+                        <td>{item.discount}</td>
+                        <td>{item.quantity}</td>
+                        <td>{item.totalCost}</td>
+                        </tr>
+                    ))
+                    )}
+                </tbody>
+                </table>
+          <p>Served By: {localStorage.getItem('username')}</p>
+          <p style={{ marginTop: '5px', marginBottom:'5px', fontSize: '13px', borderTop:'1px solid black', textAlign:'center' }}>
+            Receipt re-printed By {localStorage.getItem('branch')} Prof-Bioresearch POS System.
+          </p>
+        </div>
+      );
+    }
+}
 
 const EquatorialShopSaleDataRetrieval = () => {
     const [receiptNumber, setReceiptNumber] = useState()
@@ -18,6 +84,10 @@ const EquatorialShopSaleDataRetrieval = () => {
     const [amount, setAmountPaid] = useState(0)
     const [saleDate, setSaleDate] = useState()
     const [notes, setNotes] = useState('')
+    const options = { day: '2-digit', month: '2-digit', year: 'numeric' }
+
+    const componentRef = useRef();
+    const  printBtnRef = useRef()
 
     const receiptNumberHandler = event => {
         event.preventDefault()
@@ -46,7 +116,6 @@ const EquatorialShopSaleDataRetrieval = () => {
 
     useEffect(()=>{
         if (receiptData) {
-            console.log('rd', receiptData)
             setAdditionalInfo(receiptData[0].additionalinfo)
             setClientFName(receiptData[0].customerNames)
             setClientContact(receiptData[0].customerContact)
@@ -74,12 +143,16 @@ const EquatorialShopSaleDataRetrieval = () => {
       setStatus({ type: 'success' }))
   
       .catch((err) => setStatus({ type: 'error', err }))
-       // console.log(firstName, lastName, phoneNumber, paymentMethod, amount, additionalInfo, items, total)
     }
 
     const handlePaymentStatusChange = (event) => {
         setPaymentStatus(event.target.value);
     };
+
+    const printReceipt = event => {
+        event.preventDefault()
+        printBtnRef.current.click();
+    }
     return(
         <Row>
         <Col sm='12' md='2' lg='2' xl='2'>
@@ -97,6 +170,7 @@ const EquatorialShopSaleDataRetrieval = () => {
                         <button className="btn btn-primary" onClick={retrieveReceiptDataHandler}>
                             Retrieve Receipt Data
                         </button>
+                        <button className="btn btn-primary" onClick={printReceipt}> Re-print Receipt</button>
                     </span>
                     <h4>Client Information</h4>
                         <div className="form-floating mb-3">
@@ -190,6 +264,23 @@ const EquatorialShopSaleDataRetrieval = () => {
                             Save
                         </button>
                     </form>
+                    <ReactToPrint
+                    trigger={() => (
+                        <button style={{ width: "100%",border: "none",color: "white", height: "45px", backgroundColor: "#3452A3", marginTop:'5px', display:'none'}} ref={printBtnRef}>Print Receipt</button>
+                    )}
+                    content={() => componentRef.current}
+                    pdfPrint={true}
+                />
+                <div className="print-content">
+                    <PrintableContent ref={componentRef} firstName={clientFName} cart={itemsSold} clientcontact={clientContact} total={totalAmount} balance={balance} amountPaid={totalAmount-balance} receiptNumber={receiptNumber} paymentMethod={paymentMethod}  saleDate={saleDate}/>
+                </div>
+                <style>
+                    {`
+                    .print-content {
+                        display: none;
+                    }
+                    `}
+                </style>
                 </Col>
             </Row>
         </div>

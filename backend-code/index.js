@@ -237,7 +237,7 @@ app.post('/deleteitem', (req, res) => {
                             console.log(err)
                         } else {
                             console.log('success')
-                            res.send('Item deletion successfull.');
+                            res.send('Item deletion successful.');
                         }
                     })
                 } else {

@@ -11,7 +11,7 @@ return(
     <div className="col align-self-center" style={{marginTop:'20px'}}>
         <Link className="tab_nav" to="/equatorialshopnewitemregistration">
             <div className="mb-3 mclickable_option">
-                Register Shop Inventory
+                Product Manager
             </div>
         </Link>
         <Link className="tab_nav" to="/equatorialshoprestockingform">
