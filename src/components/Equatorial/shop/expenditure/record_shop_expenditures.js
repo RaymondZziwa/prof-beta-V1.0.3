@@ -23,8 +23,17 @@ const RecordEquatorialShopExpenditure = () => {
     const [updateExpenseName, setUpdateExpenseName] = useState('')
     const [updateExpenseCategory, setUpdateExpenseCategory] = useState('')
     const [newExpenseAmount, setNewExpenseAmount] = useState(0)
+    const [newPaidAmount, setNewPaidAmount] = useState(0)
+
+
+    const [updateField, setUpdateField] = useState('')
 
     const options = { day: '2-digit', month: '2-digit', year: 'numeric' }
+
+    const updateFieldType = event => {
+        event.preventDefault()
+        setUpdateField(event.target.value)
+    }
 
     const newExpenseTotal = event => {
         event.preventDefault()
@@ -33,7 +42,7 @@ const RecordEquatorialShopExpenditure = () => {
 
     const getUpdatedPaidAmount = event => {
         event.preventDefault()
-        setPaidAmount(event.target.value)
+        setNewPaidAmount(event.target.value)
     }
 
 
@@ -143,15 +152,17 @@ const RecordEquatorialShopExpenditure = () => {
 
     const updateExpenseData = async event => {
         event.preventDefault()
+        console.log(paidAmount)
          let res = await axios.post('http://82.180.136.230:3005/updateequatorialexpendituredata',{
              token: localStorage.getItem('token'),
              date: new Date().toLocaleDateString('en-GB', options),
              expenditureId: expenditureId,
              additionalInfo: desc,
              newExpenseAmount: newExpenseAmount,
-             newPaidAmount: paidAmount,
+             newPaidAmount: newPaidAmount,
              amountPaid: amountPaid,
-             paymentMethod: paymentMethod
+             paymentMethod: paymentMethod,
+             updateType: updateField
          })
         .then(() => setUpdateStatus({ type: 'success' }))
         .catch((err) => setUpdateStatus({ type: 'error', err }))
@@ -252,26 +263,50 @@ const RecordEquatorialShopExpenditure = () => {
                         <div className="mb-3">
                             <textarea type="text" className="form-control" rows="6" id="floatingInput" placeholder="Additional Notes" style={{ color: "#8CA6FE", height: '130px', width: '300px' }} onChange={additionalInfoInput} />
                         </div>
-                        <div className="form-floating mb-3">
-                            <input type="number" className="form-control" rows="6" id="floatingInput" placeholder="johndoe" style={{ color: "#8CA6FE" }} value={updateExpenseTotal} min='0' />
-                            <label for="floatingInput">Expenditure Total Cost</label>
+                        <div className="mb-3">
+                            <select class="form-select" aria-label="Default select example" style={{ height: "60px", color: "#8CA6FE" }} onChange={updateFieldType}>
+                                <option selected >Select Update Field</option>
+                                <option value="expenseTotalCost">Expenditure Total Cost</option>
+                                <option value="alreadypaidamount">Already Paid Amount</option>
+                                <option value="payBalance">Pay Balance</option>
+                            </select>
                         </div>
                         <div className="form-floating mb-3">
+                            <input type="number" className="form-control" rows="6" id="floatingInput" placeholder="johndoe" style={{ color: "#8CA6FE" }} value={updateExpenseTotal} min='0' readOnly/>
+                            <label for="floatingInput">Expenditure Total Cost</label>
+                        </div>
+                        <div>
+                                <div className="form-floating mb-3">
+                                    <input type="number" className="form-control" rows="6" id="floatingInput" placeholder="johndoe" style={{ color: "#8CA6FE" }}  min='0' value={paidAmount} readOnly/>
+                                    <label for="floatingInput">Amount Already Paid</label>
+                                </div>
+                            </div>
+                        {
+                            updateField === 'expenseTotalCost' &&
+                            <div className="form-floating mb-3">
                             <input type="number" className="form-control" rows="6" id="floatingInput" placeholder="johndoe" style={{ color: "#8CA6FE" }} value={newExpenseAmount} onChange={newExpenseTotal}  />
                             <label for="floatingInput">New Expenditure Total Cost</label>
                         </div>
-                        <div>
-                            <div className="form-floating mb-3">
-                                <input type="number" className="form-control" rows="6" id="floatingInput" placeholder="johndoe" style={{ color: "#8CA6FE" }}  min='0' value={paidAmount} onChange={getUpdatedPaidAmount}/>
-                                <label for="floatingInput">Amount Already Paid</label>
+                        }
+                        {
+                            updateField === 'alreadypaidamount' &&
+                            <div>
+                                <div className="form-floating mb-3">
+                                    <input type="number" className="form-control" rows="6" id="floatingInput" placeholder="johndoe" style={{ color: "#8CA6FE" }}  min='0' onChange={getUpdatedPaidAmount}/>
+                                    <label for="floatingInput">Edit Amount Already Paid</label>
+                                </div>
                             </div>
-                        </div>
-                        <div>
-                            <div className="form-floating mb-3">
-                                <input type="number" className="form-control" rows="6" id="floatingInput" placeholder="johndoe" style={{ color: "#8CA6FE" }} onChange={amountInput} min='0' />
-                                <label for="floatingInput">Amount Being Paid</label>
+                        }
+                        {
+                            updateField === 'payBalance' &&
+                            <div>
+                                <div className="form-floating mb-3">
+                                    <input type="number" className="form-control" rows="6" id="floatingInput" placeholder="johndoe" style={{ color: "#8CA6FE" }} onChange={amountInput} min='0' />
+                                    <label for="floatingInput">Amount Being Paid</label>
+                                </div>
                             </div>
-                        </div>
+                        }
+                        
                         <div>
                         <div className="form-floating mb-3">
                             <input type="number" className="form-control" rows="6" id="floatingInput" placeholder="johndoe" style={{ color: "#8CA6FE" }} value={amountNotPaid} min='0' readOnly/>
