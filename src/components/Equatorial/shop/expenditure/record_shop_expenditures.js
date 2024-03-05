@@ -105,7 +105,7 @@ const RecordEquatorialShopExpenditure = () => {
         event.preventDefault()
          let res = await axios.post('http://82.180.136.230:3005/saveequatorialshopexpense',{
              token: localStorage.getItem('token'),
-             expenditureDate: expenditureDate,
+             expenditureDate: new Date().toLocaleDateString('en-GB', options),
              expenditureName: expenditureName,
              expenditureCategory: expenditureCategory,
              expenditureDesc: desc,

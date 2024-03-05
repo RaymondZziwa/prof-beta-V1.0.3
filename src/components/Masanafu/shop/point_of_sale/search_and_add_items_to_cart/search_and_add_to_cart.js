@@ -55,7 +55,7 @@ const SearchAndAddToCart = () => {
           if (item.id === newItem.id) {
             const updatedQuantity = item.quantity + 1;
             const updatedTotalCost =
-              updatedQuantity * item.unitCost * (1 - item.discount / 100);
+              updatedQuantity * item.unitCost - item.discount;
             return {
               ...item,
               quantity: updatedQuantity,
