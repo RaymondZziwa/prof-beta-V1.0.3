@@ -75,7 +75,7 @@ const Cart = ({items, setCartItems, total, setTotal}) => {
           <th>Item Name</th>
           <th>Quantity per Item</th>
           <th>Unit Cost (UGX)</th>
-          <th>Discount (%)</th>
+          <th>Discount (UGX)</th>
           <th>Total Quantity</th>
           <th>Total Cost (UGX)</th>
           <th>Action</th>

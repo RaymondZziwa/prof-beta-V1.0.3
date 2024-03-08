@@ -25,7 +25,6 @@ const CustodianReleaseInventoryMgt = () => {
         const res = await axios.post('http://82.180.136.230:3005/fetchallequatorialgeneralstoreinventoryreleaserecords', {
             token: localStorage.getItem("token")
         })
-        console.log(res.data)
         setitemList(res.data)
         setIsItemLoading(false)
     }

@@ -15,7 +15,6 @@ const EquatorialShopInventoryRecords = () => {
             token: localStorage.getItem('token'),
             branch: localStorage.getItem('branch')
         })
-        console.log(res.data)
         if(Array.isArray(res.data)){
             setAreInventoryRecordsLoading(false)
             const incoming = res.data.filter(record => record.recordcategory === 'incoming');
@@ -24,7 +23,6 @@ const EquatorialShopInventoryRecords = () => {
             setInventoryRecords(res.data);
             setIncomingRecords(incoming);
             setOutgoingRecords(outgoing);
-           // setInventoryRecords(res.data)
         }
     }
 
