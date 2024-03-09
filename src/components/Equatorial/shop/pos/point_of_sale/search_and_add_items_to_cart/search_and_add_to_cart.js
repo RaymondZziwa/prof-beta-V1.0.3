@@ -13,22 +13,6 @@ const SearchAndAddToCart = () => {
   const [total, setTotal] = useState(0)
   const [servicesList, setServicesList] = useState(undefined)
 
-  // const fetchAllServices = async () => {
-  //   let res = await axios.post('http://82.180.136.230:3005/fetchallmassageservices',{
-  //       token: localStorage.getItem('token')
-  //   })
-
-  //   if(Array.isArray(res.data)){
-  //     const transformedOptions = res.data.map((item) => ({
-  //       value: item.productId.toString(),
-  //       label: item.productName,
-  //       productData: item // Include the whole item object as productData
-  //     }))
-  //     setServicesList(transformedOptions)
-  //   }
-  // }
-
-  
   const fetchAllMaterials = async () => {
     let res = await axios.post('http://82.180.136.230:3005/fetchallshopinventory', {
       token: localStorage.getItem('token')

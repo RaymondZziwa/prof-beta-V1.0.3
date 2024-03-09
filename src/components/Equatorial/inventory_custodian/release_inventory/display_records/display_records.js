@@ -56,7 +56,7 @@ const DisplayRecords = ({records}) => {
                                             <td>{item.notes}</td>
                                         </tr>
                                         ))
-                                    ) : records && records.length > 0 ? (
+                                    ) : typeof records !== 'string' && records.length > 0 ? (
                                         records.map((item) => (
                                         <tr key={item.releaseId}>
                                             <td>{item.releaseId}</td>
