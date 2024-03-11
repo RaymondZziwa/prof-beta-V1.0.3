@@ -59,9 +59,9 @@ return(
                 Recieve Massage Dept Income
             </div>
         </Link>
-        <Link className="tab_nav" to="#">
+        <Link className="tab_nav" to="/equatorialmassagedepartmentreportsmenu">
             <div className="mb-3 mclickable_option">
-                View Massage Sales
+                View Massage Reports
             </div>
         </Link>
         <Link className="tab_nav" to="/fetchclientassociatedreceipts">

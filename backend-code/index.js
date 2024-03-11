@@ -6093,7 +6093,8 @@ app.post('/submitmassageincome', (req, res) => {
         if (err) {
             res.status(403).send("You are not authorized to perform this action.");
         } else {
-                const submissionId = `SM-${Math.floor(Math.random()*100)}`
+                const timestamp = Date.now();
+                const submissionId = `SM-${timestamp}-${Math.floor(Math.random() * 1000000)}`
                 const date = req.body.date
                 const submittedBy = req.body.submittedBy
                 const submissionStatus = 'unconfirmed'
