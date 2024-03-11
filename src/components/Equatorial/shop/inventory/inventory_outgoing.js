@@ -44,6 +44,12 @@ const EquatorialShopOutgoingForm = () => {
         setExpenditureDate(date)
     },[])
 
+    useEffect(()=>{
+        setTimeout(()=>{
+            setStatus('')
+        }, 1000)
+    },[status])
+
     const fetchItems = async () => {
         const res = await axios.post('http://82.180.136.230:3005/fetchallshopinventory', {
             token: localStorage.getItem("token")
@@ -106,9 +112,9 @@ const EquatorialShopOutgoingForm = () => {
                 </select>
                 <select class="form-select" aria-label="Default select example" style={{ height: "60px", color: "#8CA6FE;" }} onChange={sourceInput} required>
                     <option selected>Select Destination</option>
-                    <option value='Buwama'>From Custodian</option>   
                     <option value='Namungoona'>Namungoona</option> 
-                    <option value='Equatorial'>Equatorial</option>    
+                    <option value='Equatorial'>Equatorial</option> 
+                    <option value='Masanafu'>Masanafu</option>    
                     <option value='external'>External Destinations</option>  
                     <option value='other'>Other</option>  
                 </select>

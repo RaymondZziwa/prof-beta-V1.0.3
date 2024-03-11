@@ -83,6 +83,12 @@ const EquatorialShopInventoryRestockingForm = () => {
         fetchItems()
     },[])
 
+    useEffect(()=>{
+        setTimeout(()=>{
+            setStatus('')
+        }, 1000)
+    },[status])
+
     const saveRestockData = async event => {
         event.preventDefault()
          let res = await axios.post('http://82.180.136.230:3005/saveequatorialshoprestockdata',{
@@ -158,7 +164,7 @@ const EquatorialShopInventoryRestockingForm = () => {
                         }
                 <select class="form-select" aria-label="Default select example" style={{ height: "60px", color: "#8CA6FE;" }} onChange={sourceInput} required>
                     <option selected>Select Restock Source</option>
-                    <option value='equatorialshop'>From Equatorial Main Shop</option>    
+                    <option value='equatorialshop'>From Equatorial General Store</option>    
                     <option value='external'>From External Sources</option>  
                 </select>
                 {restockSource === 'external' && 
