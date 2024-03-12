@@ -118,7 +118,7 @@ const EquatorialShopInventoryRestockingForm = () => {
                     <input className="form-control" id="floatingInput" placeholder="Order-Id" style={{ color: "#8CA6FE" }} value={expenditureDate} required readOnly/>
                     <label htmlFor="floatingInput">Date</label>
                 </div>    
-                {items.map((items, index) => (
+                    {items.map((items, index) => (
                                         <div  key={index}>
                                             <div className="form-floating mb-3">
                                             <Select

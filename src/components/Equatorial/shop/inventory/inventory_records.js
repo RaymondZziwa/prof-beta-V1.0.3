@@ -2,6 +2,8 @@ import { Row, Col } from 'react-bootstrap'
 import Navbar from '../../../side navbar/sidenav'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleChevronLeft, faCircleChevronRight } from "@fortawesome/free-solid-svg-icons"
 
 const EquatorialShopInventoryRecords = () => {
 
@@ -10,6 +12,24 @@ const EquatorialShopInventoryRecords = () => {
     const [incomingRecords, setIncomingRecords] = useState([]);
     const [outgoingRecords, setOutgoingRecords] = useState([]);
 
+    const [incomingCurrentPage, setIncomingCurrentPage] = useState(1)
+
+    const incomingItemsPerPage = 5
+
+    const incomingStartIndex = (incomingCurrentPage - 1) * incomingItemsPerPage;
+    const incomingEndIndex = incomingStartIndex + incomingItemsPerPage;
+
+    const totalPages = Math.ceil(incomingRecords.length / incomingItemsPerPage)
+
+    const [outgoingCurrentPage, setOutgoingCurrentPage] = useState(1)
+
+    const outgoingItemsPerPage = 5
+
+    const outgoingStartIndex = (outgoingCurrentPage - 1) * outgoingItemsPerPage;
+    const outgoingEndIndex = outgoingStartIndex + outgoingItemsPerPage;
+
+    const outgoingTotalPages = Math.ceil(outgoingRecords.length / outgoingItemsPerPage)
+
     const fetchShopInventoryRecords = async () => {
         let res = await axios.post('http://82.180.136.230:3005/fetchequatorialshopinventoryrecords',{
             token: localStorage.getItem('token'),
@@ -17,14 +37,28 @@ const EquatorialShopInventoryRecords = () => {
         })
         if(Array.isArray(res.data)){
             setAreInventoryRecordsLoading(false)
-            const incoming = res.data.filter(record => record.recordcategory === 'incoming');
-            const outgoing = res.data.filter(record => record.recordcategory === 'outgoing');
+            const sortedRecords = res.data.slice().sort((a, b) => {
+                
+                const partsA = a.date.split('/');
+                const partsB = b.date.split('/');
+                
+                
+                const dateA = new Date(`${partsA[1]}/${partsA[0]}/${partsA[2]}`);
+                const dateB = new Date(`${partsB[1]}/${partsB[0]}/${partsB[2]}`);
+        
+                return dateB - dateA;
+            });
+            setInventoryRecords(sortedRecords);
             setAreInventoryRecordsLoading(false);
-            setInventoryRecords(res.data);
-            setIncomingRecords(incoming);
-            setOutgoingRecords(outgoing);
         }
     }
+
+    useEffect(()=>{
+        const incoming = inventoryRecords.filter(record => record.recordcategory === 'incoming');
+        const outgoing = inventoryRecords.filter(record => record.recordcategory === 'outgoing');
+        setIncomingRecords(incoming);
+        setOutgoingRecords(outgoing);
+    },[inventoryRecords])
 
     useEffect(()=> {
         fetchShopInventoryRecords()
@@ -51,7 +85,7 @@ const EquatorialShopInventoryRecords = () => {
                         </thead>
                         <tbody>
                             {areInventoryRecordsLoading ? <tr><td colSpan="7" style={{textAlign:'center'}}>Loading.....</td></tr> :
-                                incomingRecords.map(item => (
+                                incomingRecords.slice(incomingStartIndex, incomingEndIndex).map(item => (
                                     <tr>
                                         <td>{item.date}</td>
                                         <td>{item.productName}</td>
@@ -64,6 +98,13 @@ const EquatorialShopInventoryRecords = () => {
                                 ))}
                         </tbody>
                     </table>
+                    {totalPages > 1 && (
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
+                            <FontAwesomeIcon icon={faCircleChevronLeft} style={{color: 'blue',padding: '10px 20px',border: 'none',borderRadius: '5px',marginLeft: '10px',cursor: 'pointer', fontSize:'40px'}} disabled={incomingCurrentPage === 1} onClick={() => setIncomingCurrentPage(incomingCurrentPage - 1)}/>
+                        <span style={{ margin: '0 10px', color:'blue' }}>Page {incomingCurrentPage} of {totalPages}</span>
+                            <FontAwesomeIcon icon={faCircleChevronRight} style={{color: 'blue',padding: '10px 20px',border: 'none',borderRadius: '5px',marginLeft: '10px',cursor: 'pointer', fontSize:'40px'}} disabled={incomingCurrentPage === totalPages} onClick={() => setIncomingCurrentPage(incomingCurrentPage + 1)}/>
+                        </div>
+                    )}
                 <h1 style={{textAlign:'center'}}>Equatorial Shop Department Inventory Outgoing Records</h1>
                 <table className="table table-light">
                         <thead>
@@ -79,7 +120,7 @@ const EquatorialShopInventoryRecords = () => {
                         </thead>
                         <tbody>
                             {areInventoryRecordsLoading ? <tr><td colSpan="7" style={{textAlign:'center'}}>Loading.....</td></tr> :
-                                outgoingRecords.map(item => (
+                                outgoingRecords.slice(outgoingStartIndex, outgoingEndIndex).map(item => (
                                     <tr>
                                         <td>{item.date}</td>
                                         <td>{item.productName}</td>
@@ -92,6 +133,13 @@ const EquatorialShopInventoryRecords = () => {
                                 ))}
                         </tbody>
                     </table>
+                    {outgoingTotalPages > 1 && (
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '10px' }}>
+                            <FontAwesomeIcon icon={faCircleChevronLeft} style={{color: 'blue',padding: '10px 20px',border: 'none',borderRadius: '5px',marginLeft: '10px',cursor: 'pointer', fontSize:'40px'}} disabled={outgoingCurrentPage === 1} onClick={() => setOutgoingCurrentPage(outgoingCurrentPage - 1)}/>
+                        <span style={{ margin: '0 10px', color:'blue' }}>Page {outgoingCurrentPage} of {totalPages}</span>
+                            <FontAwesomeIcon icon={faCircleChevronRight} style={{color: 'blue',padding: '10px 20px',border: 'none',borderRadius: '5px',marginLeft: '10px',cursor: 'pointer', fontSize:'40px'}} disabled={outgoingCurrentPage === totalPages} onClick={() => setOutgoingCurrentPage(outgoingCurrentPage + 1)}/>
+                        </div>
+                    )}
             </div>
             <Col sm='12' md='2' lg='2' xl='2'></Col>
         </Row>
