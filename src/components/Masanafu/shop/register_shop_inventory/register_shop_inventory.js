@@ -6,6 +6,7 @@ import Select from 'react-select'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleChevronLeft, faCircleChevronRight, faArrowAltCircleRight } from "@fortawesome/free-solid-svg-icons"
 
+
 const RegisterShopInventory = () => {
     const [ equipmentName, setEquipmentName ] = useState('')
     const [isFetchedProductsLoading , setIsFetchedProductsLoading] = useState(true)
@@ -90,6 +91,9 @@ const RegisterShopInventory = () => {
             unitPrice: unitPrice
         })
 
+        setEquipmentName('')
+        setUnitPrice(0)
+
         fetchAllMaterials()
     }
     
@@ -102,7 +106,7 @@ const RegisterShopInventory = () => {
                     <Form style={{ justifyContent: 'center', marginTop: '20px' }}>
                         <div className="mb-3">
                             <div className="form-floating mb-3">
-                                <input type="text" className="form-control" id="floatingInput" min="0" placeholder="Quantity" onChange={itemInputHandler} style={{ color: "#8CA6FE" }} />
+                                <input type="text" className="form-control" id="floatingInput"   onChange={itemInputHandler} style={{ color: "#8CA6FE" }} required/>
                                 <label for="floatingInput">Product Name</label>
                             </div>
                             <div className="form-floating mb-3">

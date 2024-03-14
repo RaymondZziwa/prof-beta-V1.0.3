@@ -119,9 +119,12 @@ const Login = () => {
                             <div className="mb-3">
                                 <div className="form-floating">
                                     <input type={passwordShown ? "text" : "password"} className="form-control" id="floatingPassword" placeholder="Password" onChange={handlePwdData} />
-                                    <label for="floatingPassword">Password</label>
-                                    <span style={{ color: 'white', cursor: 'pointer' }} onClick={showPwd}><FontAwesomeIcon icon={faEye} /> show password</span>
+                                    <label for="floatingPassword">Code</label>
+                                    <span style={{ color: 'white', cursor: 'pointer' }} onClick={showPwd}><FontAwesomeIcon icon={faEye} /> show code</span>
                                 </div>
+                            </div>
+                            <div className="mb-3">
+                                <button style={{ width: "100%", border: "none", color: "white", height: "45px", backgroundColor: "#3452A3" }} onClick={loginHandler}>REQUEST ACCESS CODE</button>
                             </div>
                         </>
                     }
