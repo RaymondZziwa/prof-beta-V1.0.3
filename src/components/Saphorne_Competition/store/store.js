@@ -20,14 +20,6 @@ const authSlice = createSlice({
     }
 })
 
-// createSlice({
-//     name: 'authmgt',
-//     initialState,
-//     reducers:{
-//         logout(){}
-//     }
-// })
-
 
 const store = configureStore({
     reducer: {
