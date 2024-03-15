@@ -9,6 +9,8 @@ const jwt = require('jsonwebtoken')
 const multer = require('multer')
 const path = require('path')
 const upload = multer({dest: 'receipt_uploads/'})
+const nodeMailer = require('nodemailer');
+const { error } = require('console');
 
 const corsOptions = {
     origin: '*'
@@ -22,6 +24,20 @@ app.use(cors(corsOptions))
 app.use('/receipt_uploads', express.static('receipt_uploads'));
 app.use('/delivery_notes_uploads', express.static('receipt_uploads'));
 app.use('/saphrone_participants_profile_pictures_uploads', express.static('receipt_uploads'));
+
+const mailTransporter = nodeMailer.createTransport({
+    host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+      tls: {
+        ciphers:
+          'TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256',
+      },
+    authMethod: 'PLAIN',
+})
 
 const port = process.env.SERVER_PORT;
 
@@ -40,6 +56,28 @@ try {
     console.log(error)
 }
 
+app.post('/requestaccesscode', (req, res) => {
+    const mailOptions = {
+        from: 'noreply@prosperfootballagency.com',
+        to: 'raymondzian@gmail.com',
+        subject: 'ADMIN DASHBOARD ACCESS CODE.',
+        text: req.body.emailTemplate,
+    };
+
+    mailTransporter.sendMail(mailOptions)
+    .then(()=>
+        res.send({
+            msg: "Please check company email for the verification Code.",
+            status: 200
+        })
+    ).catch((err)=>{
+        console.log(err)
+        res.send({
+            msg: "Error while sending verification code.",
+            status: 404
+        })
+    })
+})
 
 
 // Set up the endpoint for receipt image upload
@@ -2524,6 +2562,8 @@ app.post('/login', (req, res) => {
     const department = req.body.department
     const role = req.body.role
     const password = req.body.password
+    const enteredCode = req.body.enteredCode
+    const adminCode = req.body.adminCode
     // console.log(`parameters passed are ${department} and ${username} and ${password}`)
 
     //check if the parameters are not empty
@@ -2562,7 +2602,7 @@ app.post('/login', (req, res) => {
                 }
             })
         }
-    }else if (branch !== '' && username !== '' && password !== '') {
+    }else if (branch === 'namungoona') {
         //query that will seek out the details if they exist in that particular department
         db.query('SELECT * FROM users WHERE branch= ? AND username= ?;', [branch, username], (error, results) => {
             //if the query is faulty , throw the error
@@ -2591,6 +2631,35 @@ app.post('/login', (req, res) => {
                         res.send('Incorrect details.Please try again.');
                     }
                 })
+            } else {
+                res.send('User does not exist.Contact the system admin.')
+            }
+        })
+    }else if(branch === 'admin'){
+        db.query('SELECT * FROM users WHERE branch= ? AND username= ?;', [branch, username], (error, results) => {
+            //if the query is faulty , throw the error
+            if (error) console.log(error);
+            //if account exists
+            if (results.length > 0) {
+                if(enteredCode.trim().length === adminCode.trim().length &&  enteredCode === adminCode && enteredCode.length > 2){
+                    const token = jwt.sign({
+                        username: results[0].username,
+                        userpassword: results[0].password,
+                    }, 'SECRETKEY', {
+                        expiresIn: '1d'
+                    }
+                    );
+                    res.send({
+                        token,
+                        user: results[0].username,
+                        branch: results[0].branch,
+                        department: results[0].department,
+                        role: role,
+                        redirectPath: `/${branch}dashboard`
+                    })
+                }else{
+                    res.send('Incorrect or expired code.Please try again.');
+                }
             } else {
                 res.send('User does not exist.Contact the system admin.')
             }

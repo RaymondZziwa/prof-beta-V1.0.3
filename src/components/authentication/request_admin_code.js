@@ -1,4 +1,4 @@
-const GenerateAdminAccessCode = async () => {
+export const GenerateAdminAccessCode = async () => {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let code = '';
     for (let i = 0; i < 8; i++) {
@@ -9,9 +9,3 @@ const GenerateAdminAccessCode = async () => {
     return code;
 }
 
-
-
-export const RequestAccessCode = async (AccessAdminEmailTemplate) => {
-    let code = await GenerateAdminAccessCode()
-    let email = AccessAdminEmailTemplate(code)
-}

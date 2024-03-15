@@ -1,7 +1,7 @@
 import { Form } from "react-bootstrap";
 import logo from '../../imgs/logo.png'
 import './login.css'
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import AuthContext from "../../store/auth-context";
@@ -9,8 +9,11 @@ import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import award from '../../imgs/award.gif'
 import { Link } from 'react-router-dom'
+import { GenerateAdminAccessCode } from "./request_admin_code";
+import { AccessAdminEmailTemplate } from "../../email_templates/access_admin_template";
 
 const Login = () => {
+    const [adminCode, setAdminCode] = useState('')
     const [branch, setBranch] = useState('')
     const [username, setUsername] = useState('')
     const [pwd, setPwd] = useState('')
@@ -18,6 +21,7 @@ const Login = () => {
     const [passwordShown, setPasswordShown] = useState(false);
     const [department, setDepartment] = useState('')
     const [role, setRole] = useState('')
+    const [codeStatus, setCodeStatus] = useState('')
     const history = useHistory()
 
 
@@ -49,6 +53,31 @@ const Login = () => {
         event.preventDefault()
         setPasswordShown(!passwordShown);
     }
+
+    useEffect(()=>{
+        setTimeout(()=>{
+            setCodeStatus('')
+            setloginStatus('')
+        }, 1000) 
+    },[codeStatus, loginStatus])
+
+    //code to clear admin code after 30 minutes
+    useEffect(()=>{
+        setTimeout(()=>{
+            setAdminCode('')
+        }, 1800000)
+    },[adminCode])
+
+    const requestAccessCodeHandler = async (event) => {
+        event.preventDefault();
+        let code = await GenerateAdminAccessCode()
+        let emailTemplate = await AccessAdminEmailTemplate(code)
+        setAdminCode(code)
+        let res = await axios.post('http://82.180.136.230:3005/requestaccesscode', {
+            emailTemplate: emailTemplate
+        }).then((res)=> setCodeStatus(res.data.msg))
+    }
+
     const loginHandler = async event => {
         event.preventDefault()
         let res = await axios.post('http://82.180.136.230:3005/login', {
@@ -56,7 +85,9 @@ const Login = () => {
             department: department,
             role: role,
             username: username.trim(),
-            password: pwd
+            password: pwd,
+            enteredCode: pwd,
+            adminCode: adminCode
         })
         if (typeof res.data === "string") {
             setloginStatus(res.data)
@@ -78,6 +109,7 @@ const Login = () => {
                 <div className="mb-3">
                      <img src={logo} alt="logo" fetchpriority="high" width="350px" height="180px" headers={{ "Cache-Control": "max-age=3600" }}/>
                      <p style={{ color: "#3452A3", textAlign: "center", fontFamily: "akshar", fontStyle: "normal", fontSize: "22px" }} className="login-header">PROF BIORESEARCH</p>
+                     {codeStatus && <span style={{ marginTop: '2px' }} className="alert alert-info" role="alert">{codeStatus}</span>}
                      {loginStatus && <span style={{ marginTop: '2px' }} className="alert alert-danger" role="alert">{loginStatus}</span>}
                      <Form>
                  <div style={{ backgroundColor: "#8CA6FE", padding: "30px", borderRadius: "10px" }}>
@@ -124,7 +156,7 @@ const Login = () => {
                                 </div>
                             </div>
                             <div className="mb-3">
-                                <button style={{ width: "100%", border: "none", color: "white", height: "45px", backgroundColor: "#3452A3" }} onClick={loginHandler}>REQUEST ACCESS CODE</button>
+                                <button style={{ width: "100%", border: "none", color: "white", height: "45px", backgroundColor: "#3452A3" }} onClick={requestAccessCodeHandler}>REQUEST ACCESS CODE</button>
                             </div>
                         </>
                     }

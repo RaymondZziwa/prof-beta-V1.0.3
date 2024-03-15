@@ -1,4 +1,4 @@
-export const AccessAdminEmailTemplate = (accessCode) => {
+export const AccessAdminEmailTemplate = async (accessCode) => {
     return(
         `
             A one time prof bioresearch admin dashboard access code has been requested.
