@@ -272,6 +272,7 @@ import MasanafuProductionMgtMenu from './components/Admin/masanafu_administratio
 import MasanafuGeneralStoreMgtMenu from './components/Admin/masanafu_administration/general_store';
 import MasanafuExternalReceiptsPOS from './components/Masanafu/shop/external_receipts/issue_external_receipts/point_of_sale/pos';
 import RegisterFarmSeeds from './components/Masanafu/farm/register_seeds/register_seeds';
+import AdminManageEquatorialExpenses from './components/Admin/equatorial_administration/edit_expenditure_date';
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -924,6 +925,10 @@ function App() {
           </Route>)}
           {authCtx.isLoggedIn && (<Route path="/recieveexhibitionincome">
             <RecieveExhibitionIncome />
+          </Route>)}
+
+          {authCtx.isLoggedIn && (<Route path="/manageequatorialshopexpenditures">
+            <AdminManageEquatorialExpenses />
           </Route>)}
 
           {authCtx.isLoggedIn && (<Route path="/equatorialmassagedailyservicesreport">
