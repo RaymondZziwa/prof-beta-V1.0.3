@@ -32,7 +32,7 @@ const Navbar = () => {
                   <li className="nav-item">
                     <Link className="nav-link" to="/equatoriallabellinginventorytransfermgt">Transfer Labelled Inventory</Link>
                   </li>
-                  <li className="nav-item"> 2
+                  <li className="nav-item">
                     <Link className="nav-link" to="/equatoriallabellingdailyoutputmgt">Record Daily Output</Link>
                   </li>
                   <li className="nav-item">

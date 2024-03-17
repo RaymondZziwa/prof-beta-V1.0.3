@@ -58,8 +58,8 @@ try {
 
 app.post('/requestaccesscode', (req, res) => {
     const mailOptions = {
-        from: 'noreply@prosperfootballagency.com',
-        to: 'raymondzian@gmail.com',
+        from: 'developerraymond6@gmail.com',
+        to: 'Profbioresearch@gmail.com',
         subject: 'ADMIN DASHBOARD ACCESS CODE.',
         text: req.body.emailTemplate,
     };
@@ -2237,6 +2237,28 @@ app.post('/rejectorder', (req, res) => {
                 }
             })
         }
+    })
+})
+
+app.post('/updateexpensedate', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const expenseId = req.body.expenseId
+            const newDate = req.body.newDate
+            //missing code to check if item already exists
+            db.query('UPDATE equatorialshopexpenditure SET date = ? WHERE expenditureid = ?', [newDate, expenseId], function (error, results) {
+                // If there is an issue with the query, output the error
+                if (error) throw error;
+                // If the account exists
+                res.send({
+                    msg: "Date has been successfully updated.",
+                    status: 200
+                })
+            })
+        }
+
     })
 })
 
