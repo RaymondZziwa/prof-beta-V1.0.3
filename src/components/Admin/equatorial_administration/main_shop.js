@@ -64,6 +64,11 @@ const EquatorialMainShopMgtMenu = () => {
                             Edit Expenditure Dates
                         </div>
                     </Link>
+                    <Link className="tab_nav" to="/editequatorialshopsales">
+                       <div className="mb-3 mclickable_option">
+                            Edit Sales
+                        </div>
+                    </Link>
         </div>
         <Col sm='12' md='1' lg='1' xl='1'>
         </Col>

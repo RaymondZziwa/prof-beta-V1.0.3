@@ -2262,6 +2262,50 @@ app.post('/updateexpensedate', (req, res) => {
     })
 })
 
+app.post('/deleteequatorialshopsale', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const receiptNumber = req.body.receiptNumber
+            //missing code to check if item already exists
+            db.query('DELETE equatorialShopSales WHERE receiptNumber = ?', receiptNumber, function (error) {
+                // If there is an issue with the query, output the error
+                if (error) throw error;
+                // If the account exists
+                res.send({
+                    msg: "Sale has been successfully deleted.",
+                    status: 200
+                })
+            })
+        }
+
+    })
+})
+
+
+app.post('/updateequatorialshopsale', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            const receiptNumber =req.body.receiptNumber
+            const newBalance = req.body.newBalance
+            //missing code to check if item already exists
+            db.query('UPDATE equatorialShopSales SET balance = ? WHERE receiptNumber = ?', [newBalance, receiptNumber], function (error) {
+                // If there is an issue with the query, output the error
+                if (error) throw error;
+                // If the account exists
+                res.send({
+                    msg: "Sale has been successfully deleted.",
+                    status: 200
+                })
+            })
+        }
+
+    })
+})
+
 
 //route to reject raw material requests
 app.post('/rejectrawmaterialrequest', (req, res) => {
