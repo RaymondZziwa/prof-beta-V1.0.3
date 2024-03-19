@@ -273,6 +273,7 @@ import MasanafuGeneralStoreMgtMenu from './components/Admin/masanafu_administrat
 import MasanafuExternalReceiptsPOS from './components/Masanafu/shop/external_receipts/issue_external_receipts/point_of_sale/pos';
 import RegisterFarmSeeds from './components/Masanafu/farm/register_seeds/register_seeds';
 import AdminManageEquatorialExpenses from './components/Admin/equatorial_administration/edit_expenditure_date';
+import EditEquatorialShopSales from './components/Admin/equatorial_administration/edit_sales';
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -281,9 +282,6 @@ function App() {
   const isLoggedIn = localStorage.getItem("isUserLoggedIn") === 'true'
   const home = localStorage.getItem("home")
 
-  // if(isLoggedIn){
-  //     window.location.href = home
-  // }
 
   const logoutUser = () => {
     localStorage.clear();
@@ -929,6 +927,9 @@ function App() {
 
           {authCtx.isLoggedIn && (<Route path="/manageequatorialshopexpenditures">
             <AdminManageEquatorialExpenses />
+          </Route>)}
+          {authCtx.isLoggedIn && (<Route path="/editequatorialshopsales">
+            <EditEquatorialShopSales />
           </Route>)}
 
           {authCtx.isLoggedIn && (<Route path="/equatorialmassagedailyservicesreport">

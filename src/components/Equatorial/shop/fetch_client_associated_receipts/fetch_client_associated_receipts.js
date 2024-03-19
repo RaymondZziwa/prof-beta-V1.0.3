@@ -1,26 +1,18 @@
 import { Row, Col } from 'react-bootstrap';
 import Navbar from "../../../side navbar/sidenav";
-import { useState, useEffect, useReducer } from "react";
+import { useState, useEffect } from "react";
 import axios from 'axios';
 
 const FetchClientAssociatedReceipts = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [data, setData] = useState([]);
+    const [filteredData, setFilteredData] = useState('')
     const [clientName, setClientName] = useState('');
 
-    const dataReducer = (state, action) => {
-      switch (action.type) {
-        case 'FILTER_DATA':
-          return data.filter(item => item.customerNames === action.payload);
-        default:
-          return state;
-      }
-    };
-
-    const [filteredData, dispatch] = useReducer(dataReducer, data)
-
-    const handleFilter = () => {
-      dispatch({ type: 'FILTER_DATA', payload: clientName.toUpperCase().trim() });
+    const handleFilter = (event) => {
+      event.preventDefault()
+      let filtered = data.filter((sale)=> sale.customerNames.includes(clientName.toUpperCase().trim()))
+      setFilteredData(filtered)
     }
 
     useEffect(()=>{
