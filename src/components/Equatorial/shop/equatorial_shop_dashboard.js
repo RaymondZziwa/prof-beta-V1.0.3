@@ -29,9 +29,9 @@ return(
                 Point Of Sale
             </div>
         </Link>
-        <Link className="tab_nav" to="/equatorialprojectspos">
+        <Link className="tab_nav" to="/equatorialprojectsdailyincomesubmission">
             <div className="mb-3 mclickable_option">
-                Projects Point Of Sale
+                Save Projects Income
             </div>
         </Link>
         <Link className="tab_nav" to="/managenctsbydebtmanager">

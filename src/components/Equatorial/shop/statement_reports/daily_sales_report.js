@@ -11,7 +11,7 @@ import './report.css'
 
 class PrintableContent extends React.Component {
     render() {
-      const { tsm ,tsmr ,tsmnr ,tea ,teap ,teanp, fmd, tni, tvisa, tprofmm, tmtn, tairtel ,tmi } = this.props;
+      const { tsm ,tsmr ,tsmnr ,tea ,teap ,teanp, fmd, tni, tvisa, tprofmm, tmtn, tairtel ,tmi , projectsAmount} = this.props;
       const today = new Date();
         const options = { dateStyle: 'short', timeStyle: 'short' };
         const formattedDateTime = new Intl.DateTimeFormat(undefined, options).format(today)
@@ -55,16 +55,8 @@ class PrintableContent extends React.Component {
                   <td>{tni}</td>
                 </tr>
                 <tr>
-                  <td><strong>Total Net Income Available (MTN MoMo): UGX</strong></td>
-                  <td>{tmtn}</td>
-                </tr>
-                <tr>
-                  <td><strong>Total Net Income Available (Airtel Money): UGX</strong></td>
-                  <td>{tairtel}</td>
-                </tr>
-                <tr>
-                  <td><strong>Total Net Income Available (Prof MM): UGX</strong></td>
-                  <td>{tprofmm}</td>
+                  <td><strong>Total Net Income Available (MoMo): UGX</strong></td>
+                  <td>{tmtn + tairtel + tprofmm }</td>
                 </tr>
                 <tr>
                   <td><strong>Total Net Income Available (Visa): UGX</strong></td>
@@ -73,6 +65,14 @@ class PrintableContent extends React.Component {
                 <tr>
                   <td><strong>Total Massage Income: UGX</strong></td>
                   <td>{tmi}</td>
+                </tr>
+                <tr>
+                  <td><strong>Total Projects Income: UGX</strong></td>
+                  <td>{projectsAmount}</td>
+                </tr>
+                <tr>
+                  <td><strong>Total Net Income Available (Cash) (Shop+Massage+Projects): UGX</strong></td>
+                  <td>{tni+tmi+projectsAmount}</td>
                 </tr>
             </table>
           <p>Printed By: {localStorage.getItem('username')}</p>
@@ -94,17 +94,21 @@ const EquatorialShopDailySalesReport = () => {
     const [totalAmount, setTotalAmount] = useState(0);
     const [totalAmountPaid, setTotalAmountPaid] = useState(0);
     const [balance, setBalance] = useState(0)
+    const [projectsAmount, setProjectsAmount] = useState(0)
+
 
     const [totalExpenditureAmount, setTotalExpenditureAmount] = useState(0);
     const [totalExpenditureAmountPaid, setTotalExpenditureAmountPaid] = useState(0);
     const [expenditureBalance, setExpenditureBalance] = useState(0)
     const [massageData,  setMassageData] = useState([])
+    const [projectsData,  setProjectsData] = useState([])
     const [filteredMassageData,  setFilteredMassageData] = useState([])
     const [isCalculationsLoading, setIsCalculationsLoading] = useState(true)
+    const [isExpensesLoading, setIsExpensesLoading] = useState(true)
 
     const [totalMassageAmount, setTotalMassageAmount] = useState(0)
 
-    const [formattedDate, setFormattedDate] = useState()
+    const [formattedDate, setFormattedDate] = useState('')
 
     const componentRef = useRef()
     const printBtnRef = useRef()
@@ -146,9 +150,69 @@ const EquatorialShopDailySalesReport = () => {
          setSelectedDay(event.target.value)
      };
 
+     const fetchSalesData = async () => {
+      let res = await axios.post('http://82.180.136.230:3005/fetchallequatorialshopsalesreport', {
+        token: localStorage.getItem('token'),
+        date: formattedDate
+      });
+  
+      if (Array.isArray(res.data)) {
+        setIsLoading(false);
+        setSalesData(res.data);
+        setFilteredSales(res.data)
+      }
+    };
+
+    const fetchExpensesData = async () => {
+      let res = await axios.post('http://82.180.136.230:3005/fetchallequatorialshopexpensesreport', {
+        token: localStorage.getItem('token'),
+        date: formattedDate
+      });
+  
+      if (Array.isArray(res.data)) {
+        setIsExpensesLoading(false);
+        setExpensesData(res.data);
+        setFilteredExpenses(res.data)
+      }
+    }
+
+    const fetchMassageData = async () => {
+      let res = await axios.post('http://82.180.136.230:3005/fetchamassagerecordsreport', {
+        token: localStorage.getItem('token'),
+        date: formattedDate
+      })
+  
+      if (Array.isArray(res.data)) {
+        const receivedMassageData = res.data.filter((item) => item.submissionstatus === "recieved");
+        setMassageData(receivedMassageData );
+      }
+    }
+
+    const fetchProjectsData = async () => {
+      let res = await axios.post('http://82.180.136.230:3005/fetchaprojectsrecordsreport', {
+        token: localStorage.getItem('token'),
+        date: formattedDate
+      })
+  
+      if (Array.isArray(res.data)) {
+        setProjectsData(res.data);
+        setProjectsAmount(res.data[0].amount)
+      }
+    }
+
+    const generateReport = async event => {
+      event.preventDefault()
+      await fetchSalesData()
+      await fetchExpensesData()
+      await fetchMassageData()
+      await fetchProjectsData()
+
+    }
+
+
     useEffect(()=>{
         const formattedDate = moment(selectedDay).format('DD/MM/YYYY')
-        setFormattedDate(formattedDate)
+        setFormattedDate(JSON.stringify(formattedDate))
 
        if (formattedDate) {
             const filteredSalesData = salesData.filter((sale) => {
@@ -160,6 +224,20 @@ const EquatorialShopDailySalesReport = () => {
                 const expenseDate = moment(expense.date, 'DD/MM/YYYY').format('DD/MM/YYYY');
                 return expenseDate === formattedDate;
             });
+
+
+          if(projectsData.length > 0) {
+            const filteredProjectsData = projectsData.filter((project) => {
+              const projectDate = moment(project.date, 'DD/MM/YYYY').format('DD/MM/YYYY');
+              return projectDate === formattedDate;
+            });
+
+            console.log('pp11', projectsData)
+
+            console.log('pp', filteredProjectsData)
+
+          // setProjectsAmount(filteredProjectsData[0].amount)
+          }  
 
             setFilteredSales(filteredSalesData)
             setFilteredExpenses(filteredExpensesData)
@@ -251,53 +329,6 @@ const EquatorialShopDailySalesReport = () => {
         setIsCalculationsLoading(false);
       }, [filteredSales, filteredExpenses]);
       
-
-      useEffect(() => {
-        const fetchExpensesData = async () => {
-          let res = await axios.post('http://82.180.136.230:3005/fetchallequatorialshopexpenses', {
-            token: localStorage.getItem('token')
-          });
-      
-          if (Array.isArray(res.data)) {
-            setIsLoading(false);
-            setExpensesData(res.data);
-          }
-        }
-      
-        fetchExpensesData()
-      }, [])
-
-      useEffect(() => {
-        const fetchMassageData = async () => {
-          let res = await axios.post('http://82.180.136.230:3005/fetchallincomesubmissionrecords', {
-            token: localStorage.getItem('token')
-          })
-      
-          if (Array.isArray(res.data)) {
-            const receivedMassageData = res.data.filter((item) => item.submissionstatus === "recieved");
-            setIsLoading(false);
-            setMassageData(receivedMassageData );
-          }
-        }
-      
-        fetchMassageData()
-      }, [])
-
-    useEffect(() => {
-        const fetchSalesData = async () => {
-          let res = await axios.post('http://82.180.136.230:3005/fetchallequatorialshopsales', {
-            token: localStorage.getItem('token')
-          });
-      
-          if (Array.isArray(res.data)) {
-            setIsLoading(false);
-            setSalesData(res.data);
-          }
-        };
-      
-        fetchSalesData();
-    }, []);
-
     return(
         <div style={{backgroundColor:'#E9E9E9', color:'black'}}>
             <Row>
@@ -314,7 +345,7 @@ const EquatorialShopDailySalesReport = () => {
                         pdfPrint={true}
                         />
                         <div className="print-content">
-                            <PrintableContent ref={componentRef} tsm={totalAmount} tsmr={totalAmountPaid} tsmnr={balance} tea={totalExpenditureAmount} teap={totalExpenditureAmountPaid} teanp={expenditureBalance} fmd={formattedDate} tni={paymentMethodTotals.Cash-expensePaymentMethodTotals.Cash} tmtn={paymentMethodTotals.MTNMoMo-expensePaymentMethodTotals.MTNMoMo} tairtel={paymentMethodTotals.AirtelMoney-expensePaymentMethodTotals.AirtelMoney} tprofmm={paymentMethodTotals.ProfMM-expensePaymentMethodTotals.ProfMM} tvisa={paymentMethodTotals.Visa-expensePaymentMethodTotals.Visa} tmi={totalMassageAmount}/>
+                            <PrintableContent ref={componentRef} tsm={totalAmount} tsmr={totalAmountPaid} tsmnr={balance} tea={totalExpenditureAmount} teap={totalExpenditureAmountPaid} teanp={expenditureBalance} fmd={formattedDate} tni={paymentMethodTotals.Cash-expensePaymentMethodTotals.Cash} tmtn={paymentMethodTotals.MTNMoMo-expensePaymentMethodTotals.MTNMoMo} tairtel={paymentMethodTotals.AirtelMoney-expensePaymentMethodTotals.AirtelMoney} tprofmm={paymentMethodTotals.ProfMM-expensePaymentMethodTotals.ProfMM} tvisa={paymentMethodTotals.Visa-expensePaymentMethodTotals.Visa} tmi={totalMassageAmount} projectsAmount={projectsAmount}/>
                         </div>
                         <style>
                             {`
@@ -327,10 +358,10 @@ const EquatorialShopDailySalesReport = () => {
                     <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <label htmlFor="date-select" style={{color:'black'}}>Select The Day:</label>
                         <input type="date" id="date-select" className="form-control" style={{ width: '300px' }} onChange={selectedDateHandler}/>
+                        <button onClick={generateReport}>Generate Report</button>
                     </div>
                     <div>
                         <h5 style={{ textAlign: 'center', color: 'black', marginTop: '40px' }}>
-                            {/* As On: {selectedDay && selectedDay} */}
                         </h5>
                         <h1 style={{textAlign:'center', color:'black',marginTop:'40px'}}>Daily Sales List</h1>
                         <table className="table table-light" style={{ marginTop: '20px',textAlign:'center' }}>
@@ -433,7 +464,7 @@ const EquatorialShopDailySalesReport = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {!isLoading ? filteredExpenses.map(item => (
+                                {!isExpensesLoading ? filteredExpenses.map(item => (
                                     <tr>
                                         <td>{item.expenditureid}</td>
                                         <td>{item.date}</td>
@@ -448,7 +479,7 @@ const EquatorialShopDailySalesReport = () => {
                                 ))
                                 : <tr><td colSpan='8'>Loading...</td></tr>}
                                 {/* Grand total row */}
-                                {!isLoading && filteredExpenses.length > 0 && (
+                                {!isExpensesLoading && filteredExpenses.length > 0 && (
                                         <tr>
                                             <td colSpan="4"></td>
                                             <td>
@@ -476,59 +507,6 @@ const EquatorialShopDailySalesReport = () => {
                                         )}
                             </tbody>
                         </table>
-                    </div>
-                    <h2 style={{textAlign:'center', marginTop:'60px',color:'black'}}>Daily Net Profit / Loss Report</h2>
-                    <div style={{display:'inline-block'}}>
-                        <h4>Gross Income Analysis</h4>
-                        {totalAmount ? 
-                            <>
-                                <p>Total Amount From Sales: UGX {totalAmount}</p>
-                                <p>Amount Recieved (Cash): UGX {paymentMethodTotals.Cash}</p>
-                                <p>Amount Recieved (MTN MoMo): UGX {paymentMethodTotals.MTNMoMo}</p>
-                                <p>Amount Recieved (Airtel Money): UGX {paymentMethodTotals.AirtelMoney}</p>
-                                <p>Amount Recieved (Prof MM): UGX {paymentMethodTotals.ProfMM}</p>
-                                <p>Amount Recieved (Visa): UGX {paymentMethodTotals.Visa}</p>
-                                <p>Total Amount Recieved: UGX {totalAmountPaid}</p>
-                                <p>Total Amount Not Paid: UGX {balance}</p>
-                            </>
-                            : <p>No data.....</p>
-                        }
-                    </div>
-                    <div style={{display:'inline-block',marginLeft:'100px'}}>
-                        <h4>Total Expenditure Analysis</h4>
-                        {totalExpenditureAmount ? 
-                            <>
-                                <p>Total Expenditure Amount: UGX {totalExpenditureAmount}</p>
-                                {/* <p>Expense Paid By (Cash): UGX {expensePaymentMethodTotals.Cash}</p> */}
-                                {/* <p>Expense Paid By (MTN MoMo): UGX {expensePaymentMethodTotals.MTNMoMo}</p>
-                                <p>Expense Paid By (Airtel Money): UGX {expensePaymentMethodTotals.AirtelMoney}</p>
-                                <p>Expense Paid By (Prof MM): UGX {expensePaymentMethodTotals.ProfMM}</p>
-                                <p>Expense Paid By (Visa): UGX {expensePaymentMethodTotals.Visa}</p> */}
-                                <p>Total Expenditure Amount Paid: UGX {totalExpenditureAmountPaid}</p>
-                                <p>Total Expenditure Amount Not Paid: UGX {expenditureBalance}</p>
-                            </>
-                            : <p>No data.....</p>
-                        }
-                    </div>
-                    <div style={{float:'right'}}>
-                        <h4>Net Profit / Loss Analysis</h4>
-                        {!isCalculationsLoading && (totalAmount || totalExpenditureAmount) ? 
-                            <>
-                                <p>Total Amount From Sales: UGX {totalAmount}</p>
-                                <p>Total Expenditure Amount: UGX {totalExpenditureAmount}</p>
-                                <p>Total Sales Amount Recieved: UGX {totalAmountPaid}</p>
-                                {/* <p>Total Income Amount From Massage Department: UGX {totalMassageAmount}</p>  */}
-                                <p>Total Expenditure Amount Spent: UGX {totalExpenditureAmountPaid}</p>
-                                <p>Total Sales Amount Not Recieved: UGX {balance}</p>
-                                <p>Total Expenditure Amount Not Paid: UGX {expenditureBalance}</p>
-                                <p>Total Net Income Available (Cash): UGX {paymentMethodTotals.Cash-expensePaymentMethodTotals.Cash}</p>
-                                {/* <p>Total Net Income Available (MTN MoMo): UGX {paymentMethodTotals.MTNMoMo-expensePaymentMethodTotals.MTNMoMo}</p>
-                                <p>Total Net Income Available (Airtel Money): UGX {paymentMethodTotals.AirtelMoney-expensePaymentMethodTotals.AirtelMoney}</p>
-                                <p>Total Net Income Available (Prof MM): UGX {paymentMethodTotals.ProfMM-expensePaymentMethodTotals.ProfMM}</p>
-                                <p>Total Net Income Available (Visa): UGX {paymentMethodTotals.Visa-expensePaymentMethodTotals.Visa}</p> */}
-                            </>
-                            : <p>No data.....</p>
-                    }
                     </div>
                 </Col>
                 <Col sm='12' md='1' lg='1' xl='1'></Col>

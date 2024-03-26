@@ -274,6 +274,7 @@ import MasanafuExternalReceiptsPOS from './components/Masanafu/shop/external_rec
 import RegisterFarmSeeds from './components/Masanafu/farm/register_seeds/register_seeds';
 import AdminManageEquatorialExpenses from './components/Admin/equatorial_administration/edit_expenditure_date';
 import EditEquatorialShopSales from './components/Admin/equatorial_administration/edit_sales';
+import EquatorialProjectsDailyIncomeSubmission from './components/Equatorial/shop/save_projects_income/save_projects_income';
 
 function App() {
   const authCtx = useContext(AuthContext);
@@ -980,6 +981,10 @@ function App() {
           </Route>)}
           {authCtx.isLoggedIn && (<Route path="/equatorialgeneralstorerestockingform">
             <EquatorialGeneralStoreRestockForm />
+          </Route>)}
+
+          {authCtx.isLoggedIn && (<Route path="/equatorialprojectsdailyincomesubmission">
+            <EquatorialProjectsDailyIncomeSubmission />
           </Route>)}
 
           {authCtx.isLoggedIn && (<Route path="/buwamasavelivestockfeedingrecords">

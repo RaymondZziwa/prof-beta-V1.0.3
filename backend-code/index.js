@@ -10,7 +10,6 @@ const multer = require('multer')
 const path = require('path')
 const upload = multer({dest: 'receipt_uploads/'})
 const nodeMailer = require('nodemailer');
-const { error } = require('console');
 
 const corsOptions = {
     origin: '*'
@@ -6033,6 +6032,26 @@ app.post('/fetchallequatorialshopexpenses', (req, res) => {
     })
 })
 
+app.post('/fetchallequatorialshopexpensesreport', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+            let date = req.body.date
+                db.query(`SELECT * FROM equatorialshopexpenditure WHERE date = ${date}`, (error, results) => {
+                    if (error) throw (error);
+
+                    if (results.length > 0) {
+                        console.log(results)
+                        res.send(results)
+                    } else {
+                        res.send(`There are no expenditure records found.`)
+                    }
+                })
+        }
+    })
+})
+
 
 app.post('/fetchallequatorialshopsales', (req, res) => {
     jwt.verify(req.body.token, 'SECRETKEY', (err) => {
@@ -6040,6 +6059,26 @@ app.post('/fetchallequatorialshopsales', (req, res) => {
             res.status(403).send("You are not authorized to perform this action.");
         } else {
                 db.query('SELECT * FROM equatorialShopSales', (error, results) => {
+                    if (error) throw (error);
+
+                    if (results.length > 0) {
+                        console.log(results)
+                        res.send(results)
+                    } else {
+                        res.send(`There are no sales records found.`)
+                    }
+                })
+        }
+    })
+})
+
+app.post('/fetchallequatorialshopsalesreport', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                let date = req.body.date
+                db.query(`SELECT * FROM equatorialShopSales WHERE saleDate = ${date}`, (error, results) => {
                     if (error) throw (error);
 
                     if (results.length > 0) {
@@ -6235,8 +6274,8 @@ app.post('/submitmassageincome', (req, res) => {
         if (err) {
             res.status(403).send("You are not authorized to perform this action.");
         } else {
-                const timestamp = Date.now();
-                const submissionId = `SM-${timestamp}-${Math.floor(Math.random() * 1000000)}`
+                const timestamp = Date.now().toString().slice(-6);
+                const submissionId = `SM-${timestamp}-${Math.floor(Math.random() * 1000)}`
                 const date = req.body.date
                 const submittedBy = req.body.submittedBy
                 const submissionStatus = 'unconfirmed'
@@ -6258,6 +6297,36 @@ app.post('/submitmassageincome', (req, res) => {
         }
     })
 })
+
+
+app.post('/submitprojectsincome', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                const timestamp = Date.now().toString().slice(-4);
+                const submissionId = `PM-${timestamp}-${Math.floor(Math.random() * 1000)}`
+                const date = req.body.date
+                const submittedBy = req.body.submittedBy
+                const submissionStatus = 'recieved'
+                const amountSubmitted = req.body.amount
+                const receivedBy = req.body.deliveredTo
+                
+                db.query('INSERT INTO equatorialprojectsmoneysubmission (submissionId, submissionDate, amount, submittedBy, receivedBy, submissionstatus) VALUES (?, ?, ?, ?, ?, ?)',[submissionId, date, amountSubmitted, submittedBy, receivedBy, submissionStatus], (error) => {
+                    if (error){
+                        throw (error)
+                    }else{
+                        res.send({
+                            status: 200,
+                            msg: 'success'
+                        })
+                    }
+                })
+        }
+    })
+})
+
+
 
 //route to save client payment
 app.post('/confirmincomesubmission', (req, res) => {
@@ -6282,6 +6351,7 @@ app.post('/confirmincomesubmission', (req, res) => {
         }
     })
 })
+
 
 app.post('/rejectincomesubmission', (req, res) => {
     jwt.verify(req.body.token, 'SECRETKEY', (err) => {
@@ -6312,6 +6382,65 @@ app.post('/fetchallincomesubmissionrecords', (req, res) => {
             res.status(403).send("You are not authorized to perform this action.");
         } else {
                 db.query('SELECT * FROM equatorialmassagemoneysubmission', (error, results) => {
+                    if (error) throw (error);
+
+                    if (results.length > 0) {
+                        res.send(results)
+                    } else {
+                        res.send(`There are no records found.`)
+                    }
+                })
+        }
+    })
+})
+
+
+app.post('/fetchamassagerecordsreport', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                let date = req.body.date
+                db.query(`SELECT * FROM equatorialmassagemoneysubmission WHERE submissionDate = ${date}`, (error, results) => {
+                    if (error) throw (error);
+
+                    if (results.length > 0) {
+                        res.send(results)
+                    } else {
+                        res.send(`There are no records found.`)
+                    }
+                })
+        }
+    })
+})
+
+
+
+app.post('/fetchallprojectsincomesubmissionrecords', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                db.query('SELECT * FROM equatorialprojectsmoneysubmission', (error, results) => {
+                    if (error) throw (error);
+
+                    if (results.length > 0) {
+                        res.send(results)
+                    } else {
+                        res.send(`There are no records found.`)
+                    }
+                })
+        }
+    })
+})
+
+app.post('/fetchaprojectsrecordsreport', (req, res) => {
+    jwt.verify(req.body.token, 'SECRETKEY', (err) => {
+        if (err) {
+            res.status(403).send("You are not authorized to perform this action.");
+        } else {
+                let date = req.body.date
+                db.query(`SELECT * FROM equatorialprojectsmoneysubmission WHERE submissionDate = ${date}`, (error, results) => {
                     if (error) throw (error);
 
                     if (results.length > 0) {
